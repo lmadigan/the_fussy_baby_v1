@@ -1,0 +1,42 @@
+@import "./colors.css";
+@import "./typography.css";
+@import "./spacing.css";
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background: #e9e8e4; /* backdrop behind the phone frame on wide screens */
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font-family: var(--font-ui);
+}
+
+/* App frame — mobile-first, centered column on larger screens */
+.app-frame {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100%;
+  background: var(--surface-app);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 0 0 1px var(--border-default);
+}
+
+.app-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 84px; /* room for the nav bar */
+}
+
+@media (max-width: 430px) {
+  body { background: var(--surface-app); }
+  .app-frame { box-shadow: none; }
+}

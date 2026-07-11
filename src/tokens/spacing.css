@@ -1,0 +1,23 @@
+:root {
+  /* Spacing — 4px base */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;   /* card padding */
+  --space-6: 24px;   /* screen side padding */
+  --space-7: 28px;
+
+  --gap-card-internal: 14px;   /* between blocks inside a card */
+  --gap-card-text: 6px;        /* title → description */
+  --gap-stack: 18px;           /* between cards on a screen */
+  --gap-chips: 8px;
+
+  /* Radii */
+  --radius-card: 14px;
+  --radius-button: 10px;
+  --radius-pill: 99px;
+
+  /* Hit targets */
+  --hit-min: 44px;
+}

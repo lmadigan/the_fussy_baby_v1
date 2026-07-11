@@ -1,0 +1,38 @@
+:root {
+  /* ————— Base palette — Direction 1d "Quiet Gentle Intelligence" ————— */
+  --ink-900: #222833;         /* pressed / hover state of ink */
+  --ink-800: #2c3440;         /* brand primary — quiet ink */
+  --periwinkle-500: #a8b7f0;  /* gentle signal — dots, active borders */
+  --periwinkle-100: rgba(168, 183, 240, 0.2);  /* periwinkle tint fill (#A8B7F033) */
+  --mint-200: #c7ddd6;        /* calm chip fill */
+  --clay-200: rgba(217, 185, 170, 0.33);       /* warm chip fill (#D9B9AA55) */
+  --gray-900: #22272f;        /* primary text */
+  --gray-500: #727b86;        /* muted text */
+  --gray-200: #e7e6e2;        /* borders, empty track */
+  --gray-100: #f7f7f5;        /* app background */
+  --white: #ffffff;
+
+  /* ————— Semantic aliases ————— */
+  --surface-app: var(--gray-100);
+  --surface-card: var(--white);
+  --surface-inset: var(--gray-100);      /* fills inside a card (secondary buttons, tracks) */
+
+  --text-primary: var(--gray-900);
+  --text-muted: var(--gray-500);
+  --text-brand: var(--ink-800);
+  --text-on-brand: var(--white);
+  --text-warm: var(--ink-800);           /* 1d keeps chip text in ink */
+
+  --border-default: var(--gray-200);
+  --border-hover: var(--periwinkle-500);
+
+  --accent-signal: var(--periwinkle-500);   /* "pay attention" — always small: a dot, a chip */
+  --accent-signal-bg: var(--periwinkle-100);
+  --accent-calm-bg: var(--mint-200);        /* "recorded, no alarm" */
+  --accent-warm-bg: var(--clay-200);        /* softly notable */
+
+  --action-primary: var(--ink-800);
+  --action-primary-hover: var(--ink-900);
+
+  --shadow-card: 0 1px 4px rgba(44, 52, 64, 0.04);
+}
