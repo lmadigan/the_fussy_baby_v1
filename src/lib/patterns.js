@@ -1,5 +1,5 @@
 import { INVESTIGATIONS } from "../data/playbook.js";
-import { getObservation } from "../data/vocabulary.js";
+import { getObservation, isRedFlag } from "../data/vocabulary.js";
 
 /**
  * The Pattern Engine.
@@ -27,7 +27,8 @@ export function generatePatterns(state) {
 
     for (const [dateKey, day] of days) {
       for (const obs of day.observations) {
-        if (!signSet.has(obs)) continue;
+        // Red flags never feed patterns — they get an immediate nudge instead.
+        if (!signSet.has(obs) || isRedFlag(obs)) continue;
         const entry = evidence.get(obs) ?? { count: 0, dates: [] };
         entry.count += 1;
         entry.dates.push(dateKey);

@@ -6,7 +6,7 @@ import { Tag } from "../components/core/Tag.jsx";
 import { RatingScale } from "../components/forms/RatingScale.jsx";
 import { Screen } from "../components/app/Screen.jsx";
 import { useStore, commonObservationIds } from "../lib/store.jsx";
-import { CATEGORIES, observationsInCategory, getObservation, extractObservations } from "../data/vocabulary.js";
+import { CATEGORIES, observationsInCategory, getObservation, extractObservations, redFlagsIn } from "../data/vocabulary.js";
 import { speechSupported, createRecognizer } from "../lib/speech.js";
 import { todayKey, formatLong } from "../lib/dates.js";
 
@@ -233,6 +233,19 @@ export function Detective({ navigate }) {
         <SectionLabel>How fussy was today?</SectionLabel>
         <RatingScale value={fussiness} onChange={setFussiness} />
       </Card>
+
+      {redFlagsIn(log).length > 0 && (
+        <Card style={{ borderColor: "var(--accent-signal)" }}>
+          <SectionLabel style={{ color: "var(--text-brand)" }}>Worth a call today</SectionLabel>
+          <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-primary)", textWrap: "pretty" }}>
+            {redFlagsIn(log)
+              .map((o) => getObservation(o)?.label ?? o)
+              .join(", ")}{" "}
+            — observations like these are worth raising with your pediatrician on their own, not because of any
+            pattern. We'll save them to your history but won't use them for pattern matching.
+          </div>
+        </Card>
+      )}
 
       <Card>
         <SectionLabel right={`${log.length} item${log.length === 1 ? "" : "s"}`}>Today's Log</SectionLabel>

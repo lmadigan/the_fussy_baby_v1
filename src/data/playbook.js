@@ -47,7 +47,7 @@ export const INVESTIGATIONS = [
     short: "Some babies react to proteins in milk, soy, or egg through fussiness, stool changes, skin changes, or reflux-like symptoms.",
     whatIsIt:
       "A small number of babies are sensitive to food proteins — most commonly cow's milk, and sometimes soy or egg — passed through breast milk or in formula. Reactions usually show up in the gut (mucus or blood-streaked stool, green stool), on the skin (rash, eczema), or as reflux-like discomfort. Investigating means observing carefully and discussing any elimination changes with your pediatrician.",
-    signs: ["dairy", "soy", "egg", "green-stool", "mucus-stool", "blood-stool", "rash", "eczema", "fussy-after-feeds", "spit-up"],
+    signs: ["dairy", "soy", "egg", "wheat-gluten", "green-stool", "mucus-stool", "rash", "hives", "eczema", "facial-rash-feeds", "red-ring", "fussy-after-feeds", "spit-up"],
     checklist: [
       "Log what dairy, soy, and egg entered baby's day (directly, via formula, or via a breastfeeding parent's diet).",
       "Photograph and log any unusual stool — color, mucus, streaks.",
@@ -65,7 +65,7 @@ export const INVESTIGATIONS = [
     short: "Reflux can show up as discomfort during or after feeds, even without obvious spit up.",
     whatIsIt:
       "All babies reflux — milk comes partway up and usually back down. In silent reflux, the milk comes up but isn't spit out, so the discomfort is there without the visible spit up. It often looks like arching, crying during or after feeds, congestion, and trouble lying flat. Most reflux improves with time; the investigation is about understanding what makes your baby comfortable.",
-    signs: ["arching-during-feed", "fussy-after-feeds", "congestion", "swallowing-sounds", "trouble-settling", "hiccups", "bottle-refusal", "night-waking"],
+    signs: ["arching-during-feed", "fussy-after-feeds", "congestion", "swallowing-sounds", "wet-burps", "sleeps-upright-only", "trouble-settling", "hiccups", "bottle-refusal", "night-waking"],
     checklist: [
       "Note when fussiness happens relative to feeds — during, right after, or 20–30 minutes later.",
       "Listen for wet swallowing, gagging, or gurgling sounds between feeds.",
@@ -83,7 +83,7 @@ export const INVESTIGATIONS = [
     short: "A restricted tongue or lip can make feeding harder work — clicking, leaking, and extra air are common signs.",
     whatIsIt:
       "Some babies have a band of tissue under the tongue or upper lip that restricts movement. When the tongue can't move freely, the latch is shallower and the seal is weaker — feeds become louder (clicking), messier (leaking), longer, and gassier. Only a trained provider can assess a true restriction; your job in this investigation is to gather good observations.",
-    signs: ["clicking", "milk-leaking", "pulling-off", "short-feeds", "frequent-feeds", "gas", "fussy-after-feeds"],
+    signs: ["clicking", "milk-leaking", "pulling-off", "short-feeds", "frequent-feeds", "latch-pain", "gas", "fussy-after-feeds"],
     checklist: [
       "Record feed sounds for a few days: clicking, smacking, or lots of air swallowing.",
       "Note whether milk leaks from the corners of baby's mouth during feeds.",
@@ -100,7 +100,7 @@ export const INVESTIGATIONS = [
     short: "When milk flows faster than baby can comfortably swallow, feeds get gulpy, sputtery, and gassy.",
     whatIsIt:
       "Some parents' milk lets down fast enough that baby has to gulp to keep up — swallowing air along the way. Babies often cough, sputter, pull off at letdown, and then deal with gas and green-ish stools from getting proportionally more foremilk. It's very manageable once identified.",
-    signs: ["gulping", "pulling-off", "green-stool", "gas", "spit-up", "explosive-stool", "fussy-after-feeds"],
+    signs: ["gulping", "pulling-off", "green-stool", "foamy-stool", "gas", "spit-up", "explosive-stool", "fussy-after-feeds"],
     checklist: [
       "Note what happens in the first 2 minutes of a feed — coughing, gulping, or pulling off suggests fast flow.",
       "Try a laid-back nursing position for a few feeds so gravity slows the flow.",
@@ -117,7 +117,7 @@ export const INVESTIGATIONS = [
     short: "Young digestive systems are still learning. Gas that builds during the day often peaks as evening fussiness.",
     whatIsIt:
       "A newborn's gut is brand new, and moving gas through it takes real effort — grunting, squirming, and pulling knees to chest are common. Gas builds over the day, which is one reason evening fussiness (the 'witching hour') is so widespread. The investigation is about spotting what makes gas better or worse for your baby.",
-    signs: ["gas", "knees-to-chest", "evening-fussiness", "explosive-stool", "trouble-settling", "inconsolable", "hiccups"],
+    signs: ["gas", "knees-to-chest", "straining", "red-face-grunting", "evening-fussiness", "explosive-stool", "trouble-settling", "inconsolable", "hiccups"],
     checklist: [
       "Log gas alongside the time of day it's worst.",
       "Try bicycle legs and clockwise tummy massage between feeds; log as an intervention.",
