@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { todayKey } from "./dates.js";
+import { buildDemoState } from "../data/demoSeed.js";
 
 /**
  * App state, persisted to localStorage.
@@ -8,24 +9,38 @@ import { todayKey } from "./dates.js";
  * days:      { [dateKey]: { fussiness: 1–5|null, observations: [obsId|"custom:Label"] } }
  *            — only parent-approved observations are ever stored.
  * statuses:  { [investigationId]: statusId }
+ * feedback:  { [promptId]: "dismissed" | "sent" } — timed in-app feedback prompts
  * currentInvestigationId: string|null
+ *
+ * Demo mode (?demo in the URL) loads a seeded example family and never
+ * persists — refreshing the page resets the story.
  */
 
 const STORAGE_KEY = "fussy-baby-v1";
+
+export const IS_DEMO =
+  typeof window !== "undefined" && new URLSearchParams(window.location.search).has("demo");
 
 const initialState = {
   profile: { babyName: "", babyAgeMonths: null, onboardingSymptoms: [], onboarded: false },
   days: {},
   statuses: {},
+  feedback: {},
   currentInvestigationId: null,
 };
 
 function load() {
+  if (IS_DEMO) return buildDemoState();
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return initialState;
     const parsed = JSON.parse(raw);
-    return { ...initialState, ...parsed, profile: { ...initialState.profile, ...parsed.profile } };
+    return {
+      ...initialState,
+      ...parsed,
+      profile: { ...initialState.profile, ...parsed.profile },
+      feedback: parsed.feedback ?? {},
+    };
   } catch {
     return initialState;
   }
@@ -75,6 +90,9 @@ function reducer(state, action) {
       else if (current === action.investigationId) current = null;
       return { ...state, statuses, currentInvestigationId: current };
     }
+    case "resolveFeedback": {
+      return { ...state, feedback: { ...state.feedback, [action.promptId]: action.outcome } };
+    }
     case "reset":
       return initialState;
     default:
@@ -87,6 +105,7 @@ const StoreContext = createContext(null);
 export function StoreProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, undefined, load);
   useEffect(() => {
+    if (IS_DEMO) return; // demo edits live in memory only
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {

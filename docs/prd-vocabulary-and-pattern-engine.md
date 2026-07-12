@@ -222,7 +222,13 @@ unexplained; the Playbook constrains *naming*, not *surfacing*.
 **Tier 1 — Investigation Patterns.**
 Supporting observations map to a Playbook investigation's signs.
 
-Threshold: ≥ 2 distinct signs, ≥ 3 total sightings, ≥ 2 distinct days.
+Threshold: ≥ 3 distinct signs, ≥ 5 total sightings, ≥ 3 distinct days.
+(Tuned with the simulation harness: at these values, synthetic babies
+with a known cause are detected 100% of the time by median day 4 with
+the true investigation ranked first, while a control baby with no
+underlying cause surfaces zero patterns across 50 simulated months.
+The looser 2/3/2 thresholds produced a false pattern for 74% of
+control babies.)
 
 Card: investigation title · what we're noticing · supporting
 observations with counts · View Evidence · Open Investigation.

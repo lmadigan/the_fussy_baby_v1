@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StoreProvider, useStore } from "./lib/store.jsx";
+import { StoreProvider, useStore, IS_DEMO } from "./lib/store.jsx";
 import { NavBar } from "./components/app/NavBar.jsx";
 import { Onboarding } from "./screens/Onboarding.jsx";
 import { Home } from "./screens/Home.jsx";
@@ -54,6 +54,21 @@ function Shell() {
 
   return (
     <div className="app-frame">
+      {IS_DEMO && (
+        <div
+          style={{
+            background: "var(--ink-800)",
+            color: "var(--text-on-brand)",
+            fontSize: "11.5px",
+            fontWeight: 600,
+            letterSpacing: "0.04em",
+            textAlign: "center",
+            padding: "7px 12px",
+          }}
+        >
+          DEMO · Example data for Wren, 8 weeks — explore freely, refresh to reset
+        </div>
+      )}
       <div className="app-scroll" ref={scrollRef}>
         {screen === "home" && <Home navigate={navigate} />}
         {screen === "investigation" && <InvestigationDetail navigate={navigate} goBack={goBack} params={params} />}

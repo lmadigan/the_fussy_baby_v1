@@ -7,6 +7,7 @@ import { Tag } from "../components/core/Tag.jsx";
 import { InsightRow } from "../components/data/InsightRow.jsx";
 import { StatRow } from "../components/data/StatRow.jsx";
 import { Screen } from "../components/app/Screen.jsx";
+import { FeedbackPrompt } from "../components/app/FeedbackPrompt.jsx";
 import { useStore, lastObservationDay } from "../lib/store.jsx";
 import { generatePatterns } from "../lib/patterns.js";
 import { INVESTIGATIONS, getInvestigation, matchInvestigations, statusInfo } from "../data/playbook.js";
@@ -72,6 +73,8 @@ export function Home({ navigate }) {
         </div>
         <Button onClick={() => navigate("detective")}>Start Recording</Button>
       </Card>
+
+      <FeedbackPrompt />
 
       <Card>
         <SectionLabel>What We've Learned</SectionLabel>

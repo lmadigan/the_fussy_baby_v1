@@ -13,10 +13,18 @@ import { getObservation, isRedFlag } from "../data/vocabulary.js";
  * anything out — if there isn't enough evidence, it simply stays quiet.
  */
 
-const MIN_DISTINCT_SIGNS = 2; // at least two different supporting observations
-const MIN_TOTAL_SIGHTINGS = 3; // seen at least three times in total
+/**
+ * Evidence thresholds — tuned with the simulation harness (sim/simulate.mjs)
+ * to balance early detection against noise. "Prefer silence over noise":
+ * a wrong pattern costs trust that a missing pattern does not.
+ */
+export const DEFAULT_THRESHOLDS = {
+  minDistinctSigns: 3, // at least this many different supporting observations
+  minTotalSightings: 5, // seen at least this many times in total
+  minDistinctDays: 3, // spread across at least this many days
+};
 
-export function generatePatterns(state) {
+export function generatePatterns(state, thresholds = DEFAULT_THRESHOLDS) {
   const days = Object.entries(state.days);
   const patterns = [];
 
@@ -39,7 +47,12 @@ export function generatePatterns(state) {
 
     const distinct = evidence.size;
     const total = [...evidence.values()].reduce((sum, e) => sum + e.count, 0);
-    if (distinct < MIN_DISTINCT_SIGNS || total < MIN_TOTAL_SIGHTINGS) continue;
+    if (
+      distinct < thresholds.minDistinctSigns ||
+      total < thresholds.minTotalSightings ||
+      daysWithEvidence.size < thresholds.minDistinctDays
+    )
+      continue;
 
     const supporting = [...evidence.entries()]
       .sort((a, b) => b[1].count - a[1].count)

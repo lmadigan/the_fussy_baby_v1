@@ -100,29 +100,49 @@ Two channel types matter, in this order:
   map exactly onto high-volume search queries. Publishing them as a
   public content site is a long-term acquisition engine.
 
-## Feedback plan for the MVP
+## Validation & feedback plan for the MVP
 
-**Round 1 — Moderated sessions (this month, n=5–8).**
-Sit with moms (or video call), give them the link, say nothing.
-Watch: Do they finish onboarding? Do they understand Detective without
-explanation? Does the first log take under a minute? What do they
-*expect* Patterns to tell them? The gap between expectation and our
-evidence-not-conclusions stance is the single most important thing to
-learn — it's the product's core bet.
+Moms with fussy babies are exhausted; they will not join a "study,"
+keep a diary on request, or fill in surveys. So the plan splits into
+two halves: **prove the engine on synthetic families first, then open
+it to real moms as a product** — with feedback collected inside the
+app at natural moments, one question at a time.
 
-**Round 2 — Diary beta (2 weeks, n=20–50, PWA).**
-Real use, real babies. Weekly 5-question check-in survey.
+**Phase 1 — Synthetic families (before wide release).**
+The simulation harness (`sim/simulate.mjs`) generates example users
+over time: babies with a known underlying cause (forceful letdown,
+silent reflux, overtiredness, dairy sensitivity) plus a control baby
+with no cause, each producing probabilistic daily observations with
+noise and skipped days, replayed through the Pattern Engine day by
+day. Confidence gates before opening up:
+- ≥ 95% of true causes surfaced within 28 days ✅ (currently 100%,
+  median detection day 4)
+- True cause ranked first at day 28 ✅ (currently 100%)
+- Control baby surfaces zero patterns ✅ (0% at tuned thresholds;
+  the initial thresholds produced false patterns for 74% of control
+  babies — the harness caught and fixed this before any real user
+  saw it)
+Every engine or Playbook change reruns the harness. Add personas as
+the vocabulary grows (teething, oversupply, mixed causes).
 
-**Metrics that matter:**
+**Phase 2 — Real moms, product-first (no "experiment" framing).**
+Two low-burden inputs, in this order:
+- **Watch, don't ask (n=5–8):** hand a mom the demo link or the app,
+  say nothing, watch where she hesitates. The one thing to learn: when
+  she opens Patterns, does "evidence, never diagnosis" read as calm
+  expertise or as withholding?
+- **In-app timed feedback:** the app asks exactly one question at
+  natural milestones — after the first saved observation, around a
+  week of logging, when the first pattern surfaces, and at two weeks.
+  One tap to dismiss, a sentence to answer. No surveys, no scheduled
+  check-ins, no participant obligations.
+
+**Metrics that matter (observable, no participation required):**
 - Onboarding completion rate
 - Time to first saved observation (target: < 1 minute)
-- Logging retention: % of testers who log 5+ of their first 7 days
+- Logging retention: % who log 5+ of their first 7 days
 - % who reach their first surfaced pattern, and time-to-first-pattern
-- Qualitative: do they *trust* the patterns? Would they show their
-  pediatrician?
-
-**What we're testing, in one sentence:** does "evidence, never
-diagnosis" feel like calm expertise or like withholding?
+- Feedback-prompt answer rate and sentiment
 
 ## Pre-launch requirements (gate the store release)
 
@@ -142,8 +162,8 @@ diagnosis" feel like calm expertise or like withholding?
 
 | When | What | Goal |
 | --- | --- | --- |
-| Now | Pages link + QR | Hallway feedback, n=5–8 moderated |
-| +2 weeks | PWA beta | 20–50 mom diary study |
+| Now | Demo link + QR · synthetic validation gates | Show people the seeded demo; prove the engine on example users |
+| +2 weeks | PWA beta | 20–50 real moms using the product, in-app timed feedback |
 | +4–6 weeks | Capacitor + TestFlight external link | Broader beta, waitlist building |
 | +8–12 weeks | App Store launch | Gated on legal/clinical review, not a date |
 | Ongoing | IBCLC partnerships, Learn-content SEO | Durable acquisition |
