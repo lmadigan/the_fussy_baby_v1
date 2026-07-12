@@ -63,22 +63,19 @@ export function Onboarding() {
           <div style={{ fontFamily: "var(--font-display)", fontSize: "32px", fontWeight: 600, color: "var(--text-primary)" }}>
             The Fussy Baby
           </div>
-          <div style={{ fontSize: "14px", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
-            A calm way to investigate what's behind the fuss.
-          </div>
         </div>
         <Card>
-          <SectionLabel>What this app does</SectionLabel>
-          <div style={{ fontSize: "14px", lineHeight: 1.55, color: "var(--text-primary)", textWrap: "pretty" }}>
-            Guides you through common causes of fussiness, helps you record daily observations in under a minute, and
-            surfaces patterns from what <em>you</em> approve and save.
+          <div style={{ fontSize: "17px", lineHeight: 1.5, fontWeight: 600, color: "var(--text-primary)", textWrap: "pretty" }}>
+            Hey — you're doing great. But baby fussiness is no joke.
           </div>
-        </Card>
-        <Card>
-          <SectionLabel>What it doesn't do</SectionLabel>
-          <div style={{ fontSize: "14px", lineHeight: 1.55, color: "var(--text-primary)", textWrap: "pretty" }}>
-            It never diagnoses, never recommends treatment, and never replaces your pediatrician. It surfaces evidence —
-            you and your care team draw the conclusions.
+          <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-primary)", textWrap: "pretty" }}>
+            The good news: we're here to help you troubleshoot. This is an educational and observational tool that helps
+            you understand the common causes of fussiness, and surfaces correlations between what you observe and how
+            fussy your baby's days are.
+          </div>
+          <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-muted)", textWrap: "pretty" }}>
+            It's not a medical diagnostic tool — your pediatrician stays in charge. We just help you show up with
+            better notes.
           </div>
         </Card>
         <Button onClick={() => setStep(1)}>Get Started</Button>
