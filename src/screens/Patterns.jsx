@@ -31,7 +31,7 @@ export function Patterns({ navigate }) {
           const open = evidenceOpen[p.investigationId];
           return (
             <Card key={p.investigationId}>
-              <SectionLabel right={`${p.dayCount} day${p.dayCount === 1 ? "" : "s"} of evidence`}>Pattern</SectionLabel>
+              <SectionLabel right={`across ${p.dayCount} day${p.dayCount === 1 ? "" : "s"}`}>Pattern</SectionLabel>
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-card-text)" }}>
                 <div style={{ fontSize: "var(--type-title-size)", fontWeight: "var(--type-title-weight)", letterSpacing: "-0.01em", color: "var(--text-primary)" }}>
                   {p.investigationTitle}
@@ -42,7 +42,7 @@ export function Patterns({ navigate }) {
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                 <div style={{ fontSize: "var(--type-meta-size)", fontWeight: 500, color: "var(--text-muted)" }}>
-                  Supporting observations
+                  What we noticed
                 </div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
                   {p.supporting.map((s) => (
@@ -70,10 +70,10 @@ export function Patterns({ navigate }) {
                   variant="secondary"
                   onClick={() => setEvidenceOpen((prev) => ({ ...prev, [p.investigationId]: !open }))}
                 >
-                  {open ? "Hide Evidence" : "View Evidence"}
+                  {open ? "Hide" : "See Why"}
                 </Button>
                 <Button variant="secondary" onClick={() => navigate("investigation", { id: p.investigationId })}>
-                  Open Investigation
+                  Look Into This
                 </Button>
               </div>
             </Card>

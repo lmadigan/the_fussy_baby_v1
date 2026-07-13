@@ -30,12 +30,12 @@ export function SymptomMatrix({ navigate, goBack, preselect }) {
   );
 
   return (
-    <Screen eyebrow="Learn" title="Symptom Matrix" onBack={goBack}>
+    <Screen eyebrow="Guides" title="Symptom Explorer" onBack={goBack}>
       <Card>
         <SectionLabel>How to use this</SectionLabel>
         <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
-          Select one or more symptoms to highlight the investigations they commonly appear in. This is an educational
-          map of relationships — it doesn't use your observations, rank anything, or make recommendations.
+          Select one or more symptoms to highlight the possible causes they commonly appear with. This is an
+          educational map of relationships — it doesn't use your observations, rank anything, or make recommendations.
         </div>
       </Card>
 
@@ -57,7 +57,7 @@ export function SymptomMatrix({ navigate, goBack, preselect }) {
       })}
 
       <Card>
-        <SectionLabel right={selected.length ? `${selected.length} selected` : undefined}>Investigations</SectionLabel>
+        <SectionLabel right={selected.length ? `${selected.length} selected` : undefined}>Possible Causes</SectionLabel>
         {selected.length === 0 && (
           <div style={{ fontSize: "13px", lineHeight: 1.5, color: "var(--text-muted)" }}>
             Select symptoms above to see relationships light up.
@@ -100,7 +100,7 @@ export function SymptomMatrix({ navigate, goBack, preselect }) {
                       ))}
                     </div>
                     <Button variant="secondary" size="sm" onClick={() => navigate("investigation", { id: investigation.id })}>
-                      Open Investigation
+                      Look Into This
                     </Button>
                   </>
                 )}
