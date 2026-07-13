@@ -5,7 +5,7 @@ import { SectionLabel } from "../components/core/SectionLabel.jsx";
 import { Tag } from "../components/core/Tag.jsx";
 import { Input } from "../components/forms/Input.jsx";
 import { useStore } from "../lib/store.jsx";
-import { ONBOARDING_SYMPTOM_IDS, getObservation } from "../data/vocabulary.js";
+import { CATEGORIES, observationsInCategory } from "../data/vocabulary.js";
 
 const AGE_OPTIONS = [
   { label: "0–6 weeks", months: 1 },
@@ -126,13 +126,18 @@ export function Onboarding() {
           </div>
         </div>
         <Card>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
-            {ONBOARDING_SYMPTOM_IDS.map((id) => (
-              <Tag key={id} tone="neutral" selected={symptoms.includes(id)} onClick={() => toggleSymptom(id)}>
-                {getObservation(id).label}
-              </Tag>
-            ))}
-          </div>
+          {CATEGORIES.map((cat) => (
+            <div key={cat} style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <div style={{ fontSize: "var(--type-meta-size)", fontWeight: 500, color: "var(--text-muted)" }}>{cat}</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
+                {observationsInCategory(cat).map((obs) => (
+                  <Tag key={obs.id} tone="neutral" selected={symptoms.includes(obs.id)} onClick={() => toggleSymptom(obs.id)}>
+                    {obs.label}
+                  </Tag>
+                ))}
+              </div>
+            </div>
+          ))}
         </Card>
         <Button onClick={() => setStep(3)}>{symptoms.length ? "Continue" : "Skip for now"}</Button>
       </>

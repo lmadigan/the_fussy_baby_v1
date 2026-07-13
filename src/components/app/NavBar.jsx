@@ -38,8 +38,11 @@ export function NavBar({ current, onNavigate }) {
               alignItems: "center",
               gap: "3px",
               padding: "6px 0",
+              margin: "0 2px",
               borderRadius: "10px",
+              background: active ? "var(--accent-signal-bg)" : "transparent",
               color: active ? "var(--text-brand)" : "var(--text-muted)",
+              transition: "background .15s ease",
             }}
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2 : 1.6} strokeLinecap="round" strokeLinejoin="round">

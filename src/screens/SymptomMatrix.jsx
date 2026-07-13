@@ -100,7 +100,7 @@ export function SymptomMatrix({ navigate, goBack, preselect }) {
                       ))}
                     </div>
                     <Button variant="secondary" size="sm" onClick={() => navigate("investigation", { id: investigation.id })}>
-                      Look Into This
+                      Explore This
                     </Button>
                   </>
                 )}

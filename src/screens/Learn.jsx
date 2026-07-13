@@ -63,7 +63,7 @@ export function Learn({ navigate, params }) {
               <SectionLabel>Possible Cause</SectionLabel>
               <div style={{ fontSize: "16px", fontWeight: 600, color: "var(--text-primary)" }}>{inv.title}</div>
               <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>{inv.short}</div>
-              <Button variant="secondary" onClick={() => navigate("investigation", { id: inv.id })}>Look Into This</Button>
+              <Button variant="secondary" onClick={() => navigate("investigation", { id: inv.id })}>Explore This</Button>
             </Card>
           ))}
           {hits.articles.map((a) => (
@@ -92,6 +92,10 @@ export function Learn({ navigate, params }) {
         <>
           <Card>
             <SectionLabel right={`${INVESTIGATIONS.length} total`}>Possible Causes</SectionLabel>
+            <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
+              These are the most common causes of baby fussiness. Each one explains itself and gives you concrete
+              things to try.
+            </div>
             {INVESTIGATIONS.map((inv) => (
               <button
                 key={inv.id}
@@ -157,7 +161,7 @@ export function Learn({ navigate, params }) {
           <Card>
             <SectionLabel>How This Works</SectionLabel>
             <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
-              How looking into a cause works, why observations matter, and why one symptom can have many causes.
+              How exploring a cause works, why observations matter, and why one symptom can have many causes.
             </div>
             <Button variant="secondary" onClick={() => navigate("learn", { section: "process" })}>How It Works</Button>
           </Card>
@@ -172,7 +176,7 @@ function Process({ goBack }) {
   const steps = [
     {
       title: "Pick a possible cause",
-      body: "Choose one possible cause to look into and work through What to Try. Each one explains itself before asking you to act — you always know why you're observing something.",
+      body: "Choose one possible cause to explore and work through What to Try. Each one explains itself before asking you to act — you always know why you're observing something.",
     },
     {
       title: "Observe & record",
@@ -184,7 +188,7 @@ function Process({ goBack }) {
     },
     {
       title: "Follow the next lead",
-      body: "Patterns point to what may be worth looking into next. Mark causes checked, back burner, or come back later — and keep narrowing in.",
+      body: "Patterns point to what may be worth exploring next. Mark causes checked, back burner, or come back later — and keep narrowing in.",
     },
   ];
   return (

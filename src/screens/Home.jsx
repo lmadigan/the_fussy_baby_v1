@@ -11,8 +11,8 @@ import { FeedbackPrompt } from "../components/app/FeedbackPrompt.jsx";
 import { useStore, lastObservationDay } from "../lib/store.jsx";
 import { generatePatterns } from "../lib/patterns.js";
 import { INVESTIGATIONS, getInvestigation, matchInvestigations, statusInfo } from "../data/playbook.js";
-import { getObservation } from "../data/vocabulary.js";
-import { formatLong, formatRelative } from "../lib/dates.js";
+import { getObservation, isRedFlag } from "../data/vocabulary.js";
+import { formatLong, formatRelative, todayKey } from "../lib/dates.js";
 
 /** Pick the investigation Home should feature. */
 export function homeInvestigation(state) {
@@ -20,9 +20,11 @@ export function homeInvestigation(state) {
     return { investigation: getInvestigation(state.currentInvestigationId), suggested: false };
   }
   // Suggest from onboarding symptoms + logged observations — most overlapping signs,
-  // skipping anything the parent has completed or deprioritized.
-  const seen = new Set(state.profile.onboardingSymptoms);
-  for (const day of Object.values(state.days)) for (const o of day.observations) if (!o.startsWith("custom:")) seen.add(o);
+  // skipping anything the parent has completed or deprioritized. Red flags never
+  // steer suggestions; they get their own pediatrician nudge instead.
+  const seen = new Set(state.profile.onboardingSymptoms.filter((s) => !isRedFlag(s)));
+  for (const day of Object.values(state.days))
+    for (const o of day.observations) if (!o.startsWith("custom:") && !isRedFlag(o)) seen.add(o);
   const skip = new Set(
     Object.entries(state.statuses)
       .filter(([, s]) => s === "complete" || s === "low_priority")
@@ -43,15 +45,32 @@ export function Home({ navigate }) {
   const patterns = generatePatterns(state);
   const lastDay = lastObservationDay(state);
   const name = state.profile.babyName;
+  const loggedToday = Boolean(state.days[todayKey()]);
+  const recentRedFlags = lastDay ? lastDay.observations.filter((o) => isRedFlag(o)) : [];
 
   return (
-    <Screen eyebrow={formatLong(new Date())} title="The Fussy Baby">
+    <Screen eyebrow={formatLong(new Date())} title={name ? `How's ${name} doing today?` : "How's your baby doing today?"}>
+      {recentRedFlags.length > 0 && (
+        <Card style={{ borderColor: "var(--accent-signal)" }}>
+          <SectionLabel style={{ color: "var(--text-brand)" }}>Worth a call today</SectionLabel>
+          <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-primary)", textWrap: "pretty" }}>
+            {recentRedFlags.map((o) => getObservation(o)?.label ?? o).join(", ")} — observations like these are worth
+            raising with your pediatrician on their own, whatever else you're exploring.
+          </div>
+        </Card>
+      )}
+
       <Card>
         <SectionLabel
           right={<StatusBadge tone={suggested ? "neutral" : status.tone}>{suggested ? "Suggested" : status.label}</StatusBadge>}
         >
-          What We're Looking Into
+          {suggested ? "Here's What You Should Explore" : "What You're Exploring"}
         </SectionLabel>
+        {suggested && (
+          <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
+            Based on what you've told us, we'd suggest starting here.
+          </div>
+        )}
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-card-text)" }}>
           <div style={{ fontSize: "var(--type-title-size)", fontWeight: "var(--type-title-weight)", letterSpacing: "-0.01em", color: "var(--text-primary)" }}>
             {investigation.title}
@@ -61,17 +80,21 @@ export function Home({ navigate }) {
           </div>
         </div>
         <Button onClick={() => navigate("investigation", { id: investigation.id })}>
-          {suggested ? "Start Looking Into This" : "Keep Going"}
+          {suggested ? "Start Exploring" : "Keep Going"}
+        </Button>
+        <Button variant="secondary" onClick={() => navigate("learn", { section: "investigations" })}>
+          See All Possible Causes
         </Button>
       </Card>
 
       <Card>
-        <SectionLabel>Record Today's Observation</SectionLabel>
+        <SectionLabel>{loggedToday ? "Update Today's Observation" : "Record Today's Observation"}</SectionLabel>
         <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
-          {name ? `Tell us about ${name}'s day` : "Tell us about today"} — speak naturally or tap a few chips. It takes
-          under a minute.
+          {loggedToday
+            ? "Notice something new since you last logged? Add it to today."
+            : `${name ? `Tell us about ${name}'s day` : "Tell us about today"} — speak naturally or tap a few chips. It takes under a minute.`}
         </div>
-        <Button onClick={() => navigate("detective")}>Start Recording</Button>
+        <Button onClick={() => navigate("detective")}>{loggedToday ? "Edit Observation" : "Start Recording"}</Button>
       </Card>
 
       <FeedbackPrompt />
@@ -95,7 +118,9 @@ export function Home({ navigate }) {
       </Card>
 
       <Card>
-        <SectionLabel right={lastDay ? formatRelative(lastDay.dateKey) : undefined}>Last Observation</SectionLabel>
+        <SectionLabel right={lastDay ? formatRelative(lastDay.dateKey) : undefined}>
+          {lastDay && lastDay.dateKey === todayKey() ? "Today's Observation" : "Last Observation"}
+        </SectionLabel>
         {lastDay ? (
           <>
             <StatRow label="Fussiness" value={lastDay.fussiness} max={5} />

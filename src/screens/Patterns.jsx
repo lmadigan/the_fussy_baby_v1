@@ -73,7 +73,7 @@ export function Patterns({ navigate }) {
                   {open ? "Hide" : "See Why"}
                 </Button>
                 <Button variant="secondary" onClick={() => navigate("investigation", { id: p.investigationId })}>
-                  Look Into This
+                  Explore This
                 </Button>
               </div>
             </Card>

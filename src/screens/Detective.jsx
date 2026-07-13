@@ -9,6 +9,9 @@ import { useStore, commonObservationIds } from "../lib/store.jsx";
 import { CATEGORIES, observationsInCategory, getObservation, extractObservations, redFlagsIn } from "../data/vocabulary.js";
 import { speechSupported, createRecognizer } from "../lib/speech.js";
 import { todayKey, formatLong } from "../lib/dates.js";
+import { statusInfo } from "../data/playbook.js";
+import { StatusBadge } from "../components/core/StatusBadge.jsx";
+import { homeInvestigation } from "./Home.jsx";
 
 function labelFor(obs) {
   return obs.startsWith("custom:") ? obs.slice(7) : getObservation(obs)?.label ?? obs;
@@ -78,16 +81,37 @@ export function Detective({ navigate }) {
   };
 
   if (saved) {
+    const { investigation, suggested } = homeInvestigation(state);
+    const invStatus = statusInfo(state.statuses[investigation.id] ?? "not_started");
     return (
       <Screen eyebrow={formatLong(new Date())} title="Saved">
         <Card>
           <SectionLabel>Today's Observation</SectionLabel>
           <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-primary)", textWrap: "pretty" }}>
-            {log.length} observation{log.length === 1 ? "" : "s"} added to your history. Every entry strengthens the
+            {log.length} observation{log.length === 1 ? "" : "s"} added to your journal. Every entry strengthens the
             patterns we can surface.
           </div>
-          <Button onClick={() => navigate("patterns")}>See Patterns</Button>
-          <Button variant="secondary" onClick={() => navigate("home")}>Back to Home</Button>
+        </Card>
+        <Card>
+          <SectionLabel right={<StatusBadge tone={suggested ? "neutral" : invStatus.tone}>{suggested ? "Suggested" : invStatus.label}</StatusBadge>}>
+            Here's What You Should Explore
+          </SectionLabel>
+          <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
+            Based on what you've recorded so far, this is the most useful place to keep digging.
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-card-text)" }}>
+            <div style={{ fontSize: "var(--type-title-size)", fontWeight: "var(--type-title-weight)", letterSpacing: "-0.01em", color: "var(--text-primary)" }}>
+              {investigation.title}
+            </div>
+            <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
+              {investigation.short}
+            </div>
+          </div>
+          <Button onClick={() => navigate("investigation", { id: investigation.id })}>Explore This</Button>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <Button variant="secondary" onClick={() => navigate("patterns")}>See Patterns</Button>
+            <Button variant="secondary" onClick={() => navigate("home")}>Back to Home</Button>
+          </div>
         </Card>
       </Screen>
     );
