@@ -43,7 +43,7 @@ export function History({ navigate }) {
   };
 
   return (
-    <Screen eyebrow="Your Observations" title="Journal">
+    <Screen eyebrow="Your Observations" title="History">
       {days.length === 0 ? (
         <Card>
           <SectionLabel>Nothing Here Yet</SectionLabel>

@@ -50,7 +50,7 @@ export function Home({ navigate }) {
         <SectionLabel
           right={<StatusBadge tone={suggested ? "neutral" : status.tone}>{suggested ? "Suggested" : status.label}</StatusBadge>}
         >
-          What We're Looking Into
+          Current Investigation
         </SectionLabel>
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-card-text)" }}>
           <div style={{ fontSize: "var(--type-title-size)", fontWeight: "var(--type-title-weight)", letterSpacing: "-0.01em", color: "var(--text-primary)" }}>
@@ -61,7 +61,7 @@ export function Home({ navigate }) {
           </div>
         </div>
         <Button onClick={() => navigate("investigation", { id: investigation.id })}>
-          {suggested ? "Start Looking Into This" : "Keep Going"}
+          {suggested ? "Start Investigation" : "Continue Investigation"}
         </Button>
       </Card>
 
@@ -112,16 +112,16 @@ export function Home({ navigate }) {
           </div>
         )}
         <Button variant="secondary" onClick={() => navigate("history")}>
-          Open Journal
+          View History
         </Button>
       </Card>
 
       <Card>
-        <SectionLabel>Guides</SectionLabel>
+        <SectionLabel>Learn</SectionLabel>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
-          <Tag tone="signal" onClick={() => navigate("learn", { section: "investigations" })}>Possible Causes</Tag>
-          <Tag tone="signal" onClick={() => navigate("learn", { section: "matrix" })}>Symptom Explorer</Tag>
-          <Tag tone="signal" onClick={() => navigate("learn", { section: "articles" })}>Good Reads</Tag>
+          <Tag tone="signal" onClick={() => navigate("learn", { section: "investigations" })}>Investigations</Tag>
+          <Tag tone="signal" onClick={() => navigate("learn", { section: "matrix" })}>Symptom Matrix</Tag>
+          <Tag tone="signal" onClick={() => navigate("learn", { section: "articles" })}>Popular Articles</Tag>
         </div>
       </Card>
     </Screen>

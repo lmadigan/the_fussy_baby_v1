@@ -19,7 +19,7 @@ export function Article({ navigate, goBack, params }) {
     );
   }
   return (
-    <Screen eyebrow="Good Read" title={article.title} onBack={goBack}>
+    <Screen eyebrow="Learn" title={article.title} onBack={goBack}>
       <Card gap="12px">
         {article.body.map((para, i) => (
           <div key={i} style={{ fontSize: "var(--type-body-size)", lineHeight: 1.65, color: i === 0 ? "var(--text-primary)" : "var(--text-muted)", textWrap: "pretty" }}>
@@ -29,7 +29,7 @@ export function Article({ navigate, goBack, params }) {
       </Card>
       {article.relatedInvestigations?.length > 0 && (
         <Card>
-          <SectionLabel>Related Causes</SectionLabel>
+          <SectionLabel>Related Investigations</SectionLabel>
           {article.relatedInvestigations.map((id) => {
             const inv = getInvestigation(id);
             if (!inv) return null;

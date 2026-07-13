@@ -30,11 +30,11 @@ export function Learn({ navigate, params }) {
     : null;
 
   return (
-    <Screen eyebrow="Good to Know" title="Guides">
+    <Screen eyebrow="Reference Library" title="Learn">
       <input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search causes, symptoms, reads…"
+        placeholder="Search investigations, symptoms, articles…"
         style={{
           boxSizing: "border-box",
           width: "100%",
@@ -60,15 +60,15 @@ export function Learn({ navigate, params }) {
           )}
           {hits.investigations.map((inv) => (
             <Card key={inv.id}>
-              <SectionLabel>Possible Cause</SectionLabel>
+              <SectionLabel>Investigation</SectionLabel>
               <div style={{ fontSize: "16px", fontWeight: 600, color: "var(--text-primary)" }}>{inv.title}</div>
               <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>{inv.short}</div>
-              <Button variant="secondary" onClick={() => navigate("investigation", { id: inv.id })}>Look Into This</Button>
+              <Button variant="secondary" onClick={() => navigate("investigation", { id: inv.id })}>Open Investigation</Button>
             </Card>
           ))}
           {hits.articles.map((a) => (
             <Card key={a.id}>
-              <SectionLabel>Good Read</SectionLabel>
+              <SectionLabel>Article</SectionLabel>
               <div style={{ fontSize: "16px", fontWeight: 600, color: "var(--text-primary)" }}>{a.title}</div>
               <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>{a.teaser}</div>
               <Button variant="secondary" onClick={() => navigate("article", { id: a.id })}>Read</Button>
@@ -84,14 +84,14 @@ export function Learn({ navigate, params }) {
                   </Tag>
                 ))}
               </div>
-              <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>Tap a symptom to open it in the Symptom Explorer.</div>
+              <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>Tap a symptom to explore it in the matrix.</div>
             </Card>
           )}
         </>
       ) : (
         <>
           <Card>
-            <SectionLabel right={`${INVESTIGATIONS.length} total`}>Possible Causes</SectionLabel>
+            <SectionLabel right={`${INVESTIGATIONS.length} total`}>Investigations</SectionLabel>
             {INVESTIGATIONS.map((inv) => (
               <button
                 key={inv.id}
@@ -122,16 +122,16 @@ export function Learn({ navigate, params }) {
           </Card>
 
           <Card>
-            <SectionLabel>Symptom Explorer</SectionLabel>
+            <SectionLabel>Interactive Symptom Matrix</SectionLabel>
             <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
-              Select symptoms and see which possible causes they commonly relate to. An educational exploration tool —
+              Select symptoms and see which investigations they commonly relate to. An educational exploration tool —
               it never uses your data and never recommends.
             </div>
-            <Button onClick={() => navigate("learn", { section: "matrix" })}>Open Symptom Explorer</Button>
+            <Button onClick={() => navigate("learn", { section: "matrix" })}>Explore the Matrix</Button>
           </Card>
 
           <Card>
-            <SectionLabel>Good Reads</SectionLabel>
+            <SectionLabel>Popular Articles</SectionLabel>
             {ARTICLES.map((a) => (
               <button
                 key={a.id}
@@ -155,9 +155,9 @@ export function Learn({ navigate, params }) {
           </Card>
 
           <Card>
-            <SectionLabel>How This Works</SectionLabel>
+            <SectionLabel>Investigation Process</SectionLabel>
             <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
-              How looking into a cause works, why observations matter, and why one symptom can have many causes.
+              How investigations work, why observations matter, and why one symptom can have many causes.
             </div>
             <Button variant="secondary" onClick={() => navigate("learn", { section: "process" })}>How It Works</Button>
           </Card>
@@ -167,28 +167,28 @@ export function Learn({ navigate, params }) {
   );
 }
 
-/** How This Works — static explainer of the core loop. */
+/** Investigation Process — static explainer of the core loop. */
 function Process({ goBack }) {
   const steps = [
     {
-      title: "Pick a possible cause",
-      body: "Choose one possible cause to look into and work through What to Try. Each one explains itself before asking you to act — you always know why you're observing something.",
+      title: "Investigate",
+      body: "Pick one investigation from the Playbook and work its checklist. Each one explains itself before asking you to act — you always know why you're observing something.",
     },
     {
-      title: "Observe & record",
-      body: "Log what you notice each day in under a minute — by voice or by tapping chips. You approve everything before it's saved; nothing enters your journal without you.",
+      title: "Observe & Record",
+      body: "Log what you notice each day in under a minute — by voice or by tapping chips. You approve everything before it's saved; nothing enters your history without you.",
     },
     {
-      title: "Watch the patterns",
-      body: "As observations accumulate, the app surfaces combinations that repeat — always with the exact observations behind them, never as a conclusion.",
+      title: "Recognize Patterns",
+      body: "As observations accumulate, the app surfaces combinations that repeat — always as evidence with the exact observations behind it, never as a conclusion.",
     },
     {
-      title: "Follow the next lead",
-      body: "Patterns point to what may be worth looking into next. Mark causes checked, back burner, or come back later — and keep narrowing in.",
+      title: "Investigate Again",
+      body: "Patterns point to what may be worth investigating next. Mark investigations complete, low priority, or revisit — and keep narrowing in.",
     },
   ];
   return (
-    <Screen eyebrow="Guides" title="How This Works" onBack={goBack}>
+    <Screen eyebrow="Learn" title="How Investigations Work" onBack={goBack}>
       <Card>
         <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.6, color: "var(--text-primary)", textWrap: "pretty" }}>
           Fussiness is rarely explained by a single observation. Arching can be reflux, feeding mechanics, or an

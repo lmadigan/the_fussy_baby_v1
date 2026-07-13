@@ -11,11 +11,11 @@
  */
 
 export const STATUSES = [
-  { id: "not_started", label: "Not started", tone: "neutral" },
-  { id: "in_progress", label: "Looking into it", tone: "signal" },
-  { id: "complete", label: "Checked", tone: "calm" },
-  { id: "low_priority", label: "Back burner", tone: "neutral" },
-  { id: "revisit", label: "Come back later", tone: "warm" },
+  { id: "not_started", label: "Not Started", tone: "neutral" },
+  { id: "in_progress", label: "In Progress", tone: "signal" },
+  { id: "complete", label: "Complete", tone: "calm" },
+  { id: "low_priority", label: "Low Priority", tone: "neutral" },
+  { id: "revisit", label: "Revisit", tone: "warm" },
 ];
 
 export function statusInfo(id) {

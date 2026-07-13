@@ -18,9 +18,9 @@ export function InvestigationDetail({ navigate, goBack, params }) {
 
   if (!investigation) {
     return (
-      <Screen title="Possible Cause" onBack={goBack}>
+      <Screen title="Investigation" onBack={goBack}>
         <Card>
-          <div style={{ fontSize: "14px", color: "var(--text-muted)" }}>This one isn't in the Playbook yet.</div>
+          <div style={{ fontSize: "14px", color: "var(--text-muted)" }}>This investigation isn't in the Playbook yet.</div>
         </Card>
       </Screen>
     );
@@ -42,7 +42,7 @@ export function InvestigationDetail({ navigate, goBack, params }) {
   return (
     <Screen
       title={investigation.title}
-      eyebrow="Possible Cause"
+      eyebrow="Investigation"
       onBack={goBack}
       action={<StatusBadge tone={status.tone}>{status.label}</StatusBadge>}
     >
@@ -82,7 +82,7 @@ export function InvestigationDetail({ navigate, goBack, params }) {
       </Card>
 
       <Card>
-        <SectionLabel>What to Try</SectionLabel>
+        <SectionLabel>Investigation Checklist</SectionLabel>
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {investigation.checklist.map((item, i) => (
             <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
@@ -141,7 +141,7 @@ export function InvestigationDetail({ navigate, goBack, params }) {
         {investigation.related.length > 0 && (
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             <div style={{ fontSize: "var(--type-meta-size)", fontWeight: 500, color: "var(--text-muted)" }}>
-              Related causes
+              Related investigations
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
               {investigation.related.map((rid) => (
@@ -165,7 +165,7 @@ export function InvestigationDetail({ navigate, goBack, params }) {
             ))}
           </div>
         ) : (
-          <Button onClick={() => setChoosingStatus(true)}>Where Are You With This?</Button>
+          <Button onClick={() => setChoosingStatus(true)}>Update Investigation Status</Button>
         )}
       </Card>
     </Screen>
