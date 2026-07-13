@@ -131,11 +131,11 @@ Two low-burden inputs, in this order:
   say nothing, watch where she hesitates. The one thing to learn: when
   she opens Patterns, does "evidence, never diagnosis" read as calm
   expertise or as withholding?
-- **In-app timed feedback:** the app asks exactly one question at
-  natural milestones — after the first saved observation, around a
-  week of logging, when the first pattern surfaces, and at two weeks.
-  One tap to dismiss, a sentence to answer. No surveys, no scheduled
-  check-ins, no participant obligations.
+- **In-app feedback, accuracy-focused:** once patterns start
+  surfacing, a single dismissable prompt links out of the app to a
+  short questionnaire asking whether the patterns match what the
+  parent is actually seeing. No UX micro-surveys inside the app; the
+  prompt stays hidden until a questionnaire URL is configured.
 
 **Metrics that matter (observable, no participation required):**
 - Onboarding completion rate

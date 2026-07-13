@@ -171,62 +171,86 @@ export function Detective({ navigate }) {
       </Card>
 
       <Card>
-        <SectionLabel>Your Common Observations</SectionLabel>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
-          {common.length === 0 ? (
-            <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>
-              As you log, your most-used observations will collect here for one-tap entry.
-            </div>
-          ) : (
-            common.map((id) => (
-              <Tag key={id} tone="calm" selected={log.includes(id)} onClick={() => toggleLog(id)}>
-                {getObservation(id)?.label ?? id}
+        <SectionLabel>Add Observations</SectionLabel>
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          <div style={{ fontSize: "var(--type-meta-size)", fontWeight: 500, color: "var(--text-muted)" }}>
+            Your common observations
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
+            {common.length === 0 ? (
+              <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>
+                As you log, your most-used observations will collect here for one-tap entry.
+              </div>
+            ) : (
+              common.map((id) => (
+                <Tag key={id} tone="calm" selected={log.includes(id)} onClick={() => toggleLog(id)}>
+                  {getObservation(id)?.label ?? id}
+                </Tag>
+              ))
+            )}
+          </div>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px", paddingTop: "10px", borderTop: "1px solid var(--border-default)" }}>
+          <div style={{ fontSize: "var(--type-meta-size)", fontWeight: 500, color: "var(--text-muted)" }}>
+            By category
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
+            {CATEGORIES.map((cat) => (
+              <Tag key={cat} tone="neutral" selected={openCategory === cat} onClick={() => setOpenCategory(openCategory === cat ? null : cat)}>
+                {cat}
               </Tag>
-            ))
+            ))}
+          </div>
+          {openCategory && (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
+              {observationsInCategory(openCategory).map((obs) => (
+                <Tag key={obs.id} tone="signal" selected={log.includes(obs.id)} onClick={() => toggleLog(obs.id)}>
+                  {obs.label}
+                </Tag>
+              ))}
+            </div>
           )}
+          <div style={{ display: "flex", gap: "8px" }}>
+            <input
+              value={customText}
+              onChange={(e) => setCustomText(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && addCustom()}
+              placeholder="Add your own…"
+              style={{
+                boxSizing: "border-box",
+                flex: 1,
+                minWidth: 0,
+                fontFamily: "var(--font-ui)",
+                fontSize: "13px",
+                color: "var(--text-primary)",
+                background: "var(--surface-inset)",
+                border: "1px solid var(--border-default)",
+                borderRadius: "var(--radius-pill)",
+                padding: "8px 14px",
+                outline: "none",
+              }}
+            />
+            <Button size="sm" onClick={addCustom}>Add</Button>
+          </div>
         </div>
       </Card>
 
       <Card>
-        <SectionLabel>Add Observations</SectionLabel>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
-          {CATEGORIES.map((cat) => (
-            <Tag key={cat} tone="neutral" selected={openCategory === cat} onClick={() => setOpenCategory(openCategory === cat ? null : cat)}>
-              {cat}
-            </Tag>
-          ))}
-        </div>
-        {openCategory && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)", paddingTop: "4px", borderTop: "1px solid var(--border-default)" }}>
-            {observationsInCategory(openCategory).map((obs) => (
-              <Tag key={obs.id} tone="signal" selected={log.includes(obs.id)} onClick={() => toggleLog(obs.id)}>
-                {obs.label}
+        <SectionLabel right={`${log.length} item${log.length === 1 ? "" : "s"}`}>Today's Log</SectionLabel>
+        {log.length === 0 ? (
+          <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
+            Observations you speak, tap, or type will collect here. Only what you approve gets saved.
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
+            {log.map((obs) => (
+              <Tag key={obs} tone="calm" onClick={() => removeFromLog(obs)}>
+                {labelFor(obs)}
+                <span aria-hidden style={{ fontWeight: 600, opacity: 0.55 }}>×</span>
               </Tag>
             ))}
           </div>
         )}
-        <div style={{ display: "flex", gap: "8px" }}>
-          <input
-            value={customText}
-            onChange={(e) => setCustomText(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && addCustom()}
-            placeholder="Add your own…"
-            style={{
-              boxSizing: "border-box",
-              flex: 1,
-              minWidth: 0,
-              fontFamily: "var(--font-ui)",
-              fontSize: "13px",
-              color: "var(--text-primary)",
-              background: "var(--surface-inset)",
-              border: "1px solid var(--border-default)",
-              borderRadius: "var(--radius-pill)",
-              padding: "8px 14px",
-              outline: "none",
-            }}
-          />
-          <Button size="sm" onClick={addCustom}>Add</Button>
-        </div>
       </Card>
 
       <Card>
@@ -247,29 +271,12 @@ export function Detective({ navigate }) {
         </Card>
       )}
 
-      <Card>
-        <SectionLabel right={`${log.length} item${log.length === 1 ? "" : "s"}`}>Today's Log</SectionLabel>
-        {log.length === 0 ? (
-          <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
-            Observations you speak, tap, or type will collect here. Only what you approve gets saved.
-          </div>
-        ) : (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
-            {log.map((obs) => (
-              <Tag key={obs} tone="calm" onClick={() => removeFromLog(obs)}>
-                {labelFor(obs)}
-                <span aria-hidden style={{ fontWeight: 600, opacity: 0.55 }}>×</span>
-              </Tag>
-            ))}
-          </div>
-        )}
-        <Button
-          onClick={save}
-          style={log.length === 0 && fussiness == null ? { opacity: 0.4, cursor: "default" } : undefined}
-        >
-          Save Observation
-        </Button>
-      </Card>
+      <Button
+        onClick={save}
+        style={log.length === 0 && fussiness == null ? { opacity: 0.4, cursor: "default" } : undefined}
+      >
+        Save Observation
+      </Button>
     </Screen>
   );
 }
