@@ -31,6 +31,10 @@ export function buildDemoState() {
       "forceful-letdown": "in_progress",
       "food-protein-sensitivity": "low_priority",
     },
+    checklists: {
+      "feeding-mechanics": [0, 1, 2, 3, 4, 5],
+      "forceful-letdown": [0, 1],
+    },
     feedback: {},
     days: {
       [daysAgo(13)]: {

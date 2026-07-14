@@ -39,6 +39,10 @@ export function InvestigationDetail({ navigate, goBack, params }) {
     setChoosingStatus(false);
   };
 
+  const checked = new Set(state.checklists?.[investigation.id] ?? []);
+  const total = investigation.checklist.length;
+  const done = checked.size;
+
   return (
     <Screen
       title={investigation.title}
@@ -82,33 +86,62 @@ export function InvestigationDetail({ navigate, goBack, params }) {
       </Card>
 
       <Card>
-        <SectionLabel>What to Try</SectionLabel>
+        <SectionLabel right={`${done} of ${total} done`}>Care Advice</SectionLabel>
+        <div style={{ height: "6px", borderRadius: "99px", background: "var(--surface-inset)", border: "1px solid var(--border-default)", overflow: "hidden" }}>
+          <div
+            style={{
+              height: "100%",
+              width: `${total ? Math.round((done / total) * 100) : 0}%`,
+              background: "var(--accent-signal)",
+              borderRadius: "99px",
+              transition: "width .25s ease",
+            }}
+          />
+        </div>
+        <div style={{ fontSize: "13px", lineHeight: 1.5, color: "var(--text-muted)", textWrap: "pretty" }}>
+          Work through these at your own pace — tap each one as you do it.
+        </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-          {investigation.checklist.map((item, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
-              <div
-                style={{
-                  flex: "none",
-                  width: "22px",
-                  height: "22px",
-                  borderRadius: "7px",
-                  border: "1px solid var(--border-default)",
-                  background: "var(--surface-inset)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "11px",
-                  fontWeight: 600,
-                  color: "var(--text-muted)",
-                }}
+          {investigation.checklist.map((item, i) => {
+            const isDone = checked.has(i);
+            return (
+              <button
+                key={i}
+                onClick={() => dispatch({ type: "toggleChecklistStep", investigationId: investigation.id, index: i })}
+                style={{ all: "unset", cursor: "pointer", display: "flex", alignItems: "flex-start", gap: "12px" }}
               >
-                {i + 1}
-              </div>
-              <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-primary)", textWrap: "pretty" }}>
-                {item}
-              </div>
-            </div>
-          ))}
+                <div
+                  style={{
+                    flex: "none",
+                    width: "22px",
+                    height: "22px",
+                    borderRadius: "7px",
+                    border: "1px solid " + (isDone ? "var(--action-primary)" : "var(--border-default)"),
+                    background: isDone ? "var(--action-primary)" : "var(--surface-inset)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    color: isDone ? "var(--text-on-brand)" : "var(--text-muted)",
+                    transition: "background .15s ease",
+                  }}
+                >
+                  {isDone ? "✓" : i + 1}
+                </div>
+                <div
+                  style={{
+                    fontSize: "var(--type-body-size)",
+                    lineHeight: 1.55,
+                    color: isDone ? "var(--text-muted)" : "var(--text-primary)",
+                    textWrap: "pretty",
+                  }}
+                >
+                  {item}
+                </div>
+              </button>
+            );
+          })}
         </div>
       </Card>
 

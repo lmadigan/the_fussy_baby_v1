@@ -8,6 +8,7 @@ import { InsightRow } from "../components/data/InsightRow.jsx";
 import { StatRow } from "../components/data/StatRow.jsx";
 import { Screen } from "../components/app/Screen.jsx";
 import { FeedbackPrompt } from "../components/app/FeedbackPrompt.jsx";
+import { BabyFace } from "../components/app/BabyFace.jsx";
 import { useStore, lastObservationDay } from "../lib/store.jsx";
 import { generatePatterns } from "../lib/patterns.js";
 import { INVESTIGATIONS, getInvestigation, matchInvestigations, statusInfo } from "../data/playbook.js";
@@ -51,8 +52,24 @@ export function Home({ navigate }) {
   const loggedToday = Boolean(state.days[todayKey()]);
   const recentRedFlags = lastDay ? lastDay.observations.filter((o) => isRedFlag(o)) : [];
 
+  // Care-advice progress + the literal next step for the featured cause
+  const checkedSteps = new Set(state.checklists?.[investigation.id] ?? []);
+  const stepsTotal = investigation.checklist.length;
+  const stepsDone = checkedSteps.size;
+  const nextStep = investigation.checklist.find((_, i) => !checkedSteps.has(i));
+
+  // What matches what you're seeing, for the Top Causes list
+  const seenNow = new Set(state.profile.onboardingSymptoms.filter((s) => !isRedFlag(s)));
+  for (const day of Object.values(state.days))
+    for (const o of day.observations) if (!o.startsWith("custom:") && !isRedFlag(o)) seenNow.add(o);
+  const matchCounts = new Map(matchInvestigations([...seenNow]).map((m) => [m.investigation.id, m.matches.length]));
+
   return (
-    <Screen eyebrow={formatLong(new Date())} title={name ? `How's ${name} doing today?` : "How's your baby doing today?"}>
+    <Screen
+      eyebrow={formatLong(new Date())}
+      title={name ? `How's ${name} doing today?` : "How's your baby doing today?"}
+      action={<BabyFace />}
+    >
       {recentRedFlags.length > 0 && (
         <Card style={{ borderColor: "var(--accent-signal)" }}>
           <SectionLabel style={{ color: "var(--text-brand)" }}>Worth a call today</SectionLabel>
@@ -82,6 +99,23 @@ export function Home({ navigate }) {
             {investigation.short}
           </div>
         </div>
+        {!suggested && stepsTotal > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div style={{ flex: 1, height: "6px", borderRadius: "99px", background: "var(--surface-inset)", border: "1px solid var(--border-default)", overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${Math.round((stepsDone / stepsTotal) * 100)}%`, background: "var(--accent-signal)", borderRadius: "99px" }} />
+              </div>
+              <div style={{ fontSize: "var(--type-meta-size)", fontWeight: 500, color: "var(--text-muted)", whiteSpace: "nowrap" }}>
+                {stepsDone} of {stepsTotal}
+              </div>
+            </div>
+            {nextStep && (
+              <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-primary)", textWrap: "pretty" }}>
+                <span style={{ fontWeight: 600 }}>Your next step:</span> {nextStep}
+              </div>
+            )}
+          </div>
+        )}
         <Button onClick={() => navigate("investigation", { id: investigation.id })}>
           {suggested ? "Start Exploring" : "Keep Going"}
         </Button>
@@ -113,13 +147,50 @@ export function Home({ navigate }) {
             ))}
           </div>
         )}
-        <div style={{ display: "flex", gap: "8px" }}>
-          <Button variant="secondary" onClick={() => navigate("symptoms")}>
-            Update What You're Seeing
-          </Button>
-          <Button variant="secondary" onClick={() => navigate("learn", { section: "investigations" })}>
-            See All Causes
-          </Button>
+        <Button variant="secondary" onClick={() => navigate("symptoms")}>
+          Update What You're Seeing
+        </Button>
+      </Card>
+
+      <Card>
+        <SectionLabel right={`${INVESTIGATIONS.length} total`}>Top Causes of Fussiness</SectionLabel>
+        <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
+          The most common reasons babies fuss — the whole playbook, always right here.
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          {INVESTIGATIONS.map((inv) => {
+            const invStatus = state.statuses[inv.id];
+            const matches = matchCounts.get(inv.id) ?? 0;
+            return (
+              <button
+                key={inv.id}
+                onClick={() => navigate("investigation", { id: inv.id })}
+                style={{
+                  all: "unset",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "8px",
+                  padding: "10px 14px",
+                  background: "var(--surface-inset)",
+                  border: "1px solid var(--border-default)",
+                  borderRadius: "var(--radius-button)",
+                }}
+              >
+                <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-brand)", minWidth: 0 }}>{inv.title}</span>
+                {invStatus && invStatus !== "not_started" ? (
+                  <StatusBadge tone={statusInfo(invStatus).tone}>{statusInfo(invStatus).label}</StatusBadge>
+                ) : matches > 0 ? (
+                  <span style={{ fontSize: "var(--type-meta-size)", fontWeight: 500, color: "var(--text-muted)", whiteSpace: "nowrap" }}>
+                    {matches} match{matches === 1 ? "" : "es"}
+                  </span>
+                ) : (
+                  <span aria-hidden style={{ color: "var(--text-muted)" }}>→</span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </Card>
 

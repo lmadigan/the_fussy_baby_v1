@@ -9,6 +9,7 @@ import { buildDemoState } from "../data/demoSeed.js";
  * days:      { [dateKey]: { fussiness: 1–5|null, observations: [obsId|"custom:Label"] } }
  *            — only parent-approved observations are ever stored.
  * statuses:  { [investigationId]: statusId }
+ * checklists:{ [investigationId]: [stepIndex] } — care-advice steps checked off
  * feedback:  { [promptId]: "dismissed" | "sent" } — timed in-app feedback prompts
  * currentInvestigationId: string|null
  *
@@ -25,6 +26,7 @@ const initialState = {
   profile: { babyName: "", babyAgeMonths: null, onboardingSymptoms: [], onboarded: false },
   days: {},
   statuses: {},
+  checklists: {},
   feedback: {},
   currentInvestigationId: null,
 };
@@ -39,6 +41,7 @@ function load() {
       ...initialState,
       ...parsed,
       profile: { ...initialState.profile, ...parsed.profile },
+      checklists: parsed.checklists ?? {},
       feedback: parsed.feedback ?? {},
     };
   } catch {
@@ -93,6 +96,26 @@ function reducer(state, action) {
       if (action.status === "in_progress") current = action.investigationId;
       else if (current === action.investigationId) current = null;
       return { ...state, statuses, currentInvestigationId: current };
+    }
+    case "toggleChecklistStep": {
+      const { investigationId, index } = action;
+      const current = new Set(state.checklists[investigationId] ?? []);
+      const checking = !current.has(index);
+      if (checking) current.add(index);
+      else current.delete(index);
+      // Checking your first step means you're exploring this — promote it.
+      let statuses = state.statuses;
+      let currentInvestigationId = state.currentInvestigationId;
+      if (checking && (state.statuses[investigationId] ?? "not_started") === "not_started") {
+        statuses = { ...state.statuses, [investigationId]: "in_progress" };
+        currentInvestigationId = investigationId;
+      }
+      return {
+        ...state,
+        checklists: { ...state.checklists, [investigationId]: [...current].sort((a, b) => a - b) },
+        statuses,
+        currentInvestigationId,
+      };
     }
     case "resolveFeedback": {
       return { ...state, feedback: { ...state.feedback, [action.promptId]: action.outcome } };

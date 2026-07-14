@@ -176,7 +176,7 @@ function Process({ goBack }) {
   const steps = [
     {
       title: "Pick a possible cause",
-      body: "Choose one possible cause to explore and work through What to Try. Each one explains itself before asking you to act — you always know why you're observing something.",
+      body: "Choose one possible cause to explore and work through its Care Advice, checking off steps as you go. Each one explains itself before asking you to act — you always know why you're observing something.",
     },
     {
       title: "Observe & record",
