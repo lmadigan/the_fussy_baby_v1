@@ -6,7 +6,7 @@ import { Tag } from "../components/core/Tag.jsx";
 import { RatingScale } from "../components/forms/RatingScale.jsx";
 import { Screen } from "../components/app/Screen.jsx";
 import { useStore, sortedDays } from "../lib/store.jsx";
-import { getObservation } from "../data/vocabulary.js";
+import { getObservation, CATEGORIES, observationsInCategory, extractObservations } from "../data/vocabulary.js";
 import { formatShort, formatRelative } from "../lib/dates.js";
 
 function labelFor(obs) {
@@ -30,11 +30,27 @@ export function History({ navigate }) {
   const [editing, setEditing] = useState(null); // dateKey being edited
   const [draftObs, setDraftObs] = useState([]);
   const [draftFussiness, setDraftFussiness] = useState(null);
+  const [openCategory, setOpenCategory] = useState(null);
+  const [customText, setCustomText] = useState("");
 
   const startEdit = (day) => {
     setEditing(day.dateKey);
     setDraftObs(day.observations);
     setDraftFussiness(day.fussiness);
+    setOpenCategory(null);
+    setCustomText("");
+  };
+
+  const addObs = (obs) => setDraftObs((prev) => (prev.includes(obs) ? prev : [...prev, obs]));
+  const toggleObs = (obs) => setDraftObs((prev) => (prev.includes(obs) ? prev.filter((o) => o !== obs) : [...prev, obs]));
+
+  const addCustom = () => {
+    const text = customText.trim();
+    if (!text) return;
+    const matched = extractObservations(text);
+    if (matched.length > 0) matched.forEach(addObs);
+    else addObs(`custom:${text}`);
+    setCustomText("");
   };
 
   const saveEdit = () => {
@@ -81,6 +97,49 @@ export function History({ navigate }) {
                           No observations left — saving will remove this day.
                         </div>
                       )}
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "8px", paddingTop: "10px", borderTop: "1px solid var(--border-default)" }}>
+                    <div style={{ fontSize: "var(--type-meta-size)", fontWeight: 500, color: "var(--text-muted)" }}>
+                      Add an observation
+                    </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
+                      {CATEGORIES.map((cat) => (
+                        <Tag key={cat} tone="neutral" selected={openCategory === cat} onClick={() => setOpenCategory(openCategory === cat ? null : cat)}>
+                          {cat}
+                        </Tag>
+                      ))}
+                    </div>
+                    {openCategory && (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
+                        {observationsInCategory(openCategory).map((obs) => (
+                          <Tag key={obs.id} tone="signal" selected={draftObs.includes(obs.id)} onClick={() => toggleObs(obs.id)}>
+                            {obs.label}
+                          </Tag>
+                        ))}
+                      </div>
+                    )}
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <input
+                        value={customText}
+                        onChange={(e) => setCustomText(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && addCustom()}
+                        placeholder="Add your own…"
+                        style={{
+                          boxSizing: "border-box",
+                          flex: 1,
+                          minWidth: 0,
+                          fontFamily: "var(--font-ui)",
+                          fontSize: "13px",
+                          color: "var(--text-primary)",
+                          background: "var(--surface-inset)",
+                          border: "1px solid var(--border-default)",
+                          borderRadius: "var(--radius-pill)",
+                          padding: "8px 14px",
+                          outline: "none",
+                        }}
+                      />
+                      <Button size="sm" onClick={addCustom}>Add</Button>
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: "8px" }}>
