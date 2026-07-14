@@ -9,6 +9,7 @@ import { Patterns } from "./screens/Patterns.jsx";
 import { Learn } from "./screens/Learn.jsx";
 import { Article } from "./screens/Article.jsx";
 import { History } from "./screens/History.jsx";
+import { Symptoms } from "./screens/Symptoms.jsx";
 
 const TAB_SCREENS = new Set(["home", "detective", "patterns", "learn", "history"]);
 
@@ -77,6 +78,7 @@ function Shell() {
         {screen === "learn" && <Learn navigate={navigate} params={params} />}
         {screen === "article" && <Article navigate={navigate} goBack={goBack} params={params} />}
         {screen === "history" && <History navigate={navigate} />}
+        {screen === "symptoms" && <Symptoms goBack={goBack} />}
       </div>
       <NavBar current={activeTab} onNavigate={switchTab} />
     </div>

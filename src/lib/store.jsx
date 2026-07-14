@@ -55,6 +55,10 @@ function reducer(state, action) {
         profile: { babyName, babyAgeMonths, onboardingSymptoms: symptoms, onboarded: true },
       };
     }
+    case "updateSymptoms": {
+      // The standing "what you're seeing" list — editable any time, drives suggestions.
+      return { ...state, profile: { ...state.profile, onboardingSymptoms: action.symptoms } };
+    }
     case "saveDay": {
       // Merge approved observations into the day's record (dedupe, keep order).
       const { dateKey, observations, fussiness } = action;

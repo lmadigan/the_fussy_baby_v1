@@ -14,14 +14,11 @@ import { INVESTIGATIONS, getInvestigation, matchInvestigations, statusInfo } fro
 import { getObservation, isRedFlag } from "../data/vocabulary.js";
 import { formatLong, formatRelative, todayKey } from "../lib/dates.js";
 
-/** Pick the investigation Home should feature. */
+/** Pick the investigation Home should feature, plus runner-up suggestions. */
 export function homeInvestigation(state) {
-  if (state.currentInvestigationId) {
-    return { investigation: getInvestigation(state.currentInvestigationId), suggested: false };
-  }
-  // Suggest from onboarding symptoms + logged observations — most overlapping signs,
-  // skipping anything the parent has completed or deprioritized. Red flags never
-  // steer suggestions; they get their own pediatrician nudge instead.
+  // Suggest from the standing symptom list + logged observations — most
+  // overlapping signs, skipping anything the parent has checked or back-burnered.
+  // Red flags never steer suggestions; they get their own pediatrician nudge.
   const seen = new Set(state.profile.onboardingSymptoms.filter((s) => !isRedFlag(s)));
   for (const day of Object.values(state.days))
     for (const o of day.observations) if (!o.startsWith("custom:") && !isRedFlag(o)) seen.add(o);
@@ -30,17 +27,23 @@ export function homeInvestigation(state) {
       .filter(([, s]) => s === "complete" || s === "low_priority")
       .map(([id]) => id)
   );
-  const matches = matchInvestigations([...seen])
+  const ranked = matchInvestigations([...seen])
     .filter((m) => !skip.has(m.investigation.id))
-    .sort((a, b) => b.matches.length - a.matches.length);
-  const pick = matches[0]?.investigation ?? INVESTIGATIONS.find((i) => !skip.has(i.id)) ?? INVESTIGATIONS[0];
-  return { investigation: pick, suggested: true };
+    .sort((a, b) => b.matches.length - a.matches.length)
+    .map((m) => m.investigation);
+
+  if (state.currentInvestigationId) {
+    const current = getInvestigation(state.currentInvestigationId);
+    return { investigation: current, suggested: false, alternates: ranked.filter((i) => i.id !== current.id).slice(0, 2) };
+  }
+  const pick = ranked[0] ?? INVESTIGATIONS.find((i) => !skip.has(i.id)) ?? INVESTIGATIONS[0];
+  return { investigation: pick, suggested: true, alternates: ranked.filter((i) => i.id !== pick.id).slice(0, 2) };
 }
 
 /** Home — the command center. Helps parents know what to do next. */
 export function Home({ navigate }) {
   const { state } = useStore();
-  const { investigation, suggested } = homeInvestigation(state);
+  const { investigation, suggested, alternates } = homeInvestigation(state);
   const status = statusInfo(state.statuses[investigation.id] ?? "not_started");
   const patterns = generatePatterns(state);
   const lastDay = lastObservationDay(state);
@@ -82,19 +85,42 @@ export function Home({ navigate }) {
         <Button onClick={() => navigate("investigation", { id: investigation.id })}>
           {suggested ? "Start Exploring" : "Keep Going"}
         </Button>
-        <Button variant="secondary" onClick={() => navigate("learn", { section: "investigations" })}>
-          See All Possible Causes
-        </Button>
-      </Card>
-
-      <Card>
-        <SectionLabel>{loggedToday ? "Update Today's Observation" : "Record Today's Observation"}</SectionLabel>
-        <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
-          {loggedToday
-            ? "Notice something new since you last logged? Add it to today."
-            : `${name ? `Tell us about ${name}'s day` : "Tell us about today"} — speak naturally or tap a few chips. It takes under a minute.`}
+        {alternates.length > 0 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div style={{ fontSize: "var(--type-meta-size)", fontWeight: 500, color: "var(--text-muted)" }}>
+              Also worth a look
+            </div>
+            {alternates.map((alt) => (
+              <button
+                key={alt.id}
+                onClick={() => navigate("investigation", { id: alt.id })}
+                style={{
+                  all: "unset",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "8px",
+                  padding: "10px 14px",
+                  background: "var(--surface-inset)",
+                  border: "1px solid var(--border-default)",
+                  borderRadius: "var(--radius-button)",
+                }}
+              >
+                <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--text-brand)" }}>{alt.title}</span>
+                <span aria-hidden style={{ color: "var(--text-muted)" }}>→</span>
+              </button>
+            ))}
+          </div>
+        )}
+        <div style={{ display: "flex", gap: "8px" }}>
+          <Button variant="secondary" onClick={() => navigate("symptoms")}>
+            Update What You're Seeing
+          </Button>
+          <Button variant="secondary" onClick={() => navigate("learn", { section: "investigations" })}>
+            See All Causes
+          </Button>
         </div>
-        <Button onClick={() => navigate("detective")}>{loggedToday ? "Edit Observation" : "Start Recording"}</Button>
       </Card>
 
       <FeedbackPrompt />
@@ -115,6 +141,16 @@ export function Home({ navigate }) {
         <Button variant="secondary" onClick={() => navigate("patterns")}>
           View All
         </Button>
+      </Card>
+
+      <Card>
+        <SectionLabel>{loggedToday ? "Update Today's Observation" : "Record Today's Observation"}</SectionLabel>
+        <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
+          {loggedToday
+            ? "Notice something new since you last logged? Add it to today."
+            : `Totally optional, hugely helpful — ${name ? `a few taps about ${name}'s day` : "a few taps about today"} is what turns hunches into patterns.`}
+        </div>
+        <Button onClick={() => navigate("detective")}>{loggedToday ? "Edit Observation" : "Start Recording"}</Button>
       </Card>
 
       <Card>

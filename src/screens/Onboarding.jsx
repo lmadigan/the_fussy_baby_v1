@@ -5,7 +5,7 @@ import { SectionLabel } from "../components/core/SectionLabel.jsx";
 import { Tag } from "../components/core/Tag.jsx";
 import { Input } from "../components/forms/Input.jsx";
 import { useStore } from "../lib/store.jsx";
-import { CATEGORIES, observationsInCategory } from "../data/vocabulary.js";
+import { SymptomPicker } from "../components/app/SymptomPicker.jsx";
 
 const AGE_OPTIONS = [
   { label: "0–6 weeks", months: 1 },
@@ -122,22 +122,12 @@ export function Onboarding() {
             What have you been noticing?
           </div>
           <div style={{ fontSize: "14px", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
-            Select everything that applies. This personalizes where we start — you can always change it later.
+            Not sure what "counts"? That's exactly why we list it all — plenty of real clues don't look like symptoms.
+            If you've seen it, tap it. You can always change this later.
           </div>
         </div>
         <Card>
-          {CATEGORIES.map((cat) => (
-            <div key={cat} style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              <div style={{ fontSize: "var(--type-meta-size)", fontWeight: 500, color: "var(--text-muted)" }}>{cat}</div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
-                {observationsInCategory(cat).map((obs) => (
-                  <Tag key={obs.id} tone="neutral" selected={symptoms.includes(obs.id)} onClick={() => toggleSymptom(obs.id)}>
-                    {obs.label}
-                  </Tag>
-                ))}
-              </div>
-            </div>
-          ))}
+          <SymptomPicker selected={symptoms} onToggle={toggleSymptom} />
         </Card>
         <Button onClick={() => setStep(3)}>{symptoms.length ? "Continue" : "Skip for now"}</Button>
       </>

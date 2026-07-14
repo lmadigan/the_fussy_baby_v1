@@ -113,6 +113,15 @@ export function InvestigationDetail({ navigate, goBack, params }) {
       </Card>
 
       <Card>
+        <SectionLabel>See If It Holds Up</SectionLabel>
+        <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
+          Exploring works best with a little evidence. Log what you notice — even a few days helps — and we'll watch
+          for signs of this in what you save.
+        </div>
+        <Button variant="secondary" onClick={() => navigate("detective")}>Track Today</Button>
+      </Card>
+
+      <Card>
         <SectionLabel>Learn More</SectionLabel>
         {investigation.learnMore.map((articleId) => {
           const article = getArticle(articleId);
