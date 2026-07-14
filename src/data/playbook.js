@@ -153,11 +153,38 @@ export function getInvestigation(id) {
   return byId.get(id);
 }
 
-/** Investigations whose signs overlap the given observation ids, with the overlap. */
+/**
+ * How many investigations list each sign. A sign that points at only one
+ * cause (eczema → food protein) is far more discriminating than one shared
+ * across many (spit-up appears under feeding mechanics, food protein, and
+ * forceful letdown). We use this to weight matches by specificity so a
+ * single high-signal sign outranks a pile of generic ones — the same reason
+ * a differential like DxGPT lands on cow's-milk protein over letdown.
+ */
+const signFrequency = (() => {
+  const freq = new Map();
+  for (const inv of INVESTIGATIONS)
+    for (const s of inv.signs) freq.set(s, (freq.get(s) ?? 0) + 1);
+  return freq;
+})();
+
+/** A sign's weight: 1.0 if unique to one cause, less as it gets more generic. */
+export function signWeight(sign) {
+  return 1 / (signFrequency.get(sign) ?? 1);
+}
+
+/**
+ * Investigations whose signs overlap the given observation ids. Each result
+ * carries the raw overlap (`matches`) for display and a specificity-weighted
+ * `score` for ranking. Sorted strongest-first by score, then by overlap count.
+ */
 export function matchInvestigations(observationIds) {
   const set = new Set(observationIds);
-  return INVESTIGATIONS.map((inv) => ({
-    investigation: inv,
-    matches: inv.signs.filter((s) => set.has(s)),
-  })).filter((m) => m.matches.length > 0);
+  return INVESTIGATIONS.map((inv) => {
+    const matches = inv.signs.filter((s) => set.has(s));
+    const score = matches.reduce((sum, s) => sum + signWeight(s), 0);
+    return { investigation: inv, matches, score };
+  })
+    .filter((m) => m.matches.length > 0)
+    .sort((a, b) => b.score - a.score || b.matches.length - a.matches.length);
 }

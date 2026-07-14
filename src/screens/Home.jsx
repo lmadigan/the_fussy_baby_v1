@@ -30,7 +30,6 @@ export function homeInvestigation(state) {
   );
   const ranked = matchInvestigations([...seen])
     .filter((m) => !skip.has(m.investigation.id))
-    .sort((a, b) => b.matches.length - a.matches.length)
     .map((m) => m.investigation);
 
   if (state.currentInvestigationId) {
