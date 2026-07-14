@@ -215,20 +215,17 @@ export function Home({ navigate }) {
       </Card>
 
       <Card>
-        <SectionLabel>{loggedToday ? "Update Today's Observation" : "Record Today's Observation"}</SectionLabel>
+        <SectionLabel right={lastDay ? formatRelative(lastDay.dateKey) : undefined}>
+          {loggedToday ? "Today's Observation" : "Record Today's Observation"}
+        </SectionLabel>
         <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
           {loggedToday
             ? "Notice something new since you last logged? Add it to today."
-            : `Totally optional, hugely helpful — ${name ? `a few taps about ${name}'s day` : "a few taps about today"} is what turns hunches into patterns.`}
+            : lastDay
+              ? `Totally optional, hugely helpful — ${name ? `a few taps about ${name}'s day` : "a few taps about today"} is what turns hunches into patterns. Here's what you saw last:`
+              : `Nothing recorded yet — ${name ? `a few taps about ${name}'s day` : "a few taps about today"} is what turns hunches into patterns. Your first observation starts the picture.`}
         </div>
-        <Button onClick={() => navigate("detective")}>{loggedToday ? "Edit Observation" : "Start Recording"}</Button>
-      </Card>
-
-      <Card>
-        <SectionLabel right={lastDay ? formatRelative(lastDay.dateKey) : undefined}>
-          {lastDay && lastDay.dateKey === todayKey() ? "Today's Observation" : "Last Observation"}
-        </SectionLabel>
-        {lastDay ? (
+        {lastDay && (
           <>
             <StatRow label="Fussiness" value={lastDay.fussiness} max={5} />
             <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
@@ -238,11 +235,8 @@ export function Home({ navigate }) {
               {lastDay.observations.length > 6 && <Tag tone="neutral">+{lastDay.observations.length - 6} more</Tag>}
             </div>
           </>
-        ) : (
-          <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
-            Nothing recorded yet. Your first observation starts the picture.
-          </div>
         )}
+        <Button onClick={() => navigate("detective")}>{loggedToday ? "Edit Observation" : "Start Recording"}</Button>
         <Button variant="secondary" onClick={() => navigate("history")}>
           Open Journal
         </Button>
