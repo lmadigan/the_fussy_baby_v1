@@ -44,3 +44,23 @@ button {
   body { background: var(--surface-app); }
   .app-frame { box-shadow: none; }
 }
+
+/* Loading shimmer for the differential skeleton */
+.fb-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.fb-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  animation: fb-shimmer 1.3s ease-in-out infinite;
+}
+@keyframes fb-shimmer {
+  100% { transform: translateX(100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fb-shimmer::after { animation: none; }
+}
