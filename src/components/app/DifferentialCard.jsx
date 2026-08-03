@@ -3,8 +3,7 @@ import { Card } from "../core/Card.jsx";
 import { Button } from "../core/Button.jsx";
 
 /**
- * One possible cause from the model differential — DxGPT-style:
- * rank · name · plain description · what fits · what doesn't · care advice.
+ * One possible contributor from the model assessment.
  * `rank` is 1-based; the model's order is preserved (we never re-sort).
  */
 export function DifferentialCard({ rank, cause, onExplore }) {
@@ -28,9 +27,12 @@ export function DifferentialCard({ rank, cause, onExplore }) {
             fontVariantNumeric: "tabular-nums",
           }}
         >
-          {rank}
+          {rank === 1 ? "1" : "+"}
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 }}>
+          <div style={{ fontSize: "var(--type-meta-size)", fontWeight: 700, color: "var(--text-brand)" }}>
+            {rank === 1 ? "Strongest match" : "May also contribute"}
+          </div>
           <div style={{ fontSize: "16.5px", fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.3 }}>
             {cause.name}
           </div>
@@ -48,24 +50,13 @@ export function DifferentialCard({ rank, cause, onExplore }) {
       {cause.notFitting.length > 0 && (
         <FitRow tone="against" label="Worth noting" items={cause.notFitting} />
       )}
+      {cause.missingInformation?.length > 0 && (
+        <FitRow tone="against" label="What would make this clearer" items={cause.missingInformation} />
+      )}
 
-      {cause.playbookId ? (
-        <Button variant="secondary" onClick={() => onExplore(cause.playbookId)}>
-          See care advice
-        </Button>
-      ) : cause.whatToTry.length > 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <div style={{ fontSize: "var(--type-meta-size)", fontWeight: 600, color: "var(--text-muted)" }}>
-            Things you can try
-          </div>
-          {cause.whatToTry.map((t, i) => (
-            <div key={i} style={{ display: "flex", gap: "8px", fontSize: "13.5px", lineHeight: 1.5, color: "var(--text-primary)" }}>
-              <span aria-hidden style={{ color: "var(--text-muted)" }}>•</span>
-              <span style={{ textWrap: "pretty" }}>{t}</span>
-            </div>
-          ))}
-        </div>
-      ) : null}
+      <Button variant="secondary" onClick={() => onExplore(cause.playbookId)}>
+        Start guided investigation
+      </Button>
     </Card>
   );
 }

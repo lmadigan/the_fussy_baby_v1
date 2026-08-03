@@ -1,4 +1,6 @@
-# The Fussy Baby PRD — Additions
+# The Fussy Baby PRD - Legacy Additions
+
+> Superseded by `docs/product-requirements.md`. This file is retained as historical context for the original deterministic Pattern Engine and is not the current product requirements document.
 
 Version: MVP v1.1 (draft)
 

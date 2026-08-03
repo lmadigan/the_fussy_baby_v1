@@ -1,43 +1,50 @@
 /**
- * The Fussy Baby — differential proxy (Cloudflare Worker).
- *
- * This is the only piece that holds your API key. The app POSTs a list of
- * plain-language symptoms; this worker asks Claude for a differential of
- * common, benign infant-fussiness causes and returns clean JSON.
- *
- * Deploy (one time):
- *   1. npm i -g wrangler && wrangler login
- *   2. wrangler secret put ANTHROPIC_API_KEY      (paste your key when asked)
- *   3. wrangler deploy
- *   4. Copy the deployed URL and paste it into the app via
- *      "Connect live model" on the home screen.
- *
- * Optional env vars: MODEL (defaults to claude-sonnet-5), ALLOW_ORIGIN
- * (defaults to "*"; set it to your site origin to lock the proxy down).
+ * Cloudflare Worker for the model-driven contributor assessment.
+ * The Worker owns the API key and constrains model output to the Playbook.
  */
 
-const SYSTEM_PROMPT = `You are a calm, plainspoken assistant helping a parent of a young baby think through why their baby might be fussy. You produce a short differential of COMMON, BENIGN causes of infant fussiness for parent education.
+const PLAYBOOK = [
+  ["feeding-mechanics", "Feeding Mechanics", "Latch, suck, swallow, bottle flow, positioning, and air intake."],
+  ["food-protein-sensitivity", "Food Protein Sensitivity", "A cluster of stool, skin, feeding, and reflux-like signs; blood-streaked stool is important supporting evidence."],
+  ["silent-reflux", "Silent Reflux", "Discomfort during or after feeds, arching, wet burps, or difficulty lying flat."],
+  ["tongue-tie", "Oral Restrictions (Tongue Tie)", "Clicking, leaking, feeding effort, latch pain, and ineffective milk transfer."],
+  ["forceful-letdown", "Forceful Letdown / Oversupply", "Fast milk flow, gulping, pulling off, air intake, and foamy or green stools."],
+  ["gas-digestion", "Gas & Digestive Immaturity", "Common digestive immaturity, straining, knees to chest, and evening discomfort."],
+  ["overtiredness", "Overtiredness & Overstimulation", "Short naps, busy days, difficulty settling, and evening fussiness."],
+];
+const ALLOWED_IDS = new Set(PLAYBOOK.map(([id]) => id));
+const playbookPrompt = PLAYBOOK.map(([id, name, description]) => `- ${id}: ${name}. ${description}`).join("\n");
 
-Hard rules:
-- You are NOT diagnosing. Frame everything as "possible causes to explore and discuss with a pediatrician."
-- Use warm, everyday language a tired parent can read at 3am. No jargon without a plain gloss.
-- Rank causes by how well they fit the symptoms given, most likely first. Return 2 to 4 causes.
-- For each cause, be honest about what fits AND what doesn't. If a symptom is generic (e.g. spit-up, gas), say so rather than overclaiming.
-- Never invent symptoms the parent didn't report. Only reference their reported symptoms in "matching".
-- Do not mention emergencies or red flags here; the app handles those separately.
+const SYSTEM_PROMPT = `You help a parent organize observations about a fussy young baby. Your job is to rank possible CONTRIBUTORS for education and structured investigation, not to diagnose.
 
-Respond with ONLY a JSON object, no prose, in exactly this shape:
+You may select only from this Playbook:
+${playbookPrompt}
+
+Rules:
+- Return one strongest match and no more than two additional contributors. Multiple contributors can coexist.
+- Use calm, direct language that a tired parent can scan.
+- Explain both supporting evidence and limitations. Generic signs such as spit-up, gas, or fussiness should not be over-weighted.
+- Every item in "matching" must exactly copy one of the reported symptom labels. Never invent evidence.
+- Use "missingInformation" for the few details that would most improve the assessment.
+- Blood-streaked stool is both a safety alert handled by the app and strong evidence for food-protein-sensitivity; include that contributor first when it is reported.
+- Do not prescribe treatment, elimination diets, medication, or a protocol. The app supplies curated investigation steps.
+- Do not generate emergency instructions; the app handles deterministic safety messaging.
+
+Return ONLY this JSON shape:
 {
+  "summary": "one brief synthesis acknowledging when contributors may overlap",
   "causes": [
     {
-      "name": "short cause name (parent-friendly, may include a common medical term in parentheses)",
-      "description": "1-2 plain sentences on what it is",
-      "matching": ["which of the parent's reported symptoms fit, phrased plainly"],
-      "notFitting": ["honest caveats: which reported symptoms are non-specific or don't fit"],
-      "whatToTry": ["1-3 gentle, concrete things a parent can observe or try at home"]
+      "playbookId": "one allowed id",
+      "name": "the matching Playbook name",
+      "description": "one or two plain sentences explaining why this contributor is plausible",
+      "matching": ["exact reported symptom label"],
+      "notFitting": ["limitations or non-specific evidence"],
+      "missingInformation": ["a detail that would make this clearer"]
     }
   ],
-  "note": "one short sentence reminding this is for exploration with their pediatrician, not a diagnosis"
+  "followUpQuestions": ["zero to three short questions"],
+  "note": "one sentence saying this organizes possibilities for exploration and is not a diagnosis"
 }`;
 
 function cors(origin) {
@@ -49,7 +56,6 @@ function cors(origin) {
 }
 
 function extractJson(text) {
-  // The model is asked for pure JSON, but strip stray fences / prose just in case.
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
   const candidate = fenced ? fenced[1] : text;
   const start = candidate.indexOf("{");
@@ -58,14 +64,42 @@ function extractJson(text) {
   return JSON.parse(candidate.slice(start, end + 1));
 }
 
+function cleanList(value, limit = 3) {
+  return Array.isArray(value) ? value.map(String).map((item) => item.trim()).filter(Boolean).slice(0, limit) : [];
+}
+
+function normalize(parsed, symptoms) {
+  const reported = new Map(symptoms.map((label) => [label.toLowerCase(), label]));
+  const seen = new Set();
+  const causes = [];
+  for (const candidate of Array.isArray(parsed?.causes) ? parsed.causes : []) {
+    const playbookId = String(candidate?.playbookId || "");
+    if (!ALLOWED_IDS.has(playbookId) || seen.has(playbookId)) continue;
+    seen.add(playbookId);
+    causes.push({
+      playbookId,
+      name: PLAYBOOK.find(([id]) => id === playbookId)[1],
+      description: String(candidate?.description || "").trim(),
+      matching: cleanList(candidate?.matching, 10).map((item) => reported.get(item.toLowerCase())).filter(Boolean),
+      notFitting: cleanList(candidate?.notFitting),
+      missingInformation: cleanList(candidate?.missingInformation),
+    });
+    if (causes.length === 3) break;
+  }
+  return {
+    summary: String(parsed?.summary || "").trim(),
+    causes,
+    followUpQuestions: cleanList(parsed?.followUpQuestions),
+    note: String(parsed?.note || "").trim(),
+  };
+}
+
 export default {
   async fetch(request, env) {
     const origin = env.ALLOW_ORIGIN || "*";
     const headers = { "Content-Type": "application/json", ...cors(origin) };
-
     if (request.method === "OPTIONS") return new Response(null, { headers: cors(origin) });
-    if (request.method !== "POST")
-      return new Response(JSON.stringify({ error: "POST only" }), { status: 405, headers });
+    if (request.method !== "POST") return new Response(JSON.stringify({ error: "POST only" }), { status: 405, headers });
 
     let body;
     try {
@@ -74,17 +108,19 @@ export default {
       return new Response(JSON.stringify({ error: "Invalid JSON body" }), { status: 400, headers });
     }
 
-    const symptoms = Array.isArray(body.symptoms) ? body.symptoms.slice(0, 40).map(String) : [];
-    const age = body.babyAgeMonths;
-    if (symptoms.length === 0)
-      return new Response(JSON.stringify({ error: "No symptoms provided" }), { status: 400, headers });
+    const symptoms = Array.isArray(body.symptoms) ? body.symptoms.slice(0, 40).map(String).map((item) => item.slice(0, 120)) : [];
+    if (symptoms.length === 0) return new Response(JSON.stringify({ error: "No symptoms provided" }), { status: 400, headers });
 
-    const userMsg =
-      `Baby's age: ${age != null ? `${age} month(s)` : "unknown"}.\n` +
-      `Reported symptoms: ${symptoms.join(", ")}.\n\n` +
-      `Give the differential as specified.`;
+    const userMessage = [
+      `Baby age: ${body.babyAgeMonths != null ? `${body.babyAgeMonths} month(s)` : "unknown"}`,
+      `Feeding mode: ${String(body.feedingMode || "not provided").slice(0, 80)}`,
+      `Fussiness timing: ${String(body.fussinessTiming || "not provided").slice(0, 160)}`,
+      `Reported symptoms: ${symptoms.join(", ")}`,
+      `Additional parent context: ${String(body.additionalContext || "not provided").slice(0, 2000)}`,
+      "Return the assessment as specified.",
+    ].join("\n");
 
-    const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
+    const modelResponse = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -95,28 +131,21 @@ export default {
         model: env.MODEL || "claude-sonnet-5",
         max_tokens: 1200,
         system: SYSTEM_PROMPT,
-        messages: [{ role: "user", content: userMsg }],
+        messages: [{ role: "user", content: userMessage }],
       }),
     });
 
-    if (!anthropicRes.ok) {
-      const detail = await anthropicRes.text().catch(() => "");
-      return new Response(JSON.stringify({ error: "Model request failed", detail: detail.slice(0, 300) }), {
-        status: 502,
-        headers,
-      });
+    if (!modelResponse.ok) {
+      const detail = await modelResponse.text().catch(() => "");
+      return new Response(JSON.stringify({ error: "Model request failed", detail: detail.slice(0, 300) }), { status: 502, headers });
     }
 
-    const data = await anthropicRes.json();
-    const text = (data.content || []).map((b) => b.text || "").join("");
+    const data = await modelResponse.json();
+    const text = (data.content || []).map((block) => block.text || "").join("");
     try {
-      const parsed = extractJson(text);
-      return new Response(JSON.stringify(parsed), { headers });
-    } catch (e) {
-      return new Response(JSON.stringify({ error: "Could not parse model output", detail: String(e) }), {
-        status: 502,
-        headers,
-      });
+      return new Response(JSON.stringify(normalize(extractJson(text), symptoms)), { headers });
+    } catch (error) {
+      return new Response(JSON.stringify({ error: "Could not parse model output", detail: String(error) }), { status: 502, headers });
     }
   },
 };

@@ -1,6 +1,6 @@
-# Differential proxy
+# Contributor assessment proxy
 
-The app asks a language model for possible causes of your baby's fussiness.
+The app asks a language model to rank possible contributors to your baby's fussiness.
 The model call can't happen safely from the browser (it needs an API key), so
 this tiny worker sits in between: the app sends it symptoms, it asks Claude,
 and it returns clean JSON. **This worker is the only place your API key lives.**
@@ -20,10 +20,8 @@ wrangler deploy
 
 ## Connect the app
 
-Open the app, and on the home screen tap **“Connect live model →”** (shown on
-the possible-causes section). Paste the worker URL. It's stored in your browser
-only. From then on, your symptoms get a live read; edit them and the causes
-update.
+Open the Symptom Navigator, run an assessment in example mode, and tap
+**Connect live model**. Paste the worker URL. It is stored in your browser only.
 
 ## Options
 
@@ -39,3 +37,5 @@ update.
 - It does **not** handle red flags. Those are matched in the app itself,
   deterministically, so the “call your pediatrician” nudge never depends on a
   model response.
+- It does **not** write investigation protocols. The model can select only from
+  the seven Playbook contributors; curated app content supplies every next step.

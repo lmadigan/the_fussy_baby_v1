@@ -175,20 +175,20 @@ export function Learn({ navigate, params }) {
 function Process({ goBack }) {
   const steps = [
     {
-      title: "Pick a possible cause",
-      body: "Choose one possible cause to explore and work through its Care Advice, checking off steps as you go. Each one explains itself before asking you to act — you always know why you're observing something.",
+      title: "Describe what you're seeing",
+      body: "The Symptom Navigator organizes one strongest contributor and up to two others that may be involved, with the observations supporting each possibility.",
     },
     {
-      title: "Observe & record",
-      body: "Log what you notice each day in under a minute — by voice or by tapping chips. You approve everything before it's saved; nothing enters your journal without you.",
+      title: "Choose one investigation",
+      body: "Review its curated plan and choose whether to begin. Each investigation focuses on a small set of observations over a 7- or 14-day window.",
     },
     {
-      title: "Watch the patterns",
-      body: "As observations accumulate, the app surfaces combinations that repeat — always with the exact observations behind them, never as a conclusion.",
+      title: "Complete quick check-ins",
+      body: "Log only the targeted signs and a fussiness rating. You approve everything before it is saved; recordings and transcripts are not stored.",
     },
     {
-      title: "Follow the next lead",
-      body: "Patterns point to what may be worth exploring next. Mark causes checked, back burner, or come back later — and keep narrowing in.",
+      title: "Review the direction",
+      body: "Progress shows the exact observations behind the investigation so you can decide whether the fit is strengthening, weakening, or still unclear.",
     },
   ];
   return (
@@ -197,7 +197,7 @@ function Process({ goBack }) {
         <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.6, color: "var(--text-primary)", textWrap: "pretty" }}>
           Fussiness is rarely explained by a single observation. Arching can be reflux, feeding mechanics, or an
           ordinary preference; green stool can be letdown speed, a sensitivity, or nothing at all. That's why this app
-          is built around a loop instead of a lookup:
+          starts with a useful answer, then offers a focused loop when you want more confidence:
         </div>
       </Card>
       {steps.map((s, i) => (

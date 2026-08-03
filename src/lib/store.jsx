@@ -5,13 +5,15 @@ import { buildDemoState } from "../data/demoSeed.js";
 /**
  * App state, persisted to localStorage.
  *
- * profile:   { babyName, babyAgeMonths, onboardingSymptoms: [obsId], onboarded }
- * days:      { [dateKey]: { fussiness: 1–5|null, observations: [obsId|"custom:Label"] } }
+ * profile:   { babyName, babyAgeMonths, feedingMode, fussinessTiming, onboardingSymptoms: [obsId], onboarded }
+ * days:      { [dateKey]: { fussiness: 1–5|null, observations: [obsId|"custom:Label"], investigationIds: [id] } }
  *            — only parent-approved observations are ever stored.
  * statuses:  { [investigationId]: statusId }
  * checklists:{ [investigationId]: [stepIndex] } — care-advice steps checked off
  * feedback:  { [promptId]: "dismissed" | "sent" } — timed in-app feedback prompts
  * currentInvestigationId: string|null
+ * investigations: { [id]: { startedAt, reviewDays } }
+ * assessment: latest validated contributor map, or null
  *
  * Demo mode (?demo in the URL) loads a seeded example family and never
  * persists — refreshing the page resets the story.
@@ -23,12 +25,21 @@ export const IS_DEMO =
   typeof window !== "undefined" && new URLSearchParams(window.location.search).has("demo");
 
 const initialState = {
-  profile: { babyName: "", babyAgeMonths: null, onboardingSymptoms: [], onboarded: false },
+  profile: {
+    babyName: "",
+    babyAgeMonths: null,
+    feedingMode: "",
+    fussinessTiming: "",
+    onboardingSymptoms: [],
+    onboarded: false,
+  },
   days: {},
   statuses: {},
   checklists: {},
   feedback: {},
   currentInvestigationId: null,
+  investigations: {},
+  assessment: null,
 };
 
 function load() {
@@ -43,6 +54,8 @@ function load() {
       profile: { ...initialState.profile, ...parsed.profile },
       checklists: parsed.checklists ?? {},
       feedback: parsed.feedback ?? {},
+      investigations: parsed.investigations ?? {},
+      assessment: parsed.assessment ?? null,
     };
   } catch {
     return initialState;
@@ -52,27 +65,65 @@ function load() {
 function reducer(state, action) {
   switch (action.type) {
     case "completeOnboarding": {
-      const { babyName, babyAgeMonths, symptoms } = action;
+      const { babyName, babyAgeMonths, feedingMode = "", symptoms } = action;
       return {
         ...state,
-        profile: { babyName, babyAgeMonths, onboardingSymptoms: symptoms, onboarded: true },
+        profile: {
+          ...state.profile,
+          babyName,
+          babyAgeMonths,
+          feedingMode,
+          onboardingSymptoms: symptoms,
+          onboarded: true,
+        },
       };
     }
     case "updateSymptoms": {
       // The standing "what you're seeing" list — editable any time, drives suggestions.
       return { ...state, profile: { ...state.profile, onboardingSymptoms: action.symptoms } };
     }
+    case "updateAssessmentContext": {
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          feedingMode: action.feedingMode ?? state.profile.feedingMode,
+          fussinessTiming: action.fussinessTiming ?? state.profile.fussinessTiming,
+        },
+      };
+    }
+    case "saveAssessment": {
+      return { ...state, assessment: action.assessment };
+    }
+    case "startInvestigation": {
+      const { investigationId, reviewDays, startedAt = todayKey() } = action;
+      return {
+        ...state,
+        currentInvestigationId: investigationId,
+        statuses: { ...state.statuses, [investigationId]: "in_progress" },
+        investigations: {
+          ...state.investigations,
+          [investigationId]: {
+            ...(state.investigations[investigationId] ?? {}),
+            startedAt: state.investigations[investigationId]?.startedAt ?? startedAt,
+            reviewDays,
+          },
+        },
+      };
+    }
     case "saveDay": {
       // Merge approved observations into the day's record (dedupe, keep order).
-      const { dateKey, observations, fussiness } = action;
-      const existing = state.days[dateKey] ?? { fussiness: null, observations: [] };
+      const { dateKey, observations, fussiness, investigationId } = action;
+      const existing = state.days[dateKey] ?? { fussiness: null, observations: [], investigationIds: [] };
       const merged = [...existing.observations];
       for (const obs of observations) if (!merged.includes(obs)) merged.push(obs);
+      const investigationIds = [...(existing.investigationIds ?? [])];
+      if (investigationId && !investigationIds.includes(investigationId)) investigationIds.push(investigationId);
       return {
         ...state,
         days: {
           ...state.days,
-          [dateKey]: { fussiness: fussiness ?? existing.fussiness, observations: merged },
+          [dateKey]: { fussiness: fussiness ?? existing.fussiness, observations: merged, investigationIds },
         },
       };
     }
@@ -83,7 +134,14 @@ function reducer(state, action) {
         delete days[dateKey];
         return { ...state, days };
       }
-      return { ...state, days: { ...state.days, [dateKey]: { fussiness, observations } } };
+      const existing = state.days[dateKey] ?? {};
+      return {
+        ...state,
+        days: {
+          ...state.days,
+          [dateKey]: { fussiness, observations, investigationIds: existing.investigationIds ?? [] },
+        },
+      };
     }
     case "deleteDay": {
       const days = { ...state.days };
@@ -106,15 +164,24 @@ function reducer(state, action) {
       // Checking your first step means you're exploring this — promote it.
       let statuses = state.statuses;
       let currentInvestigationId = state.currentInvestigationId;
+      let investigations = state.investigations;
       if (checking && (state.statuses[investigationId] ?? "not_started") === "not_started") {
         statuses = { ...state.statuses, [investigationId]: "in_progress" };
         currentInvestigationId = investigationId;
+        investigations = {
+          ...state.investigations,
+          [investigationId]: {
+            ...(state.investigations[investigationId] ?? {}),
+            startedAt: state.investigations[investigationId]?.startedAt ?? todayKey(),
+          },
+        };
       }
       return {
         ...state,
         checklists: { ...state.checklists, [investigationId]: [...current].sort((a, b) => a - b) },
         statuses,
         currentInvestigationId,
+        investigations,
       };
     }
     case "resolveFeedback": {

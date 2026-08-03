@@ -42,11 +42,17 @@ export function InvestigationDetail({ navigate, goBack, params }) {
   const checked = new Set(state.checklists?.[investigation.id] ?? []);
   const total = investigation.checklist.length;
   const done = checked.size;
+  const isActive = state.currentInvestigationId === investigation.id;
+  const assessmentCause = state.assessment?.causes?.find((cause) => cause.playbookId === investigation.id);
+
+  const start = () => {
+    dispatch({ type: "startInvestigation", investigationId: investigation.id, reviewDays: investigation.reviewDays });
+  };
 
   return (
     <Screen
       title={investigation.title}
-      eyebrow="Possible Cause"
+      eyebrow="Possible Contributor"
       onBack={goBack}
       action={<StatusBadge tone={status.tone}>{status.label}</StatusBadge>}
     >
@@ -56,6 +62,14 @@ export function InvestigationDetail({ navigate, goBack, params }) {
           {investigation.whatIsIt}
         </div>
       </Card>
+
+      {assessmentCause?.matching?.length > 0 && (
+        <Card>
+          <SectionLabel>Why it appeared in your assessment</SectionLabel>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>{assessmentCause.matching.map((label) => <Tag key={label} tone="signal">{label}</Tag>)}</div>
+          {assessmentCause.missingInformation?.length > 0 && <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)" }}>{assessmentCause.missingInformation.join(" ")}</div>}
+        </Card>
+      )}
 
       <Card>
         <SectionLabel>Common Signs</SectionLabel>
@@ -86,7 +100,7 @@ export function InvestigationDetail({ navigate, goBack, params }) {
       </Card>
 
       <Card>
-        <SectionLabel right={`${done} of ${total} done`}>Care Advice</SectionLabel>
+        <SectionLabel right={`${done} of ${total} done`}>Investigation Plan</SectionLabel>
         <div style={{ height: "6px", borderRadius: "99px", background: "var(--surface-inset)", border: "1px solid var(--border-default)", overflow: "hidden" }}>
           <div
             style={{
@@ -99,7 +113,7 @@ export function InvestigationDetail({ navigate, goBack, params }) {
           />
         </div>
         <div style={{ fontSize: "13px", lineHeight: 1.5, color: "var(--text-muted)", textWrap: "pretty" }}>
-          Work through these at your own pace — tap each one as you do it.
+          Change one thing at a time when possible. Tap each step as you do it.
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {investigation.checklist.map((item, i) => {
@@ -146,12 +160,13 @@ export function InvestigationDetail({ navigate, goBack, params }) {
       </Card>
 
       <Card>
-        <SectionLabel>See If It Holds Up</SectionLabel>
+        <SectionLabel>{investigation.reviewDays}-day observation window</SectionLabel>
         <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
-          Exploring works best with a little evidence. Log what you notice — even a few days helps — and we'll watch
-          for signs of this in what you save.
+          Check-ins focus on {investigation.trackingSigns.length} signs that make this possibility more or less convincing. You can stop at any time.
         </div>
-        <Button variant="secondary" onClick={() => navigate("detective")}>Track Today</Button>
+        {!isActive && <Button onClick={start}>Start this investigation</Button>}
+        {isActive && <Button onClick={() => navigate("detective", { investigationId: investigation.id })}>Check in today</Button>}
+        <Button variant="secondary" onClick={() => navigate("patterns")}>View progress</Button>
       </Card>
 
       <Card>

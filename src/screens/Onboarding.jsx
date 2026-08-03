@@ -22,6 +22,7 @@ export function Onboarding() {
   const [babyName, setBabyName] = useState("");
   const [ageMonths, setAgeMonths] = useState(null);
   const [symptoms, setSymptoms] = useState([]);
+  const [feedingMode, setFeedingMode] = useState("");
 
   const toggleSymptom = (id) =>
     setSymptoms((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]));
@@ -69,9 +70,8 @@ export function Onboarding() {
             Hey — you're doing great. But baby fussiness is no joke.
           </div>
           <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-primary)", textWrap: "pretty" }}>
-            The good news: we're here to help you troubleshoot. This is an educational and observational tool that helps
-            you understand the common causes of fussiness, and surfaces correlations between what you observe and how
-            fussy your baby's days are.
+            The good news: we're here to help you troubleshoot. Describe what you're seeing and the Symptom Navigator
+            organizes the contributors that fit best, including when more than one may be involved.
           </div>
           <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-muted)", textWrap: "pretty" }}>
             It's not a medical diagnostic tool — your pediatrician stays in charge. We just help you show up with
@@ -102,6 +102,16 @@ export function Onboarding() {
               {AGE_OPTIONS.map((opt) => (
                 <Tag key={opt.label} tone="neutral" selected={ageMonths === opt.months} onClick={() => setAgeMonths(opt.months)}>
                   {opt.label}
+                </Tag>
+              ))}
+            </div>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <SectionLabel>Feeding (optional)</SectionLabel>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
+              {["Breastfeeding", "Formula", "Both"].map((option) => (
+                <Tag key={option} tone="neutral" selected={feedingMode === option} onClick={() => setFeedingMode(feedingMode === option ? "" : option)}>
+                  {option}
                 </Tag>
               ))}
             </div>
@@ -143,17 +153,17 @@ export function Onboarding() {
       </div>
       <Card>
         <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-primary)", textWrap: "pretty" }}>
-          The Fussy Baby is an educational pattern recognition tool. It does not diagnose, treat, or replace medical
-          advice.
+          The Fussy Baby is an educational symptom-navigation and observation tool. It does not diagnose, treat, or
+          replace medical advice.
         </div>
         <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-muted)", textWrap: "pretty" }}>
-          Patterns represent observations you've recorded and should not be interpreted as medical conclusions. Always
-          consult your pediatrician about your baby's health.
+          Assessments organize possibilities to explore. Guided check-ins summarize only what you record and should not
+          be interpreted as medical conclusions. Always consult your pediatrician about your baby's health.
         </div>
       </Card>
       <Button
         onClick={() =>
-          dispatch({ type: "completeOnboarding", babyName: babyName.trim(), babyAgeMonths: ageMonths, symptoms })
+          dispatch({ type: "completeOnboarding", babyName: babyName.trim(), babyAgeMonths: ageMonths, feedingMode, symptoms })
         }
       >
         Go to Home

@@ -3,6 +3,7 @@ import { StoreProvider, useStore, IS_DEMO } from "./lib/store.jsx";
 import { NavBar } from "./components/app/NavBar.jsx";
 import { Onboarding } from "./screens/Onboarding.jsx";
 import { Home } from "./screens/Home.jsx";
+import { Navigator } from "./screens/Navigator.jsx";
 import { InvestigationDetail } from "./screens/InvestigationDetail.jsx";
 import { Detective } from "./screens/Detective.jsx";
 import { Patterns } from "./screens/Patterns.jsx";
@@ -11,7 +12,7 @@ import { Article } from "./screens/Article.jsx";
 import { History } from "./screens/History.jsx";
 import { Symptoms } from "./screens/Symptoms.jsx";
 
-const TAB_SCREENS = new Set(["home", "detective", "patterns", "learn", "history"]);
+const TAB_SCREENS = new Set(["home", "navigator", "patterns", "learn", "history"]);
 
 function Shell() {
   const { state } = useStore();
@@ -51,7 +52,13 @@ function Shell() {
   const { screen, params } = route;
   // Which tab is highlighted while on a detail screen
   const activeTab =
-    screen === "investigation" ? "home" : screen === "article" ? "learn" : TAB_SCREENS.has(screen) ? screen : "home";
+    screen === "investigation" || screen === "detective"
+      ? "patterns"
+      : screen === "article"
+        ? "learn"
+        : TAB_SCREENS.has(screen)
+          ? screen
+          : "home";
 
   return (
     <div className="app-frame">
@@ -72,8 +79,9 @@ function Shell() {
       )}
       <div className="app-scroll" ref={scrollRef}>
         {screen === "home" && <Home navigate={navigate} />}
+        {screen === "navigator" && <Navigator navigate={navigate} />}
         {screen === "investigation" && <InvestigationDetail navigate={navigate} goBack={goBack} params={params} />}
-        {screen === "detective" && <Detective navigate={navigate} />}
+        {screen === "detective" && <Detective navigate={navigate} params={params} />}
         {screen === "patterns" && <Patterns navigate={navigate} />}
         {screen === "learn" && <Learn navigate={navigate} params={params} />}
         {screen === "article" && <Article navigate={navigate} goBack={goBack} params={params} />}

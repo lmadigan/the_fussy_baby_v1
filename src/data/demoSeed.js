@@ -5,10 +5,9 @@ import { todayKey } from "../lib/dates.js";
  * the app without entering data. Loaded when the URL contains ?demo.
  * Nothing is persisted in demo mode; refreshing resets the story.
  *
- * The story: Wren, 8 weeks. Three distinct signals are planted so the
- * Pattern Engine demonstrably surfaces different kinds of patterns —
- * feeding mechanics (gulpy feeds, green/foamy stool), daytime rhythm
- * (short naps → rough evenings), and gas — not just one food storyline.
+ * The story: Wren, 8 weeks. The assessment highlights feeding flow first,
+ * with digestive immaturity and overtiredness as possible co-contributors.
+ * A focused investigation is already in progress so Progress has useful data.
  */
 
 function daysAgo(n) {
@@ -22,10 +21,28 @@ export function buildDemoState() {
     profile: {
       babyName: "Wren",
       babyAgeMonths: 2,
+      feedingMode: "Breastfeeding",
+      fussinessTiming: "Right after feeds",
       onboardingSymptoms: ["gulping", "green-stool", "gas", "short-nap", "evening-fussiness"],
       onboarded: true,
     },
     currentInvestigationId: "forceful-letdown",
+    investigations: {
+      "forceful-letdown": { startedAt: daysAgo(6), reviewDays: 7 },
+    },
+    assessment: {
+      createdAt: new Date().toISOString(),
+      symptomIds: ["gulping", "green-stool", "gas", "short-nap", "evening-fussiness"],
+      summary: "Feeding flow looks like the strongest contributor, while digestive immaturity and overtiredness may be adding to harder evenings.",
+      causes: [
+        { playbookId: "forceful-letdown", name: "Forceful Letdown / Oversupply", description: "Fast milk flow can make feeds gulpy and add air.", matching: ["Gulping", "Green stool", "Gas"], notFitting: [], missingInformation: [] },
+        { playbookId: "gas-digestion", name: "Gas & Digestive Immaturity", description: "Gas can build through the day and make evenings harder.", matching: ["Gas", "Evening fussiness"], notFitting: [], missingInformation: [] },
+        { playbookId: "overtiredness", name: "Overtiredness & Overstimulation", description: "Short naps can make evening settling harder.", matching: ["Short nap", "Evening fussiness"], notFitting: [], missingInformation: [] },
+      ],
+      followUpQuestions: [],
+      note: "This organizes possibilities for exploration and is not a diagnosis.",
+      isExample: true,
+    },
     statuses: {
       "feeding-mechanics": "complete",
       "forceful-letdown": "in_progress",
@@ -68,6 +85,7 @@ export function buildDemoState() {
       [daysAgo(6)]: {
         fussiness: 3,
         observations: ["green-stool", "foamy-stool", "gas", "knees-to-chest", "custom:Loud restaurant dinner"],
+        investigationIds: ["forceful-letdown"],
       },
       [daysAgo(5)]: {
         fussiness: 4,
@@ -76,10 +94,12 @@ export function buildDemoState() {
       [daysAgo(4)]: {
         fussiness: 2,
         observations: ["paced-feeding", "upright-after-feed", "calm-day", "content-day"],
+        investigationIds: ["forceful-letdown"],
       },
       [daysAgo(3)]: {
         fussiness: 3,
         observations: ["gulping", "green-stool", "spit-up", "extra-burping", "trouble-settling"],
+        investigationIds: ["forceful-letdown"],
       },
       [daysAgo(2)]: {
         fussiness: 4,
@@ -88,10 +108,12 @@ export function buildDemoState() {
       [daysAgo(1)]: {
         fussiness: 2,
         observations: ["paced-feeding", "long-nap", "content-day"],
+        investigationIds: ["forceful-letdown"],
       },
       [daysAgo(0)]: {
         fussiness: 3,
         observations: ["gulping", "green-stool", "short-nap", "arching-during-feed"],
+        investigationIds: ["forceful-letdown"],
       },
     },
   };

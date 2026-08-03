@@ -9,14 +9,17 @@ import { useStore, commonObservationIds } from "../lib/store.jsx";
 import { CATEGORIES, observationsInCategory, getObservation, extractObservations, redFlagsIn } from "../data/vocabulary.js";
 import { speechSupported, createRecognizer } from "../lib/speech.js";
 import { todayKey, formatLong } from "../lib/dates.js";
+import { getInvestigation } from "../data/playbook.js";
 
 function labelFor(obs) {
   return obs.startsWith("custom:") ? obs.slice(7) : getObservation(obs)?.label ?? obs;
 }
 
 /** Detective — capture today's observations naturally and quickly. Voice is an input method only. */
-export function Detective({ navigate }) {
+export function Detective({ navigate, params = {} }) {
   const { state, dispatch } = useStore();
+  const investigationId = params.investigationId || state.currentInvestigationId;
+  const investigation = investigationId ? getInvestigation(investigationId) : null;
   const [log, setLog] = useState([]); // observation ids + "custom:Label" entries awaiting approval
   const [fussiness, setFussiness] = useState(null);
   const [listening, setListening] = useState(false);
@@ -73,7 +76,7 @@ export function Detective({ navigate }) {
 
   const save = () => {
     if (log.length === 0 && fussiness == null) return;
-    dispatch({ type: "saveDay", dateKey: todayKey(), observations: log, fussiness });
+    dispatch({ type: "saveDay", dateKey: todayKey(), observations: log, fussiness, investigationId });
     setSaved(true);
   };
 
@@ -83,12 +86,11 @@ export function Detective({ navigate }) {
         <Card>
           <SectionLabel>Today's Observation</SectionLabel>
           <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-primary)", textWrap: "pretty" }}>
-            {log.length} observation{log.length === 1 ? "" : "s"} added to your journal. Your possible causes on the home
-            screen update to reflect what you've saved.
+            {log.length} observation{log.length === 1 ? "" : "s"} added to your journal{investigation ? ` for the ${investigation.title} investigation` : ""}.
           </div>
-          <Button onClick={() => navigate("home")}>See your possible causes</Button>
+          <Button onClick={() => navigate("patterns")}>See progress</Button>
           <div style={{ display: "flex", gap: "8px" }}>
-            <Button variant="secondary" onClick={() => navigate("patterns")}>See patterns</Button>
+            <Button variant="secondary" onClick={() => navigate("navigator")}>Update assessment</Button>
             <Button variant="secondary" onClick={() => navigate("history")}>Open journal</Button>
           </div>
         </Card>
@@ -97,7 +99,16 @@ export function Detective({ navigate }) {
   }
 
   return (
-    <Screen eyebrow={formatLong(new Date())} title="Tell me about today">
+    <Screen eyebrow={formatLong(new Date())} title={investigation ? `Check in on ${investigation.title}` : "Tell me about today"}>
+      {investigation && (
+        <Card>
+          <SectionLabel>Today's focused signals</SectionLabel>
+          <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)" }}>Tap only what you noticed today. You can add anything else below.</div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
+            {investigation.trackingSigns.map((id) => <Tag key={id} tone="signal" selected={log.includes(id)} onClick={() => toggleLog(id)}>{getObservation(id)?.label ?? id}</Tag>)}
+          </div>
+        </Card>
+      )}
       <Card>
         <SectionLabel>{canSpeak ? "Tap to speak naturally" : "Describe the day"}</SectionLabel>
         {canSpeak ? (
@@ -268,8 +279,7 @@ export function Detective({ navigate }) {
             {redFlagsIn(log)
               .map((o) => getObservation(o)?.label ?? o)
               .join(", ")}{" "}
-            — observations like these are worth raising with your pediatrician on their own, not because of any
-            pattern. We'll save them to your history but won't use them for pattern matching.
+            — observations like these are worth raising with your pediatrician on their own. We'll save them and include them when they are relevant to a possible contributor.
           </div>
         </Card>
       )}
@@ -278,7 +288,7 @@ export function Detective({ navigate }) {
         onClick={save}
         style={log.length === 0 && fussiness == null ? { opacity: 0.4, cursor: "default" } : undefined}
       >
-        Save Observation
+        Save Check-in
       </Button>
     </Screen>
   );
