@@ -1,11 +1,11 @@
 /**
  * Observation vocabulary — the shared language of the app.
- * Navigator chips, onboarding symptoms, assessment evidence, and focused
- * check-ins all reference observations by `id`.
+ * Navigator chips, onboarding symptoms, and assessment evidence all reference
+ * observations by `id`.
  *
  * `match` terms are used to extract observations from natural speech/text.
  * `redFlag` observations trigger an immediate clinician message. Some also
- * deterministically inform ranking when they map to a supported investigation.
+ * deterministically inform ranking when they map to a supported cause.
  *
  * Ids are stable identifiers: they persist in saved histories, so rename
  * labels freely but never reuse or change an id.

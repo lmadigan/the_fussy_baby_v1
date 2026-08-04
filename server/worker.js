@@ -4,13 +4,14 @@
  */
 
 const PLAYBOOK = [
-  ["feeding-mechanics", "Feeding Mechanics", "Latch, suck, swallow, bottle flow, positioning, and air intake."],
   ["food-protein-sensitivity", "Food Protein Sensitivity", "A cluster of stool, skin, feeding, and reflux-like signs; blood-streaked stool is important supporting evidence."],
   ["silent-reflux", "Silent Reflux", "Discomfort during or after feeds, arching, wet burps, or difficulty lying flat."],
-  ["tongue-tie", "Oral Restrictions (Tongue Tie)", "Clicking, leaking, feeding effort, latch pain, and ineffective milk transfer."],
-  ["forceful-letdown", "Forceful Letdown / Oversupply", "Fast milk flow, gulping, pulling off, air intake, and foamy or green stools."],
-  ["gas-digestion", "Gas & Digestive Immaturity", "Common digestive immaturity, straining, knees to chest, and evening discomfort."],
-  ["overtiredness", "Overtiredness & Overstimulation", "Short naps, busy days, difficulty settling, and evening fussiness."],
+  ["tongue-tie", "Tongue Tie / Oral Restriction", "Clicking, leaking, feeding effort, latch pain, and ineffective milk transfer."],
+  ["forceful-letdown", "Oversupply / Forceful Letdown", "Fast milk flow, gulping, pulling off, air intake, and foamy or green stools."],
+  ["microbiome", "Gut Microbiome Disruption", "Birth, antibiotic, feeding, and digestive context with evolving evidence."],
+  ["digestive-immaturity", "Immature Digestive System", "Common digestive immaturity, straining, knees to chest, and evening discomfort."],
+  ["sensory-overload", "Sensory Overload", "Short naps, busy days, difficulty settling, and evening fussiness."],
+  ["structural-tension", "Structural Tension", "Persistent asymmetry, body tension, head preference, or feeding-position difficulty; evidence for proposed treatments is limited."],
 ];
 const ALLOWED_IDS = new Set(PLAYBOOK.map(([id]) => id));
 const playbookPrompt = PLAYBOOK.map(([id, name, description]) => `- ${id}: ${name}. ${description}`).join("\n");
@@ -27,7 +28,7 @@ Rules:
 - Every item in "matching" must exactly copy one of the reported symptom labels. Never invent evidence.
 - Use "missingInformation" for the few details that would most improve the assessment.
 - Blood-streaked stool is both a safety alert handled by the app and strong evidence for food-protein-sensitivity; include that contributor first when it is reported.
-- Do not prescribe treatment, elimination diets, medication, or a protocol. The app supplies curated investigation steps.
+- Do not prescribe treatment, elimination diets, medication, or a protocol. The free Playbook supplies curated protocol steps.
 - Do not generate emergency instructions; the app handles deterministic safety messaging.
 
 Return ONLY this JSON shape:

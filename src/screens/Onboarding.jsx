@@ -70,8 +70,8 @@ export function Onboarding() {
             Hey — you're doing great. But baby fussiness is no joke.
           </div>
           <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-primary)", textWrap: "pretty" }}>
-            The good news: we're here to help you troubleshoot. Describe what you're seeing and the Symptom Navigator
-            organizes the contributors that fit best, including when more than one may be involved.
+            The free Playbook gives you the common causes and a systematic protocol. Premium Navigator helps organize
+            which contributors fit what you're seeing, including when more than one may be involved.
           </div>
           <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-muted)", textWrap: "pretty" }}>
             It's not a medical diagnostic tool — your pediatrician stays in charge. We just help you show up with
@@ -153,12 +153,12 @@ export function Onboarding() {
       </div>
       <Card>
         <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-primary)", textWrap: "pretty" }}>
-          The Fussy Baby is an educational symptom-navigation and observation tool. It does not diagnose, treat, or
+          The Fussy Baby is an educational symptom-navigation and planning tool. It does not diagnose, treat, or
           replace medical advice.
         </div>
         <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-muted)", textWrap: "pretty" }}>
-          Assessments organize possibilities to explore. Guided check-ins summarize only what you record and should not
-          be interpreted as medical conclusions. Always consult your pediatrician about your baby's health.
+          Assessments organize possibilities to explore. Playbook outcomes should not be interpreted as medical
+          conclusions. Always consult your pediatrician about your baby's health.
         </div>
       </Card>
       <Button

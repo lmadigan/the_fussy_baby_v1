@@ -1,204 +1,239 @@
 /**
- * The Playbook — the source of truth for the investigation methodology.
+ * The free Playbook has two related, but distinct, structures:
+ * - causes explain the common contributors parents may want to understand;
+ * - protocol steps provide a systematic path parents can follow on their own.
  *
- * The Playbook is content; the app is the framework. Every investigation
- * uses the same template (What is it? · Common Signs · Investigation
- * Checklist · Learn More · Status), so adding an investigation is a
- * content update only.
- *
- * `signs` reference observation ids from vocabulary.js. They constrain
- * assessment evidence and define each investigation's focused check-ins.
+ * AI may rank causes. It never invents or rewrites protocol content.
  */
 
-export const STATUSES = [
-  { id: "not_started", label: "Not started", tone: "neutral" },
-  { id: "in_progress", label: "Exploring", tone: "signal" },
-  { id: "complete", label: "Checked", tone: "calm" },
-  { id: "low_priority", label: "Back burner", tone: "neutral" },
-  { id: "revisit", label: "Come back later", tone: "warm" },
-];
-
-export function statusInfo(id) {
-  return STATUSES.find((s) => s.id === id) ?? STATUSES[0];
-}
-
-export const INVESTIGATIONS = [
+export const PROTOCOL_STEPS = [
   {
-    id: "feeding-mechanics",
-    title: "Feeding Mechanics",
-    short: "Small feeding issues can contribute to air intake, gas, spit up, and discomfort.",
-    whatIsIt:
-      "How a baby latches, sucks, and swallows affects how much air they take in during feeds. Small mechanical issues — a shallow latch, a fast-flow nipple, an awkward position — can add up to gas, spit up, and general discomfort. Feeding mechanics are one of the most common and most fixable contributors to fussiness.",
-    signs: ["clicking", "milk-leaking", "gulping", "pulling-off", "gas", "spit-up", "hiccups", "fussy-after-feeds", "short-feeds"],
-    trackingSigns: ["clicking", "milk-leaking", "gulping", "pulling-off", "fussy-after-feeds"],
-    reviewDays: 7,
+    id: "structural-oral",
+    number: 1,
+    track: "core",
+    timing: "Start here",
+    title: "Rule Out Structural & Oral Issues",
+    short: "Check whether latch, suction, bottle flow, or physical feeding mechanics are adding air or discomfort.",
+    reviewAfterDays: 7,
     checklist: [
-      "Watch one full feed and note any clicking, gulping, or milk leaking from the corners of the mouth.",
-      "Check the latch: lips flanged out, chin touching the breast or a deep reach onto the bottle nipple.",
-      "If bottle feeding, try a slower-flow nipple for 2–3 days and note any change.",
-      "Try paced bottle feeding: baby more upright, bottle horizontal, short pauses.",
-      "Burp mid-feed as well as after, and log whether burps come up easily.",
-      "Record fussiness after feeds for several days so patterns can emerge.",
+      "Watch one complete feed and note clicking, leaking, jaw tension, or a shallow latch.",
+      "Confirm that bottle nipple flow is not faster than baby can comfortably manage.",
+      "Try paced bottle feeding or a more supported feeding position when appropriate.",
+      "Ask an IBCLC or feeding-qualified healthcare professional to observe a feed if concerns persist.",
+      "Follow any provider-recommended correction long enough to reach the planned review date.",
     ],
-    learnMore: ["paced-bottle-feeding", "tongue-ties-explained"],
-    related: ["tongue-tie", "forceful-letdown"],
+    reviewQuestion: "After addressing feeding mechanics, is feeding more comfortable and is fussiness improving?",
+    relatedCauseIds: ["tongue-tie", "structural-tension"],
   },
   {
-    id: "food-protein-sensitivity",
-    title: "Food Protein Sensitivity",
-    short: "Some babies react to proteins in milk, soy, or egg through fussiness, stool changes, skin changes, or reflux-like symptoms.",
-    whatIsIt:
-      "A small number of babies are sensitive to food proteins — most commonly cow's milk, and sometimes soy or egg — passed through breast milk or in formula. Reactions usually show up in the gut (mucus or blood-streaked stool, green stool), on the skin (rash, eczema), or as reflux-like discomfort. Investigating means observing carefully and discussing any elimination changes with your pediatrician.",
-    signs: ["dairy", "soy", "egg", "wheat-gluten", "green-stool", "mucus-stool", "blood-stool", "rash", "hives", "eczema", "facial-rash-feeds", "red-ring", "fussy-after-feeds", "spit-up"],
-    trackingSigns: ["mucus-stool", "blood-stool", "eczema", "fussy-after-feeds", "spit-up"],
-    reviewDays: 14,
+    id: "feeding-dynamics",
+    number: 2,
+    track: "core",
+    timing: "Next quick check",
+    title: "Investigate Feeding Dynamics",
+    short: "Fast flow and oversupply can resemble reflux or food sensitivity and are often quicker to explore.",
+    reviewAfterDays: 7,
     checklist: [
-      "Log what dairy, soy, and egg entered baby's day (directly, via formula, or via a breastfeeding parent's diet).",
-      "Photograph and log any unusual stool — color, mucus, streaks.",
-      "Note skin changes: new rashes, eczema flares, redness around the mouth.",
-      "Track whether fussiness clusters in the hours after feeds.",
-      "Bring 1–2 weeks of observations to your pediatrician before changing anyone's diet.",
-      "If an elimination is recommended, log it as an intervention so changes can be compared.",
+      "Look for coughing, choking, gulping, pulling off, or distress in the first minutes of feeds.",
+      "For nursing, try a laid-back position that may make a fast letdown easier to manage.",
+      "For bottles, use paced feeding and confirm an appropriate nipple flow with a feeding professional.",
+      "Notice whether green or foamy stools occur alongside fast, difficult feeds.",
+      "Discuss supply-management changes with an IBCLC before making changes that could affect milk supply.",
     ],
-    learnMore: ["what-does-green-stool-mean"],
-    related: ["silent-reflux", "gas-digestion"],
+    reviewQuestion: "After making the recommended feeding adjustment, are feeds calmer and is post-feed discomfort improving?",
+    relatedCauseIds: ["forceful-letdown"],
+  },
+  {
+    id: "food-protein",
+    number: 3,
+    track: "core",
+    timing: "Defined review period",
+    title: "Investigate Food Protein Sensitivity",
+    short: "Use a clinician-supported feeding or elimination protocol, then review the original symptom cluster after enough time has passed.",
+    reviewAfterDays: 14,
+    checklist: [
+      "Contact a healthcare professional promptly if blood-streaked stool or another red flag is present.",
+      "Review the stool, skin, feeding, and reflux-like symptoms that led to this investigation.",
+      "Agree on one defined feeding or elimination protocol with a pediatrician or dietitian before starting.",
+      "Record the protocol start date and avoid adding unrelated dietary or formula changes during the review period.",
+      "Follow the agreed protocol consistently until the outcome review unless a clinician advises otherwise.",
+      "Use a clinician-guided reintroduction or next step when appropriate; improvement alone is not a diagnosis.",
+    ],
+    reviewQuestion: "After the agreed review period, are the original stool, skin, feeding, and fussiness symptoms clearly better?",
+    relatedCauseIds: ["food-protein-sensitivity"],
+  },
+  {
+    id: "reflux",
+    number: 4,
+    track: "core",
+    timing: "If symptoms persist",
+    title: "Investigate Silent Reflux",
+    short: "Bring a specific symptom history to a clinician and test only safe, provider-supported feeding adjustments.",
+    reviewAfterDays: 7,
+    checklist: [
+      "Write down the dominant symptoms and when they occur relative to feeds.",
+      "Keep baby upright while awake after feeds when practical.",
+      "Use a firm, flat, non-inclined sleep surface and place baby on their back for sleep.",
+      "Discuss feeding volume, frequency, and technique with a pediatrician or feeding professional.",
+      "Ask specifically about reflux if arching, feeding distress, or difficulty lying flat persists.",
+      "Follow the clinician's plan until its stated review point before interpreting the outcome.",
+    ],
+    reviewQuestion: "After following the agreed reflux plan, are feeding comfort, settling, or sleep-related symptoms improving?",
+    relatedCauseIds: ["silent-reflux"],
+  },
+  {
+    id: "microbiome-support",
+    number: 5,
+    track: "parallel",
+    timing: "Parallel support",
+    title: "Support Digestive Health",
+    short: "Discuss digestive and microbiome support alongside the core protocol rather than waiting for every other step.",
+    reviewAfterDays: 14,
+    checklist: [
+      "Share relevant birth, antibiotic, feeding, stool, and growth history with the baby's clinician.",
+      "Discuss whether any probiotic or feeding support is appropriate for this baby before starting it.",
+      "Avoid starting multiple new products at once, so the outcome remains interpretable.",
+      "Follow the selected plan until its recommended review point.",
+    ],
+    reviewQuestion: "After the planned support period, are digestive comfort and overall fussiness improving?",
+    relatedCauseIds: ["microbiome", "digestive-immaturity"],
+  },
+  {
+    id: "sensory-support",
+    number: 6,
+    track: "ongoing",
+    timing: "Available anytime",
+    title: "Sensory & Environmental Support",
+    short: "Use calm, low-risk comfort measures while investigating contributors that may be driving the fussiness.",
+    reviewAfterDays: 7,
+    checklist: [
+      "Reduce stimulation during the hardest part of the day with lower light, fewer transitions, and a quieter environment.",
+      "Try a consistent calming sequence such as holding, shushing, rhythmic movement, and a pacifier when appropriate.",
+      "Use babywearing only with a clear airway and according to the carrier's safety instructions.",
+      "Keep white noise at a low volume and away from the baby's sleep space.",
+      "Continue safe sleep practices for every sleep, even when comfort measures happen beforehand.",
+    ],
+    reviewQuestion: "Does the consistent calming routine make the hardest periods more manageable?",
+    relatedCauseIds: ["sensory-overload"],
+  },
+];
+
+export const CAUSES = [
+  {
+    id: "food-protein-sensitivity",
+    rank: 1,
+    title: "Food Protein Sensitivity",
+    evidenceLabel: "Commonly discussed",
+    short: "A stool, skin, feeding, and reflux-like symptom cluster can sometimes point toward a food protein response.",
+    whatIsIt: "Food protein sensitivity can overlap with reflux and ordinary newborn symptoms. Blood or mucus in stool, eczema, and persistent feeding discomfort make the full cluster more informative than any single sign.",
+    signs: ["green-stool", "mucus-stool", "blood-stool", "eczema", "rash", "diaper-rash", "fussy-after-feeds", "spit-up"],
+    protocolStepId: "food-protein",
+    related: ["silent-reflux", "microbiome"],
   },
   {
     id: "silent-reflux",
+    rank: 2,
     title: "Silent Reflux",
-    short: "Reflux can show up as discomfort during or after feeds, even without obvious spit up.",
-    whatIsIt:
-      "All babies reflux — milk comes partway up and usually back down. In silent reflux, the milk comes up but isn't spit out, so the discomfort is there without the visible spit up. It often looks like arching, crying during or after feeds, congestion, and trouble lying flat. Most reflux improves with time; the investigation is about understanding what makes your baby comfortable.",
-    signs: ["arching-during-feed", "fussy-after-feeds", "congestion", "swallowing-sounds", "wet-burps", "sleeps-upright-only", "trouble-settling", "hiccups", "bottle-refusal", "night-waking"],
-    trackingSigns: ["arching-during-feed", "fussy-after-feeds", "wet-burps", "sleeps-upright-only", "trouble-settling"],
-    reviewDays: 7,
-    checklist: [
-      "Note when fussiness happens relative to feeds — during, right after, or 20–30 minutes later.",
-      "Listen for wet swallowing, gagging, or gurgling sounds between feeds.",
-      "Keep baby upright for 20–30 minutes after feeds for a few days and log any change.",
-      "Log naps: does baby settle better upright (carrier, arms) than flat?",
-      "Track congestion that isn't explained by a cold.",
-      "Share the observation history with your pediatrician if discomfort persists.",
-    ],
-    learnMore: ["silent-reflux-explained"],
-    related: ["feeding-mechanics", "food-protein-sensitivity"],
+    evidenceLabel: "Commonly discussed",
+    short: "Reflux can appear as discomfort during or after feeds even when very little milk is visibly spit up.",
+    whatIsIt: "Reflux-like discomfort may include arching, wet burps, feeding distress, congestion, or difficulty settling flat. These signs overlap with feeding mechanics and food protein sensitivity, so context matters.",
+    signs: ["arching-during-feed", "fussy-after-feeds", "wet-burps", "congestion", "sleeps-upright-only", "trouble-settling", "hiccups"],
+    protocolStepId: "reflux",
+    related: ["food-protein-sensitivity", "tongue-tie"],
   },
   {
     id: "tongue-tie",
-    title: "Oral Restrictions (Tongue Tie)",
-    short: "A restricted tongue or lip can make feeding harder work — clicking, leaking, and extra air are common signs.",
-    whatIsIt:
-      "Some babies have a band of tissue under the tongue or upper lip that restricts movement. When the tongue can't move freely, the latch is shallower and the seal is weaker — feeds become louder (clicking), messier (leaking), longer, and gassier. Only a trained provider can assess a true restriction; your job in this investigation is to gather good observations.",
-    signs: ["clicking", "milk-leaking", "pulling-off", "short-feeds", "frequent-feeds", "latch-pain", "gas", "fussy-after-feeds"],
-    trackingSigns: ["clicking", "milk-leaking", "short-feeds", "latch-pain", "fussy-after-feeds"],
-    reviewDays: 7,
-    checklist: [
-      "Record feed sounds for a few days: clicking, smacking, or lots of air swallowing.",
-      "Note whether milk leaks from the corners of baby's mouth during feeds.",
-      "Log feed lengths — very short or very long feeds are both worth noting.",
-      "If nursing: note nipple pain or lipstick-shaped nipples after feeds.",
-      "Ask a lactation consultant or pediatric provider for an oral assessment.",
-    ],
-    learnMore: ["tongue-ties-explained"],
-    related: ["feeding-mechanics"],
+    rank: 3,
+    title: "Tongue Tie / Oral Restriction",
+    evidenceLabel: "Commonly discussed",
+    short: "Restricted oral movement may make feeding harder and contribute to clicking, leaking, or extra air intake.",
+    whatIsIt: "A functional feeding assessment matters more than appearance alone. Not every clicking feed is a tie, and the app cannot confirm an oral restriction.",
+    signs: ["clicking", "milk-leaking", "short-feeds", "frequent-feeds", "latch-pain", "gas", "fussy-after-feeds"],
+    protocolStepId: "structural-oral",
+    related: ["structural-tension", "forceful-letdown"],
   },
   {
     id: "forceful-letdown",
-    title: "Forceful Letdown / Oversupply",
-    short: "When milk flows faster than baby can comfortably swallow, feeds get gulpy, sputtery, and gassy.",
-    whatIsIt:
-      "Some parents' milk lets down fast enough that baby has to gulp to keep up — swallowing air along the way. Babies often cough, sputter, pull off at letdown, and then deal with gas and green-ish stools from getting proportionally more foremilk. It's very manageable once identified.",
-    signs: ["gulping", "pulling-off", "green-stool", "foamy-stool", "gas", "spit-up", "explosive-stool", "fussy-after-feeds"],
-    trackingSigns: ["gulping", "pulling-off", "foamy-stool", "gas", "fussy-after-feeds"],
-    reviewDays: 7,
-    checklist: [
-      "Note what happens in the first 2 minutes of a feed — coughing, gulping, or pulling off suggests fast flow.",
-      "Try a laid-back nursing position for a few feeds so gravity slows the flow.",
-      "Log stool color for a week — consistently green, frothy stool is a useful observation.",
-      "If pumping before feeds or block feeding is suggested by a lactation consultant, log it as an intervention.",
-      "Track whether gas and fussiness ease as flow-management changes are made.",
-    ],
-    learnMore: ["forceful-letdown-explained", "what-does-green-stool-mean"],
-    related: ["feeding-mechanics", "gas-digestion"],
+    rank: 4,
+    title: "Oversupply / Forceful Letdown",
+    evidenceLabel: "Commonly discussed",
+    short: "Fast milk flow can make feeds gulping, sputtery, and uncomfortable and can overlap with other digestive signs.",
+    whatIsIt: "A baby managing fast flow may cough, pull away, swallow air, or have green or foamy stools. This contributor is most relevant to breastfeeding and should be interpreted in feeding context.",
+    signs: ["gulping", "pulling-off", "green-stool", "foamy-stool", "gas", "explosive-stool", "fussy-after-feeds"],
+    protocolStepId: "feeding-dynamics",
+    related: ["tongue-tie", "food-protein-sensitivity"],
   },
   {
-    id: "gas-digestion",
-    title: "Gas & Digestive Immaturity",
-    short: "Young digestive systems are still learning. Gas that builds during the day often peaks as evening fussiness.",
-    whatIsIt:
-      "A newborn's gut is brand new, and moving gas through it takes real effort — grunting, squirming, and pulling knees to chest are common. Gas builds over the day, which is one reason evening fussiness (the 'witching hour') is so widespread. The investigation is about spotting what makes gas better or worse for your baby.",
-    signs: ["gas", "knees-to-chest", "straining", "red-face-grunting", "evening-fussiness", "explosive-stool", "trouble-settling", "inconsolable", "hiccups"],
-    trackingSigns: ["gas", "knees-to-chest", "straining", "evening-fussiness", "trouble-settling"],
-    reviewDays: 7,
-    checklist: [
-      "Log gas alongside the time of day it's worst.",
-      "Try bicycle legs and clockwise tummy massage between feeds; log as an intervention.",
-      "Burp thoroughly and log how easily burps come up.",
-      "Note whether gassy days follow specific feeds, foods, or busy days.",
-      "Track evening fussiness separately from daytime fussiness for a week.",
-    ],
-    learnMore: ["the-witching-hour"],
-    related: ["feeding-mechanics", "food-protein-sensitivity"],
+    id: "microbiome",
+    rank: 5,
+    title: "Gut Microbiome Disruption",
+    evidenceLabel: "Developing evidence",
+    short: "Birth, antibiotics, feeding history, and the developing gut microbiome may influence digestive comfort.",
+    whatIsIt: "Microbiome research is evolving, and symptoms such as gas or crying are non-specific. Product or probiotic decisions should be made with the baby's healthcare professional.",
+    signs: ["gas", "explosive-stool", "antibiotics", "evening-fussiness", "trouble-settling"],
+    protocolStepId: "microbiome-support",
+    related: ["digestive-immaturity", "food-protein-sensitivity"],
   },
   {
-    id: "overtiredness",
-    title: "Overtiredness & Overstimulation",
-    short: "Fussy evenings often trace back to the day: short naps and big stimulation are a common combination.",
-    whatIsIt:
-      "Babies have small windows of comfortable wakefulness. When naps run short or the day runs loud, stress hormones build and babies get wired-but-exhausted — harder to settle, fussier, and quicker to cry. This investigation connects daytime rhythm to evening mood.",
+    id: "digestive-immaturity",
+    rank: 6,
+    title: "Immature Digestive System",
+    evidenceLabel: "Developmental",
+    short: "Young babies may grunt, strain, and struggle with gas as digestion and coordination mature.",
+    whatIsIt: "Digestive immaturity is common and often improves with development, but it should not automatically be used to dismiss persistent pain, poor feeding, growth concerns, or red flags.",
+    signs: ["gas", "knees-to-chest", "straining", "red-face-grunting", "evening-fussiness", "hiccups"],
+    protocolStepId: "microbiome-support",
+    related: ["microbiome", "sensory-overload"],
+  },
+  {
+    id: "sensory-overload",
+    rank: 7,
+    title: "Sensory Overload",
+    evidenceLabel: "Commonly discussed",
+    short: "Short naps and a busy day can build into difficult settling and evening fussiness.",
+    whatIsIt: "Some babies reach their stimulation limit quickly. A quieter rhythm may reduce the intensity of hard periods even when another feeding or digestive contributor is also present.",
     signs: ["short-nap", "high-stimulation", "new-place", "evening-fussiness", "trouble-settling", "night-waking", "inconsolable"],
-    trackingSigns: ["short-nap", "high-stimulation", "evening-fussiness", "trouble-settling", "night-waking"],
-    reviewDays: 7,
-    checklist: [
-      "Log naps every day for a week — even rough lengths help.",
-      "Note high-stimulation days: visitors, errands, travel, loud environments.",
-      "Compare fussiness ratings on short-nap days versus good-nap days.",
-      "Try one deliberately calm day and log how the evening goes.",
-      "Watch for early tired cues (staring off, red eyebrows, jerky movements) and log when you catch them.",
-    ],
-    learnMore: ["the-witching-hour"],
-    related: ["gas-digestion"],
+    protocolStepId: "sensory-support",
+    related: ["digestive-immaturity"],
+  },
+  {
+    id: "structural-tension",
+    rank: 8,
+    title: "Structural Tension",
+    evidenceLabel: "Limited evidence",
+    short: "Head preference, body tension, or feeding asymmetry may warrant a conventional clinical assessment.",
+    whatIsIt: "Some parents notice persistent asymmetry after birth. Because evidence for many proposed treatments is limited, the useful first step is evaluation by a pediatrician or appropriately licensed feeding or physical-therapy professional.",
+    signs: ["head-side-preference", "body-tension", "pulling-off", "latch-pain", "fussy-during-feeds"],
+    protocolStepId: "structural-oral",
+    related: ["tongue-tie"],
   },
 ];
 
-const byId = new Map(INVESTIGATIONS.map((i) => [i.id, i]));
+const causeById = new Map(CAUSES.map((cause) => [cause.id, cause]));
+const protocolById = new Map(PROTOCOL_STEPS.map((step) => [step.id, step]));
 
-export function getInvestigation(id) {
-  return byId.get(id);
+export function getCause(id) {
+  return causeById.get(id);
 }
 
-/**
- * How many investigations list each sign. A sign that points at only one
- * cause (eczema → food protein) is far more discriminating than one shared
- * across many (spit-up appears under feeding mechanics, food protein, and
- * forceful letdown). We use this to weight matches by specificity so a
- * single high-signal sign outranks a pile of generic ones — the same reason
- * a differential like DxGPT lands on cow's-milk protein over letdown.
- */
-const signFrequency = (() => {
-  const freq = new Map();
-  for (const inv of INVESTIGATIONS)
-    for (const s of inv.signs) freq.set(s, (freq.get(s) ?? 0) + 1);
-  return freq;
-})();
-
-/** A sign's weight: 1.0 if unique to one cause, less as it gets more generic. */
-export function signWeight(sign) {
-  return 1 / (signFrequency.get(sign) ?? 1);
+export function getProtocolStep(id) {
+  return protocolById.get(id);
 }
 
-/**
- * Investigations whose signs overlap the given observation ids. Each result
- * carries the raw overlap (`matches`) for display and a specificity-weighted
- * `score` for ranking. Sorted strongest-first by score, then by overlap count.
- */
-export function matchInvestigations(observationIds) {
-  const set = new Set(observationIds);
-  return INVESTIGATIONS.map((inv) => {
-    const matches = inv.signs.filter((s) => set.has(s));
-    const score = matches.reduce((sum, s) => sum + signWeight(s), 0);
-    return { investigation: inv, matches, score };
-  })
-    .filter((m) => m.matches.length > 0)
-    .sort((a, b) => b.score - a.score || b.matches.length - a.matches.length);
+export function protocolForCause(causeId) {
+  const cause = getCause(causeId);
+  return cause ? getProtocolStep(cause.protocolStepId) : null;
+}
+
+export function protocolPosition(step) {
+  if (!step) return "Playbook";
+  if (step.track === "parallel") return `Step ${step.number} · Parallel support`;
+  if (step.track === "ongoing") return `Step ${step.number} · Ongoing support`;
+  return `Step ${step.number} of 4 core steps`;
+}
+
+export function reviewDate(startedAt, reviewAfterDays) {
+  const date = new Date(`${startedAt}T12:00:00`);
+  date.setDate(date.getDate() + reviewAfterDays);
+  return date.toISOString().slice(0, 10);
 }

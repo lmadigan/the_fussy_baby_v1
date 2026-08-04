@@ -37,5 +37,5 @@ Open the Symptom Navigator, run an assessment in example mode, and tap
 - It does **not** handle red flags. Those are matched in the app itself,
   deterministically, so the “call your pediatrician” nudge never depends on a
   model response.
-- It does **not** write investigation protocols. The model can select only from
-  the seven Playbook contributors; curated app content supplies every next step.
+- It does **not** write protocol content. The model can select only from the
+  eight published causes; trusted app code maps each cause to the free Playbook.

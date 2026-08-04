@@ -7,10 +7,10 @@
  */
 
 import { getObservation, isRedFlag } from "../data/vocabulary.js";
-import { getInvestigation, INVESTIGATIONS } from "../data/playbook.js";
+import { CAUSES, getCause } from "../data/playbook.js";
 
 const ENDPOINT_KEY = "fussy-baby-differential-endpoint";
-const PLAYBOOK_IDS = new Set(INVESTIGATIONS.map((item) => item.id));
+const PLAYBOOK_IDS = new Set(CAUSES.map((item) => item.id));
 
 export function getEndpoint() {
   try {
@@ -49,9 +49,9 @@ export function redFlagLabels(ids) {
 export function matchPlaybookId(causeName) {
   if (!causeName) return null;
   const name = causeName.toLowerCase();
-  for (const investigation of INVESTIGATIONS) {
-    const title = investigation.title.toLowerCase();
-    if (name.includes(title) || title.includes(name)) return investigation.id;
+  for (const cause of CAUSES) {
+    const title = cause.title.toLowerCase();
+    if (name.includes(title) || title.includes(name)) return cause.id;
   }
   const keywords = [
     ["reflux", "silent-reflux"],
@@ -60,11 +60,14 @@ export function matchPlaybookId(causeName) {
     ["allerg", "food-protein-sensitivity"],
     ["letdown", "forceful-letdown"],
     ["oversupply", "forceful-letdown"],
-    ["latch", "feeding-mechanics"],
+    ["latch", "tongue-tie"],
     ["tongue", "tongue-tie"],
-    ["gas", "gas-digestion"],
-    ["overtired", "overtiredness"],
-    ["overstimul", "overtiredness"],
+    ["microbiome", "microbiome"],
+    ["digestive", "digestive-immaturity"],
+    ["gas", "digestive-immaturity"],
+    ["overtired", "sensory-overload"],
+    ["overstimul", "sensory-overload"],
+    ["structural", "structural-tension"],
   ];
   return keywords.find(([keyword]) => name.includes(keyword))?.[1] ?? null;
 }
@@ -84,7 +87,7 @@ function normalize(raw, symptomIds) {
     const playbookId = PLAYBOOK_IDS.has(requestedId) ? requestedId : matchPlaybookId(candidate?.name);
     if (!playbookId || seen.has(playbookId)) continue;
     seen.add(playbookId);
-    const playbook = getInvestigation(playbookId);
+    const playbook = getCause(playbookId);
     causes.push({
       playbookId,
       name: playbook.title,
@@ -101,7 +104,7 @@ function normalize(raw, symptomIds) {
   // Blood-streaked stool is both an immediate safety alert and meaningful
   // evidence for the food-protein-sensitivity investigation.
   if (symptomIds.includes("blood-stool")) {
-    const playbook = getInvestigation("food-protein-sensitivity");
+    const playbook = getCause("food-protein-sensitivity");
     const matching = playbook.signs
       .filter((id) => symptomIds.includes(id))
       .map((id) => getObservation(id)?.label)
@@ -199,7 +202,7 @@ function exampleDifferential(labels) {
   }
   if (causes.length === 0) {
     causes.push({
-      playbookId: "gas-digestion",
+      playbookId: "digestive-immaturity",
       description: "Young babies often work hard to move gas through a still-maturing digestive system.",
       matching: labels,
       notFitting: ["Gas is common and non-specific, so it should not be treated as a complete explanation without a clearer pattern."],
@@ -208,7 +211,7 @@ function exampleDifferential(labels) {
   }
 
   return {
-    summary: "This symptom cluster may have more than one contributor. Start with the strongest fit, then use a short investigation to see whether the pattern holds.",
+    summary: "This symptom cluster may have more than one contributor. The strongest match shows where personalized evidence intersects with the free Playbook.",
     causes: causes.slice(0, 3),
     followUpQuestions: ["When is fussiness worst relative to feeds?", "Have the stool or skin changes been consistent across several days?"],
     note: "This is an example assessment for exploration, not a diagnosis. Connect the live model endpoint for a personalized read.",

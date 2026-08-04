@@ -9,7 +9,6 @@ import { DifferentialCard } from "../components/app/DifferentialCard.jsx";
 import { useStore } from "../lib/store.jsx";
 import { useDifferential } from "../lib/useDifferential.js";
 import { extractObservations, getObservation, redFlagsIn } from "../data/vocabulary.js";
-import { getInvestigation } from "../data/playbook.js";
 import { createRecognizer, speechSupported } from "../lib/speech.js";
 import { hasEndpoint, setEndpoint } from "../lib/differential.js";
 
@@ -72,16 +71,28 @@ export function Navigator({ navigate }) {
     }
   };
 
-  const startInvestigation = (id) => {
-    const investigation = getInvestigation(id);
-    dispatch({ type: "startInvestigation", investigationId: id, reviewDays: investigation?.reviewDays ?? 7 });
-    navigate("investigation", { id });
-  };
-
   const connectModel = () => {
     const url = window.prompt("Paste your deployed assessment endpoint URL. Leave blank to disconnect.", "");
     if (url !== null) setEndpoint(url);
   };
+
+  if (state.membership !== "premium") {
+    return (
+      <Screen eyebrow="Premium · $5/month" title="AI Symptom Navigator">
+        <Card style={{ borderColor: "var(--accent-signal)" }}>
+          <SectionLabel>Personalized starting point</SectionLabel>
+          <div style={{ fontSize: "var(--type-title-size)", fontWeight: 700, color: "var(--text-primary)" }}>Understand what fits best</div>
+          <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.6, color: "var(--text-muted)" }}>Describe what you are seeing and receive one strongest match, possible co-contributors, and the corresponding step in the free Playbook.</div>
+          <Button onClick={() => dispatch({ type: "activateMembership" })}>Unlock Navigator · $5/month</Button>
+        </Card>
+        <Card>
+          <SectionLabel>Always free</SectionLabel>
+          <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.6, color: "var(--text-primary)" }}>Browse all eight causes and follow every protocol checklist without a subscription.</div>
+          <Button variant="secondary" onClick={() => navigate("playbook")}>Open Playbook</Button>
+        </Card>
+      </Screen>
+    );
+  }
 
   return (
     <Screen eyebrow="AI Symptom Navigator" title="What are you noticing?">
@@ -146,7 +157,7 @@ export function Navigator({ navigate }) {
         <>
           <SectionLabel right={assessment.result.isExample ? "Example mode" : null}>Possible contributors</SectionLabel>
           {assessment.result.summary && <div style={{ padding: "0 4px", fontSize: "var(--type-body-size)", lineHeight: 1.6, color: "var(--text-primary)" }}>{assessment.result.summary}</div>}
-          {assessment.result.causes.map((cause, index) => <DifferentialCard key={cause.playbookId} rank={index + 1} cause={cause} onExplore={startInvestigation} />)}
+          {assessment.result.causes.map((cause, index) => <DifferentialCard key={cause.playbookId} rank={index + 1} cause={cause} onExplore={(id) => navigate("cause", { id })} />)}
           {assessment.result.followUpQuestions.length > 0 && (
             <Card>
               <SectionLabel>Questions that would make this clearer</SectionLabel>

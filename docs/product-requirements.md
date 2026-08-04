@@ -1,440 +1,474 @@
-# The Fussy Baby PRD
+# The Fussy Baby Product Requirements
 
-Version: MVP v2 - AI Symptom Navigator and Guided Investigations
+Version: MVP v3 - Free Playbook + Premium AI Navigator
 
-## 1. Product Decision
+## 1. Product Definition
 
-The Fussy Baby is an AI-first symptom navigation product with an optional longitudinal investigation layer.
+The Fussy Baby helps a parent move from an overwhelming symptom cluster to a systematic investigation plan.
 
-The first job is immediate: help a parent describe what they are seeing, recognize observations they may not know are meaningful, and understand the most plausible contributors to their baby's fussiness. The second job is longitudinal: help the parent investigate one contributor with a short, focused plan and learn what changes over time.
+The product has two complementary layers:
 
-The product is not a general baby tracker and is not a deterministic symptom-scoring tool. AI interprets the full picture and explains the strongest matches. Deterministic product rules handle red flags, allowed Playbook topics, output validation, and state transitions.
+- **The Playbook:** a free educational cause library and step-by-step protocol that any parent can use independently.
+- **AI Symptom Navigator:** a paid assessment that identifies the strongest matching contributor, allows for co-contributors, explains the evidence, and maps each result into the Playbook.
 
-## 2. Product Overview
+The product does not diagnose, prescribe medication, or replace a healthcare professional. It organizes possibilities and provides controlled educational protocols.
 
-### Vision
+## 2. Product Promise
 
-Give parents a calm, practical way to move from "something is wrong" to "here is what may be contributing, why it fits, and what I can investigate next."
+### Free promise
 
-### Core promise
+Understand the most common contributors discussed in the Fussy Baby Playbook and follow a complete, systematic protocol without paying or maintaining a daily journal.
 
-- Immediate value without requiring days of tracking.
-- Recognition over recall: show parents observations they may not know count.
-- More than one contributor may be relevant at the same time.
-- Every suggested contributor explains what fits, what is less specific, and what information would make the picture clearer.
-- Tracking is requested only when it can answer a specific investigation question.
-- Red flags trigger the same immediate contact-healthcare-professional message and may also map to relevant Playbook investigations.
+### Paid promise
 
-### Product principles
+Reduce uncertainty about where to begin. Describe what is happening and receive a personalized contributor map showing what fits best and where each contributor appears in the Playbook.
 
-- AI leads interpretation; the Playbook constrains what the product can recommend.
-- Surface contributors, not a single all-or-nothing answer.
-- Give the parent a useful next step in the first session.
-- Ask fewer, better questions.
-- Never require a broad daily diary.
-- Show the basis for every result.
-- Preserve parent control over what is saved.
-- Use plain, warm language suitable for a tired parent.
+### Product statement
 
-## 3. Target User and Jobs
+The Playbook gives you the complete process. Navigator helps you understand where your baby may fit within it.
 
-### Primary user
+## 3. Source Methodology
 
-A parent or caregiver of a baby approximately 0-6 months old who is dealing with persistent fussiness, feeding discomfort, stool changes, skin symptoms, sleep disruption, or several overlapping concerns.
+The original Fussy Baby Playbook provides two related structures that must remain distinct.
 
-### Core jobs
+### Ranked cause library
 
-1. Help me name what I am seeing.
-2. Tell me what combination of contributors best fits the whole picture.
-3. Explain why each contributor fits and what does not fit.
-4. Tell me what to investigate first without pretending only one thing can be happening.
-5. Give me a short plan I can actually follow.
-6. Help me see whether anything changed.
-7. Give me a useful summary to bring to a healthcare professional.
+The Playbook describes eight contributors in the order they appear most frequently in its source material and parent discussions:
 
-## 4. Product Loop
+1. Food Protein Sensitivity.
+2. Silent Reflux.
+3. Tongue Tie or Oral Restriction.
+4. Oversupply or Forceful Letdown.
+5. Gut Microbiome Disruption.
+6. Immature Digestive System.
+7. Sensory Overload.
+8. Structural Tension.
 
-The core loop is:
+This order is educational. It is not a clinical prevalence estimate or a personalized probability.
 
-1. Describe what is happening.
-2. Confirm the observations the app recognized.
-3. Answer a few high-value context questions.
-4. Review the contributor map.
-5. Choose a guided investigation.
-6. Complete short, targeted check-ins.
-7. Review what changed and decide what to investigate next.
+### Systematic protocol
 
-Parents may stop after the contributor map. Tracking is optional and should feel earned by the value of the initial assessment.
+The Playbook also provides a six-phase protocol:
 
-## 5. Information Architecture
+1. Rule Out Structural and Oral Issues.
+2. Investigate Feeding Dynamics.
+3. Investigate Food Protein Sensitivity.
+4. Investigate Silent Reflux.
+5. Support Digestive Health as a parallel track.
+6. Use Sensory and Environmental Support as an ongoing track.
 
-### Primary navigation
+The eight causes do not map one-to-one to the six phases. The data model must explicitly connect each cause to its relevant protocol step.
 
-- Home: current picture, active investigation, and next action.
-- Navigator: symptom intake and AI contributor map.
-- Progress: focused evidence from the active investigation.
-- Guides: Playbook investigations and educational content.
-- Journal: approved observations and check-ins.
+### Content governance
 
-### Supporting screens
-
-- Investigation Detail
-- Targeted Check-in
-- Symptom Library
-- Article Detail
-
-## 6. AI Symptom Navigator
-
-### Purpose
-
-Provide an immediate, infant-specific interpretation of the parent's approved observations without requiring historical data.
-
-### Inputs
-
-- Baby age.
-- Feeding mode when provided: breast, formula, or both.
-- Parent's free-text or voice description for the current assessment.
-- Parent-approved observation chips.
-- Fussiness timing when provided: during feeds, after feeds, evening, or unpredictable.
-- Relevant saved observations and active investigation context.
-- Follow-up information entered during refinement.
-
-Raw voice audio is never stored. Free-text assessment descriptions are processed for the current assessment and are not retained after approved observations and structured context are saved.
-
-### Intake behavior
-
-- The parent can speak, type, browse categories, or tap familiar examples.
-- The app extracts possible observations and asks the parent to confirm them.
-- The full vocabulary remains available because many parents do not know that clicking, milk leaking, mucus, foamy stool, arching, or short naps may be relevant.
-- Red flags are evaluated immediately, before the model result is shown.
-- The assessment can run with a small number of observations, but the output must identify missing information rather than manufacture certainty.
-
-### Contributor map output
-
-Return one strongest match and up to two additional contributors. Contributors are not mutually exclusive.
-
-Each result includes:
-
-- Contributor name.
-- Plain-language description.
-- Why it fits this baby's reported observations.
-- Which observations are common or less specific.
-- What information would make the assessment clearer.
-- A link to the relevant Playbook investigation when one exists.
-
-Preferred language:
-
-- "The strongest match is..."
-- "This could explain..."
-- "This may be contributing alongside..."
-- "These signs also overlap with..."
-
-Do not use:
-
-- "Your baby definitely has..."
-- "This rules out..."
-- A numeric AI confidence percentage.
-- A treatment claim generated outside the Playbook.
-
-### Follow-up behavior
-
-The model may return up to three short follow-up questions when the answer could materially change the contributor map. Questions should focus on timing, feeding mode, stool appearance, skin changes, growth/feeding adequacy, and whether symptoms occur together.
-
-The parent may answer and request a refreshed assessment. The app stores the latest structured result, not a conversation transcript.
-
-## 7. Contributor Model
-
-### MVP Playbook contributors
-
-- Feeding Mechanics
-- Food Protein Sensitivity
-- Silent Reflux
-- Oral Restrictions (Tongue Tie)
-- Forceful Letdown / Oversupply
-- Gas and Digestive Immaturity
-- Overtiredness and Overstimulation
-
-The model may describe overlap among these contributors. It should prefer Playbook contributors so the result can lead directly into a guided investigation.
-
-### Ranking
-
-The model ranks contributors by how well they fit the complete approved input, not by counting raw symptom overlap. Specific observations should influence the explanation more than generic observations. Spit-up, gas, and fussiness are common and should not overpower more distinctive observations such as blood or mucus in stool, eczema, clicking, milk leaking, arching during feeds, or consistently foamy stool.
-
-The app preserves the model order after validating the output. It does not calculate a second likelihood score.
-
-### Coexisting contributors
-
-The result should explicitly allow more than one contributor. When the symptom picture supports multiple explanations, the app should explain which observations each contributor may account for and recommend a sensible investigation sequence.
-
-## 8. Guided Investigations
-
-### Purpose
-
-Turn a plausible contributor into a short, manageable learning plan.
-
-### Starting an investigation
-
-From any contributor card, the parent can open the Playbook topic and choose "Start this investigation." Starting an investigation records its start date, makes it the active investigation, and configures the targeted check-in.
-
-Only one investigation is active at a time for MVP. Other contributors remain visible as possible co-contributors and can be revisited next.
-
-### Investigation plan
-
-Each Playbook investigation contains:
-
-- What it is.
-- Why it may fit the parent's observations.
-- Common signs.
-- Three to five observations to track.
-- A sequence of practical investigation steps.
-- What change would be informative.
-- When to reassess.
-- Related contributors.
-
-AI selects and explains the relevant plan. The plan steps themselves come from the curated Playbook; the model does not invent a new treatment protocol.
-
-### Duration
-
-The default investigation window is 7-14 days. The Playbook may specify a different review point when the topic requires it.
-
-## 9. Targeted Check-ins and Progress
-
-### Targeted check-in
-
-The active investigation determines which observations appear first. A check-in should usually contain:
-
-- Daily fussiness rating.
-- Three to five investigation-specific observations.
-- One optional note or additional observation.
-
-The parent can still browse the full vocabulary, but the primary surface stays focused. A check-in should take less than 30 seconds.
-
-### Progress interpretation
-
-Progress shows descriptive evidence, not a causal conclusion:
-
-- Number of check-in days since the investigation started.
-- Which target observations appeared and how often.
-- Fussiness trend over the investigation window.
-- Completed plan steps.
-- A plain-language summary of what changed, stayed the same, or remains unclear.
-
-Example:
-
-"Mucus and skin symptoms appeared less often this week, while spit-up and discomfort after feeds stayed about the same. Food Protein Sensitivity may explain part of the picture, and Feeding Mechanics may still be worth exploring."
-
-The MVP may generate the summary deterministically from recorded evidence. AI narration may be added when every stated count and date is validated against the saved evidence.
-
-### Weekly behavior
-
-Parents enter brief targeted observations; the product generates the weekly summary. Do not ask the parent to reconstruct an entire week from memory.
-
-## 10. Safety and Red Flags
-
-### Immediate behavior
-
-When a red-flag observation is logged or selected, immediately show the existing contact-healthcare-professional message. This behavior never depends on a model response.
-
-### Pattern and contributor behavior
-
-Red flags may also map to Playbook investigations when relevant. They should remain visible in the evidence and can strongly influence which investigation is surfaced.
+The original Playbook is the methodology and content source, but it is not automatically publication-ready medical guidance. Every actionable protocol must be reviewed for current safety and evidence before launch.
 
 For MVP:
 
-- Blood in stool maps to Food Protein Sensitivity.
-- Other red flags remain safety-only unless a Playbook mapping is explicitly defined.
+- Do not recommend an inclined sleep surface. Safe-sleep language must require a firm, flat, non-inclined surface and back sleeping.
+- Do not tell a breastfeeding parent to broadly eliminate dairy, soy, and egg without clinician or dietitian guidance.
+- Do not prescribe medication, formula, supplements, probiotics, dosing, procedures, or supply-management changes.
+- Do not present craniosacral therapy or chiropractic treatment as established care.
+- Blood in stool and other red flags must surface the deterministic clinician message immediately.
+- Improvement after an elimination or feeding change does not, by itself, confirm a diagnosis.
 
-Example:
+## 4. Business Model
 
-"Blood in stool is worth contacting your healthcare professional about today. It also strongly overlaps with Food Protein Sensitivity, so we have included that in the contributors worth exploring."
+### Free tier
 
-The safety message remains the same regardless of the contributor result.
+Free access includes:
 
-## 11. Playbook and Protocol Content
+- All eight cause pages.
+- The symptom relationship matrix when included.
+- All six protocol steps.
+- Every protocol checklist.
+- Starting and saving one active plan.
+- Checklist completion.
+- Start date and return date.
+- One structured outcome review.
+- Deterministic red-flag messages.
 
-The Playbook is the product's controlled content layer. Every investigation uses the same schema:
+Free access is a complete self-guided product, not a content teaser.
 
-- Stable id.
+### Premium tier
+
+Premium access includes:
+
+- AI symptom assessment.
+- One strongest match and up to two co-contributors.
+- Explanation of supporting and non-specific evidence.
+- Missing information and useful follow-up questions.
+- Mapping from every contributor to its Playbook step.
+- Personalized reassessment after a protocol outcome.
+
+Initial pricing assumption: $5 per month. Pricing and billing implementation remain subject to validation.
+
+### Paywall principle
+
+The product should disclose that Navigator is premium before sending data to the model. Do not collect a full assessment and unexpectedly hide the result behind a paywall.
+
+## 5. Information Architecture
+
+The bottom navigation contains four destinations:
+
+1. **Home**
+2. **Navigator**
+3. **Playbook**
+4. **My Plan**
+
+Journal, daily recording, Detective, Guides, and Progress are removed from the MVP information architecture.
+
+Settings, membership, and account controls live behind a profile or settings control and do not occupy bottom navigation.
+
+## 6. Core Product Loops
+
+### Free loop
+
+1. Browse the Playbook protocol or cause library.
+2. Open a cause or protocol step.
+3. Start a free plan.
+4. Complete the checklist independently.
+5. Wait until the protocol's review point.
+6. Complete one outcome review.
+7. Continue, repeat, or choose another Playbook step.
+
+### Premium loop
+
+1. Open Navigator.
+2. Describe symptoms and approve structured observations.
+3. Receive a personalized contributor map.
+4. See both the AI rank and the contributor's Playbook position.
+5. Open the mapped free protocol.
+6. Complete the plan and outcome review.
+7. Reassess with Navigator when the outcome is mixed, unchanged, or suggests co-contributors.
+
+## 7. Cause and Protocol Relationship
+
+Every cause object contains:
+
+- Stable cause id.
+- Educational order.
 - Parent-facing title.
-- Short description.
-- Full explanation.
-- Mapped observations.
-- Target tracking observations.
-- Investigation steps.
-- Review window.
-- Related investigations.
-- Educational articles.
+- Evidence label.
+- Short and long explanation.
+- Common signs.
+- Related causes.
+- Mapped protocol step id.
 
-AI may select, order, and explain Playbook content. It may not add unsupported treatments, medications, diagnoses, or new causes to an investigation plan.
+Every protocol object contains:
 
-## 12. AI System Contract
+- Stable protocol id.
+- Step number.
+- Track type: core, parallel, or ongoing.
+- Parent-facing title.
+- Short explanation.
+- Controlled checklist.
+- Review interval.
+- Outcome question.
+- Related cause ids.
 
-### Architecture
+### Personalized display example
 
-The browser sends the approved assessment input to a server-side proxy. The proxy holds the model API key, adds the system prompt and Playbook catalog, calls the model, validates the response shape, and returns normalized JSON.
+**Strongest AI match:** Food Protein Sensitivity
 
-### Required output schema
+**Playbook position:** Step 3 of 4 core steps
 
-The model returns:
+The UI explains that Steps 1 and 2 cover faster feeding and structural checks with overlapping signs. It does not claim the AI result overrides medical judgment or confirms a condition.
+
+## 8. Outcome Review Instead of Daily Tracking
+
+MVP does not include daily check-ins, symptom journaling, trend charts, or a historical observation log.
+
+Starting a protocol records:
+
+- Protocol id.
+- Start date.
+- Expected review date.
+- Checklist state.
+- Status.
+
+At the review point, ask:
+
+- Were you able to follow the protocol consistently?
+- Is the baby clearly better, somewhat better, unchanged, or worse?
+- Which original symptoms improved, when useful?
+- Is there anything the parent wants to remember?
+
+The review should take approximately one minute.
+
+### Deterministic interpretation
+
+- **Clearly better and protocol followed:** the contributor is more consistent with what the parent observed. Show the protocol's confirmation or clinician-guided next step.
+- **Somewhat better:** the contributor may explain part of the fussiness. Keep co-contributors visible.
+- **Unchanged, protocol followed, full interval reached:** the contributor may be less likely to explain the full picture. Suggest the next Playbook step or premium reassessment.
+- **Protocol not followed consistently:** do not interpret the result. Offer to restart or discuss another plan.
+- **Worse:** stop and reassess. Surface clinician guidance for worsening or concerning symptoms.
+- **Red flag:** immediately show the deterministic clinician message regardless of plan timing or outcome.
+
+Use relative language such as more consistent, less likely to explain the full picture, or still unclear. Do not say confirmed, cured, or ruled out.
+
+## 9. Screen Requirements
+
+### Onboarding
+
+Collect baby name, age, feeding mode, and optional initial observations. Explain that the Playbook is free and Navigator provides paid personalization.
+
+### Home
+
+Home is the decision center.
+
+Without an active plan, show:
+
+- Premium Navigator entry.
+- Free Playbook entry.
+- Browse Causes shortcut.
+- View Protocol shortcut.
+
+With an AI assessment, show:
+
+- Strongest match.
+- Matching observations.
+- Playbook position.
+- Review-assessment action.
+
+With an active plan, show:
+
+- Protocol title.
+- Protocol position.
+- Checklist completion.
+- Return date.
+- Continue My Plan action.
+
+### Navigator
+
+Navigator is visibly premium.
+
+Free state shows:
+
+- What personalization provides.
+- Price or membership action.
+- Direct route to the free Playbook.
+
+Premium state provides:
+
+- Free text or voice input.
+- Structured observation approval.
+- Feeding and timing context.
+- Deterministic red-flag message.
+- Loading, error, and retry states.
+- Strongest match and co-contributors.
+- Supporting, non-specific, and missing evidence.
+- Playbook position for every result.
+- Route to the free cause and protocol content.
+
+### Playbook
+
+Playbook replaces Guides.
+
+Use a segmented control with:
+
+- **Protocol:** four core steps plus parallel and ongoing support tracks.
+- **Causes:** all eight educational cause pages.
+
+### Cause Detail
+
+Show:
+
+- Cause order and evidence label.
+- Explanation.
+- Common signs.
+- Premium assessment evidence when available.
+- Mapped protocol step.
+- Route to the free protocol.
+
+### Protocol Detail
+
+Show:
+
+- Step number and track type.
+- Controlled checklist.
+- Checklist completion.
+- Review interval.
+- Outcome question.
+- Start or continue action.
+- Educational and safety framing.
+
+### My Plan
+
+My Plan replaces Progress.
+
+Show:
+
+- Current protocol step.
+- Checklist completion.
+- Start date and return date.
+- No-daily-logging message.
+- Outcome-review availability.
+- Saved outcome when complete.
+- Route to premium reassessment.
+
+### Outcome Review
+
+Collect consistency, outcome, and an optional note. Interpret the result deterministically and route the parent back to My Plan or Navigator.
+
+## 10. AI System Contract
+
+### Allowed cause catalog
+
+The model may select only the eight published cause ids. It may not generate an open-ended diagnosis or a new protocol.
+
+### Required output
+
+Return:
 
 - Summary.
-- One to three contributor objects.
-- Playbook id for every mapped contributor.
-- Matching observations.
-- Less-specific or conflicting observations.
+- One strongest cause and no more than two co-contributors.
+- Valid cause id for each contributor.
+- Supporting observations copied exactly from approved input.
+- Non-specific or conflicting evidence.
 - Missing information.
 - Up to three follow-up questions.
-- A short exploration note.
+- Exploration note.
 
 ### Validation rules
 
 - Reject malformed JSON.
-- Reject or remove unrecognized Playbook ids from guided-investigation actions.
-- Never display an observation the parent did not report as matching evidence.
-- Never allow model output to suppress a deterministic red-flag message.
-- If blood in stool is present and Food Protein Sensitivity is missing, add the deterministic Playbook mapping before display.
-- If the service is unavailable, show a clearly labeled example or retry state; never present cached example content as a live result.
+- Remove duplicate or unsupported cause ids.
+- Never display an unreported observation as matching evidence.
+- Never allow model output to suppress a red-flag message.
+- If blood in stool is reported, deterministically rank Food Protein Sensitivity first and retain the clinician message.
+- Map causes to protocol steps in trusted application code, not model output.
+- Never let the model create or rewrite checklist instructions.
+- Clearly label example mode when a live endpoint is not connected.
 
-### Model independence
+### Provider independence
 
-The client contract is provider-neutral. The initial server implementation may use Claude, but the product should be able to evaluate or replace the model without changing the user experience or stored data.
+The client contract remains model-provider neutral. The initial Worker may call Claude, but model selection is not part of the user-facing product identity.
 
-## 13. Data and Privacy
+## 11. Safety
+
+### Deterministic red flags
+
+Red-flag observations include:
+
+- Blood in stool.
+- Pale or white stool.
+- Projectile vomiting.
+- Fever.
+- Fewer wet diapers.
+- Unusually sleepy or hard to wake.
+- High-pitched cry.
+
+Selecting a red flag immediately surfaces the contact-healthcare-professional message. This never depends on AI or plan status.
+
+Blood in stool also maps to Food Protein Sensitivity as supporting evidence. Other red flags remain safety-only unless a reviewed mapping is explicitly added.
+
+### Controlled protocol content
+
+Protocol changes require content review and versioning. AI cannot add treatment instructions. The product should retain a source and review record for every actionable checklist.
+
+## 12. Data and Privacy
 
 ### Stored locally for MVP
 
 - Baby profile and age.
-- Feeding mode and structured context when provided.
-- Parent-approved observation ids.
-- Daily fussiness ratings.
-- Active and past investigation status.
-- Investigation start dates.
-- Completed Playbook steps.
+- Feeding mode and structured context.
+- Approved symptom ids used in the latest assessment.
+- Membership state for the prototype.
 - Latest validated contributor map.
+- Active protocol id.
+- Protocol start and review dates.
+- Checklist completion.
+- Structured outcome and optional note.
 
 ### Not stored
 
 - Voice audio.
-- Raw speech transcripts.
+- Raw speech transcript.
 - Unapproved extracted observations.
-- Model chain-of-thought or hidden reasoning.
+- Daily symptom history.
+- Journal entries.
+- Model chain-of-thought.
 
-The app should plainly state when structured symptoms are sent to the configured model service for assessment.
+The UI must state when approved structured symptoms are sent to the configured model service.
 
-## 14. Screen Requirements
-
-### Onboarding
-
-Collect baby name, age, feeding mode, and initial observations. End with a direct CTA to get the first contributor map.
-
-### Home
-
-Show the latest strongest match, possible co-contributors, active investigation progress, and one primary next action. Do not duplicate the full Navigator result.
-
-### Navigator
-
-Provide free-text/voice entry, structured context, the symptom library, red-flag messaging, assessment loading/error states, contributor cards, follow-up questions, and start-investigation actions.
-
-### Investigation Detail
-
-Show why the contributor may fit, the controlled investigation plan, target observations, progress, related contributors, and start/continue actions.
-
-### Targeted Check-in
-
-Prioritize the active investigation's observations, collect fussiness, allow optional additions, show red-flag messaging immediately, and save approved data to the Journal.
-
-### Progress
-
-Show days tracked, target-observation counts, fussiness trend, completed steps, and a descriptive learning summary. Provide a clear route to continue tracking or reassess in Navigator.
-
-### Guides
-
-Provide the full Playbook and supporting education without presenting generic content as personalized assessment.
-
-### Journal
-
-Remain the source of truth for approved saved observations. Allow review, edit, and delete.
-
-## 15. MVP Scope
+## 13. MVP Scope
 
 ### Included
 
-- AI symptom intake using approved structured observations.
+- Four-destination navigation.
+- Free eight-cause library.
+- Free six-phase Playbook protocol.
+- One active plan.
+- Checklist completion and return date.
+- One outcome review.
+- Premium gate and AI Navigator experience.
 - One strongest match plus up to two co-contributors.
-- Explanations of fit, limitations, and missing information.
-- Deterministic red-flag messages and the blood-stool mapping.
-- Seven Playbook contributors.
-- One active guided investigation.
-- Investigation-specific target observations.
-- Short daily check-ins.
-- Progress summary and Journal.
-- Server-side model proxy with local example mode.
+- Deterministic safety handling.
+- Server-side model proxy and example mode.
 
 ### Deferred
 
-- Multiple simultaneous active investigations.
-- Photos or image interpretation.
-- Automated clinician messaging.
+- Real billing and account management.
+- Push or email reminders.
+- Multiple simultaneous plans.
+- Daily symptom logging and Journal.
+- Trend charts.
+- Photo or image interpretation.
 - Medication guidance.
-- Open-ended diagnoses outside the Playbook.
-- Model-generated treatment plans.
-- Population-level probability scores.
-- Numeric AI confidence percentages.
-- Community or peer advice.
+- Open-ended diagnoses.
+- Model-generated protocols.
+- Automated clinician messaging.
+- Community advice or social features.
 
-## 16. Success Metrics
+## 14. Success Metrics
 
-### Activation
+### Free value
 
-- Parent completes the first contributor map in under five minutes.
-- At least 70% of completed assessments open a contributor explanation.
-- At least 35% start a guided investigation.
+- Percentage of new users who open a cause or protocol.
+- Percentage who start a free plan.
+- Checklist completion rate.
+- Percentage returning for the outcome review.
 
-### Engagement
+### Premium conversion
 
-- At least 50% of started investigations record three check-in days.
-- Median check-in completion time is under 30 seconds.
-- At least 30% of started investigations reach a progress review.
+- Percentage of free users who open Navigator.
+- Paywall-to-membership conversion.
+- Assessment completion rate.
+- Percentage of assessments that open the mapped cause or protocol.
+- Percentage that return for premium reassessment after an outcome.
 
-### Quality
+### Quality and safety
 
-- Parents report that the strongest match feels relevant.
-- Every displayed matching observation exists in the approved input.
-- Red-flag message recall is 100% in automated test histories.
-- No model response can create an unsupported guided-investigation id.
-- Example-mode results are always visibly labeled.
+- Parents report that the strongest match feels relevant and understandable.
+- Every matching observation exists in approved input.
+- Every AI contributor maps to a published cause id.
+- Every displayed protocol comes from reviewed Playbook content.
+- Red-flag message recall is 100% in automated safety tests.
+- No removed Journal or daily-tracking path remains reachable.
 
-### Learning
+## 15. Implementation Notes
 
-- Track which follow-up questions most often change the contributor order.
-- Track which contributors commonly appear together.
-- Track where parents abandon an investigation plan.
-- Use repeated unmapped model language to identify future Playbook topics without automatically publishing them.
+- Keep the React and Vite client.
+- Keep local-first storage for the prototype.
+- Keep the Cloudflare Worker model proxy.
+- Separate cause content from protocol content in code.
+- Map cause ids to protocol ids deterministically.
+- Replace investigations, daily observations, and progress summaries with plan, checklist, review date, and outcome state.
+- Keep the UI compact and mobile-first.
+- Keep membership activation local in the prototype until billing is selected.
 
-## 17. Out of Scope and Positioning
+## 16. Launch Decisions
 
-The Fussy Baby does not replace physical examination, testing, or professional judgment. The MVP does not provide a definitive diagnosis, prescribe medication, or claim that a recorded intervention caused improvement.
-
-The product may clearly state which contributor is the strongest match to the approved information. It must also show the supporting observations, relevant alternatives, and missing information so the parent can understand the basis of the result.
-
-## 18. Implementation Notes
-
-- Keep the existing React/Vite client and local-first store.
-- Keep the Cloudflare Worker model proxy and evolve its output contract.
-- Replace automatic all-history model calls with an explicit assessment action and persist the latest validated result.
-- Rename the daily Record tab to Navigator; targeted recording becomes a context-specific route.
-- Replace the old Patterns destination with Progress.
-- Add investigation start metadata and target-observation definitions to the Playbook.
-- Retain the existing Journal and educational content where they support the new flow.
-- Keep the UI quiet, compact, and mobile-first.
-
-## 19. Launch Decisions
-
-- One product, not separate symptom-checker and tracking products.
-- AI assessment is the front door.
-- Guided investigations create continuity and differentiation.
-- Tracking is targeted and optional.
-- Contributor results allow overlap.
-- Safety handling remains deterministic.
-- Protocol steps come from the Playbook.
-- The initial model provider is an implementation detail, not the product identity.
+- The Playbook is free.
+- AI personalization is paid.
+- The free product remains useful without AI.
+- Navigator is the premium front door for parents who want help choosing where to begin.
+- Cause rank and protocol order remain separate concepts.
+- Protocol Steps 1-4 form the core path.
+- Digestive support is parallel.
+- Sensory support is ongoing.
+- Daily check-ins, Journal, and trend-based Progress are removed.
+- My Plan contains checklists, timing, and one outcome review.
+- Safety handling is deterministic.
+- Protocol content is controlled and never generated by AI.

@@ -1,12 +1,14 @@
 import React from "react";
 import { Card } from "../core/Card.jsx";
 import { Button } from "../core/Button.jsx";
+import { protocolForCause, protocolPosition } from "../../data/playbook.js";
 
 /**
  * One possible contributor from the model assessment.
  * `rank` is 1-based; the model's order is preserved (we never re-sort).
  */
 export function DifferentialCard({ rank, cause, onExplore }) {
+  const protocol = protocolForCause(cause.playbookId);
   return (
     <Card>
       <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
@@ -36,6 +38,7 @@ export function DifferentialCard({ rank, cause, onExplore }) {
           <div style={{ fontSize: "16.5px", fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.3 }}>
             {cause.name}
           </div>
+          {protocol && <div style={{ fontSize: "12.5px", fontWeight: 700, color: "var(--text-brand)" }}>{protocolPosition(protocol)}</div>}
           {cause.description && (
             <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
               {cause.description}
@@ -55,7 +58,7 @@ export function DifferentialCard({ rank, cause, onExplore }) {
       )}
 
       <Button variant="secondary" onClick={() => onExplore(cause.playbookId)}>
-        Start guided investigation
+        View match in Playbook
       </Button>
     </Card>
   );
