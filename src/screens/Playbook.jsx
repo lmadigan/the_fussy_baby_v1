@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Card } from "../components/core/Card.jsx";
 import { Button } from "../components/core/Button.jsx";
+import { CardTitle } from "../components/core/CardTitle.jsx";
 import { SectionLabel } from "../components/core/SectionLabel.jsx";
 import { Screen } from "../components/app/Screen.jsx";
 import { CAUSES, PROTOCOL_STEPS, protocolPosition } from "../data/playbook.js";
@@ -11,12 +12,14 @@ export function Playbook({ navigate, params = {} }) {
 
   return (
     <Screen eyebrow="Free reference" title="The Fussy Baby Playbook">
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", padding: "3px", borderRadius: "var(--radius-button)", background: "var(--surface-inset)", border: "1px solid var(--border-default)" }}>
+      <div role="tablist" aria-label="Playbook view" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", padding: "3px", borderRadius: "var(--radius-pill)", background: "var(--surface-inset)", border: "1px solid var(--border-default)" }}>
         {[{ id: "protocol", label: "Protocol" }, { id: "causes", label: "Causes" }].map((option) => (
           <button
             key={option.id}
+            role="tab"
+            aria-selected={view === option.id}
             onClick={() => setView(option.id)}
-            style={{ border: 0, borderRadius: "7px", padding: "9px 10px", cursor: "pointer", font: "inherit", fontSize: "13px", fontWeight: 700, background: view === option.id ? "var(--surface-card)" : "transparent", color: view === option.id ? "var(--text-brand)" : "var(--text-muted)", boxShadow: view === option.id ? "0 1px 2px rgba(20, 20, 20, .08)" : "none" }}
+            style={{ border: 0, borderRadius: "var(--radius-pill)", minHeight: "var(--hit-min)", padding: "9px 10px", cursor: "pointer", font: "inherit", fontSize: "13px", fontWeight: 600, background: view === option.id ? "var(--surface-card)" : "transparent", color: view === option.id ? "var(--text-brand)" : "var(--text-muted)", boxShadow: view === option.id ? "var(--shadow-card)" : "none" }}
           >
             {option.label}
           </button>
@@ -31,7 +34,7 @@ export function Playbook({ navigate, params = {} }) {
           {items.map((step) => (
             <Card key={step.id}>
               <SectionLabel right={step.timing}>{protocolPosition(step)}</SectionLabel>
-              <div style={{ fontSize: "var(--type-title-size)", fontWeight: 700, color: "var(--text-primary)" }}>{step.title}</div>
+              <CardTitle>{step.title}</CardTitle>
               <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)" }}>{step.short}</div>
               <Button variant="secondary" onClick={() => navigate("protocol", { id: step.id })}>Open checklist</Button>
             </Card>
@@ -45,7 +48,7 @@ export function Playbook({ navigate, params = {} }) {
           {items.map((cause) => (
             <Card key={cause.id}>
               <SectionLabel right={cause.evidenceLabel}>Cause {cause.rank}</SectionLabel>
-              <div style={{ fontSize: "var(--type-title-size)", fontWeight: 700, color: "var(--text-primary)" }}>{cause.title}</div>
+              <CardTitle>{cause.title}</CardTitle>
               <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)" }}>{cause.short}</div>
               <Button variant="secondary" onClick={() => navigate("cause", { id: cause.id })}>Learn about this cause</Button>
             </Card>

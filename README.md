@@ -43,4 +43,4 @@ The full product decisions are in `docs/product-requirements.md` and the latest 
 
 ## Design system
 
-Direction **1d - Quiet Gentle Intelligence** from the Claude Design project: quiet ink on warm gray, periwinkle as the main attention signal, and mint/clay observation chips. Tokens live in `src/tokens/`.
+The approved **Quiet Gentle Intelligence: Navy Petal** direction uses Prata display type, Instrument Sans UI type, deep navy actions, and restrained rose/mint signals. Tokens live in `src/tokens/`; the implementation rules are in `docs/design-system.md`.

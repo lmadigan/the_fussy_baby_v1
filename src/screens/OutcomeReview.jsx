@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { Card } from "../components/core/Card.jsx";
 import { Button } from "../components/core/Button.jsx";
 import { SectionLabel } from "../components/core/SectionLabel.jsx";
+import { StatusBadge } from "../components/core/StatusBadge.jsx";
 import { Tag } from "../components/core/Tag.jsx";
+import { Input } from "../components/forms/Input.jsx";
 import { Screen } from "../components/app/Screen.jsx";
 import { useStore } from "../lib/store.jsx";
 import { getProtocolStep } from "../data/playbook.js";
@@ -40,7 +42,8 @@ export function OutcomeReview({ navigate, goBack, params }) {
             : "The protocol was not completed consistently enough to interpret. Restart or discuss a different plan.";
     return (
       <Screen eyebrow="Outcome saved" title="What this means">
-        <Card style={{ borderColor: "var(--accent-signal)" }}>
+        <Card>
+          <SectionLabel right={<StatusBadge tone="calm">Saved</StatusBadge>}>Outcome review</SectionLabel>
           <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.6, color: "var(--text-primary)" }}>{interpretation}</div>
           <Button onClick={() => navigate("plan")}>Return to My Plan</Button>
         </Card>
@@ -49,7 +52,7 @@ export function OutcomeReview({ navigate, goBack, params }) {
   }
 
   return (
-    <Screen eyebrow="One-time check-in" title="Did this help?" onBack={goBack}>
+    <Screen eyebrow="Outcome review" title="Did this help?" onBack={goBack}>
       <Card>
         <SectionLabel>{protocol.title}</SectionLabel>
         <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.6, color: "var(--text-primary)" }}>{protocol.reviewQuestion}</div>
@@ -58,7 +61,7 @@ export function OutcomeReview({ navigate, goBack, params }) {
       <Card>
         <SectionLabel>Were you able to follow the plan?</SectionLabel>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>{[["yes", "Yes"], ["partly", "Partly"], ["no", "No"]].map(([id, label]) => <Tag key={id} tone="neutral" selected={followed === id} onClick={() => setFollowed(id)}>{label}</Tag>)}</div>
-        <textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="Anything you want to remember (optional)" style={{ boxSizing: "border-box", width: "100%", minHeight: "80px", resize: "vertical", padding: "12px 14px", borderRadius: "var(--radius-button)", border: "1px solid var(--border-default)", background: "var(--surface-inset)", color: "var(--text-primary)", font: "inherit", lineHeight: 1.55 }} />
+        <Input multiline value={note} onChange={(event) => setNote(event.target.value)} placeholder="Anything you want to remember (optional)" style={{ minHeight: "80px" }} />
       </Card>
       <Button disabled={!result || !followed} style={!result || !followed ? { opacity: 0.45, cursor: "default" } : undefined} onClick={() => result && followed && save()}>Save outcome</Button>
     </Screen>

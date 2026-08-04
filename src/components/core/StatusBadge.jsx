@@ -1,14 +1,13 @@
 import React from "react";
 
 /** Status pill with a signal dot — "In Progress". */
-export function StatusBadge({ tone = "signal", children }) {
+export function StatusBadge({ tone = "calm", children }) {
   const tones = {
-    signal: { bg: "var(--accent-signal-bg)", dot: "var(--accent-signal)", text: "var(--text-brand)" },
-    calm: { bg: "var(--accent-calm-bg)", dot: "var(--ink-800)", text: "var(--text-brand)" },
-    warm: { bg: "var(--accent-warm-bg)", dot: "var(--ink-800)", text: "var(--text-brand)" },
+    calm: { bg: "var(--accent-calm-bg)", dot: "var(--accent-calm)", text: "var(--text-calm)" },
+    warm: { bg: "var(--accent-signal-bg)", dot: "var(--accent-signal)", text: "var(--text-warm)" },
     neutral: { bg: "var(--surface-inset)", dot: "var(--gray-500)", text: "var(--text-muted)" },
   };
-  const t = tones[tone] ?? tones.signal;
+  const t = tones[tone] ?? tones.calm;
   return (
     <div
       style={{

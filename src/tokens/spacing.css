@@ -14,9 +14,10 @@
   --gap-chips: 8px;
 
   /* Radii */
-  --radius-card: 14px;
-  --radius-button: 10px;
+  --radius-card: 18px;
+  --radius-button: 99px;
   --radius-pill: 99px;
+  --radius-field: 12px;
 
   /* Hit targets */
   --hit-min: 44px;

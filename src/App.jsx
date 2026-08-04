@@ -63,11 +63,11 @@ function Shell() {
       {IS_DEMO && (
         <div
           style={{
-            background: "var(--ink-800)",
+            background: "var(--navy-800)",
             color: "var(--text-on-brand)",
             fontSize: "11.5px",
             fontWeight: 600,
-            letterSpacing: "0.04em",
+            letterSpacing: "0.08em",
             textAlign: "center",
             padding: "7px 12px",
           }}

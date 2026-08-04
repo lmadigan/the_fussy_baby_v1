@@ -10,7 +10,7 @@ export function Input({ label, multiline = false, style, ...rest }) {
     color: "var(--text-primary)",
     background: "var(--surface-inset)",
     border: "1px solid var(--border-default)",
-    borderRadius: "var(--radius-button)",
+    borderRadius: "var(--radius-field)",
     padding: "12px 14px",
     outline: "none",
     resize: "vertical",

@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Card } from "../components/core/Card.jsx";
 import { Button } from "../components/core/Button.jsx";
+import { CardTitle } from "../components/core/CardTitle.jsx";
 import { SectionLabel } from "../components/core/SectionLabel.jsx";
+import { StatusBadge } from "../components/core/StatusBadge.jsx";
 import { Tag } from "../components/core/Tag.jsx";
+import { Input } from "../components/forms/Input.jsx";
+import { InsightRow } from "../components/data/InsightRow.jsx";
 import { Screen } from "../components/app/Screen.jsx";
 import { SymptomPicker } from "../components/app/SymptomPicker.jsx";
 import { DifferentialCard } from "../components/app/DifferentialCard.jsx";
@@ -79,9 +83,9 @@ export function Navigator({ navigate }) {
   if (state.membership !== "premium") {
     return (
       <Screen eyebrow="Premium · $5/month" title="AI Symptom Navigator">
-        <Card style={{ borderColor: "var(--accent-signal)" }}>
-          <SectionLabel>Personalized starting point</SectionLabel>
-          <div style={{ fontSize: "var(--type-title-size)", fontWeight: 700, color: "var(--text-primary)" }}>Understand what fits best</div>
+        <Card>
+          <SectionLabel right={<StatusBadge tone="warm">Premium</StatusBadge>}>Personalized starting point</SectionLabel>
+          <CardTitle>Understand what fits best</CardTitle>
           <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.6, color: "var(--text-muted)" }}>Describe what you are seeing and receive one strongest match, possible co-contributors, and the corresponding step in the free Playbook.</div>
           <Button onClick={() => dispatch({ type: "activateMembership" })}>Unlock Navigator · $5/month</Button>
         </Card>
@@ -98,11 +102,12 @@ export function Navigator({ navigate }) {
     <Screen eyebrow="AI Symptom Navigator" title="What are you noticing?">
       <Card>
         <SectionLabel>Describe it in your own words</SectionLabel>
-        <textarea
+        <Input
+          multiline
           value={context}
           onChange={(event) => absorbContext(event.target.value)}
           placeholder="e.g. Explosive mucousy poops, eczema, lots of spit up, and crying after feeds"
-          style={{ boxSizing: "border-box", width: "100%", minHeight: "96px", resize: "vertical", padding: "12px 14px", borderRadius: "var(--radius-button)", border: "1px solid var(--border-default)", background: "var(--surface-inset)", color: "var(--text-primary)", font: "inherit", lineHeight: 1.55, outline: "none" }}
+          style={{ minHeight: "96px" }}
         />
         {canSpeak && <Button variant="secondary" onClick={toggleVoice}>{listening ? "Stop listening" : "Speak instead"}</Button>}
         <div style={{ fontSize: "12px", lineHeight: 1.5, color: "var(--text-muted)" }}>
@@ -114,14 +119,14 @@ export function Navigator({ navigate }) {
         <Card>
           <SectionLabel right={`${selected.length} selected`}>What the app heard</SectionLabel>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
-            {selected.map((id) => <Tag key={id} tone="signal" selected onClick={() => toggle(id)}>{getObservation(id)?.label ?? id} <span aria-hidden>×</span></Tag>)}
+            {selected.map((id) => <Tag key={id} tone="warm" selected onClick={() => toggle(id)}>{getObservation(id)?.label ?? id}</Tag>)}
           </div>
         </Card>
       )}
 
       {flags.length > 0 && (
-        <Card style={{ borderColor: "var(--accent-signal)" }}>
-          <SectionLabel style={{ color: "var(--text-brand)" }}>Contact a healthcare professional</SectionLabel>
+        <Card>
+          <SectionLabel right={<StatusBadge tone="warm">Pay attention</StatusBadge>}>Contact a healthcare professional</SectionLabel>
           <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-primary)" }}>
             {flags.map((id) => getObservation(id)?.label ?? id).join(", ")} should be discussed with your baby's healthcare professional. The assessment will also use this as evidence where it meaningfully fits.
           </div>
@@ -134,7 +139,7 @@ export function Navigator({ navigate }) {
         <Choice label="Fussiness is worst" options={TIMING_OPTIONS} value={fussinessTiming} onChange={setFussinessTiming} />
       </Card>
 
-      <details style={{ background: "var(--surface-card)", border: "1px solid var(--border-default)", borderRadius: "var(--radius-card)", padding: "14px 16px" }}>
+      <details style={{ background: "var(--surface-card)", border: "1px solid var(--border-default)", borderRadius: "var(--radius-card)", padding: "14px 16px", boxShadow: "var(--shadow-card)" }}>
         <summary style={{ cursor: "pointer", color: "var(--text-brand)", fontSize: "14px", fontWeight: 600 }}>Browse all observations</summary>
         <div style={{ display: "flex", flexDirection: "column", gap: "18px", paddingTop: "16px" }}>
           <SymptomPicker selected={selected} onToggle={toggle} />
@@ -161,7 +166,7 @@ export function Navigator({ navigate }) {
           {assessment.result.followUpQuestions.length > 0 && (
             <Card>
               <SectionLabel>Questions that would make this clearer</SectionLabel>
-              {assessment.result.followUpQuestions.map((question) => <div key={question} style={{ fontSize: "13.5px", lineHeight: 1.5, color: "var(--text-primary)" }}>• {question}</div>)}
+              {assessment.result.followUpQuestions.map((question) => <InsightRow key={question} tone="neutral">{question}</InsightRow>)}
             </Card>
           )}
           {assessment.result.note && <div style={{ padding: "0 4px", fontSize: "12.5px", lineHeight: 1.55, color: "var(--text-muted)" }}>{assessment.result.note}</div>}

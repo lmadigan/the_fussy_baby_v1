@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Card } from "../components/core/Card.jsx";
 import { Button } from "../components/core/Button.jsx";
+import { CardTitle } from "../components/core/CardTitle.jsx";
 import { SectionLabel } from "../components/core/SectionLabel.jsx";
 import { Tag } from "../components/core/Tag.jsx";
 import { Input } from "../components/forms/Input.jsx";
@@ -44,11 +45,10 @@ export function Onboarding() {
           <div
             key={i}
             style={{
-              width: i === step ? "20px" : "6px",
+              width: "6px",
               height: "6px",
               borderRadius: "99px",
-              background: i <= step ? "var(--accent-signal)" : "var(--border-default)",
-              transition: "width .2s ease",
+              background: i === step ? "var(--accent-signal)" : i < step ? "var(--accent-calm)" : "var(--border-default)",
             }}
           />
         ))}
@@ -61,14 +61,12 @@ export function Onboarding() {
     return shell(
       <>
         <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "8px" }}>
-          <div style={{ fontFamily: "var(--font-display)", fontSize: "32px", fontWeight: 600, color: "var(--text-primary)" }}>
+          <div style={{ fontFamily: "var(--font-display)", fontSize: "var(--type-display-size)", fontWeight: 400, color: "var(--text-brand)" }}>
             The Fussy Baby
           </div>
         </div>
         <Card>
-          <div style={{ fontSize: "17px", lineHeight: 1.5, fontWeight: 600, color: "var(--text-primary)", textWrap: "pretty" }}>
-            Hey — you're doing great. But baby fussiness is no joke.
-          </div>
+          <CardTitle>Baby fussiness can be hard to read.</CardTitle>
           <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-primary)", textWrap: "pretty" }}>
             The free Playbook gives you the common causes and a systematic protocol. Premium Navigator helps organize
             which contributors fit what you're seeing, including when more than one may be involved.
@@ -87,7 +85,7 @@ export function Onboarding() {
     return shell(
       <>
         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <div style={{ fontFamily: "var(--font-display)", fontSize: "24px", fontWeight: 600, color: "var(--text-primary)" }}>
+          <div style={{ fontFamily: "var(--font-display)", fontSize: "24px", fontWeight: 400, color: "var(--text-primary)" }}>
             Tell us about your baby
           </div>
           <div style={{ fontSize: "14px", lineHeight: 1.55, color: "var(--text-muted)" }}>
@@ -128,7 +126,7 @@ export function Onboarding() {
     return shell(
       <>
         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <div style={{ fontFamily: "var(--font-display)", fontSize: "24px", fontWeight: 600, color: "var(--text-primary)" }}>
+          <div style={{ fontFamily: "var(--font-display)", fontSize: "24px", fontWeight: 400, color: "var(--text-primary)" }}>
             What have you been noticing?
           </div>
           <div style={{ fontSize: "14px", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
@@ -147,7 +145,7 @@ export function Onboarding() {
   return shell(
     <>
       <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <div style={{ fontFamily: "var(--font-display)", fontSize: "24px", fontWeight: 600, color: "var(--text-primary)" }}>
+        <div style={{ fontFamily: "var(--font-display)", fontSize: "24px", fontWeight: 400, color: "var(--text-primary)" }}>
           One important note
         </div>
       </div>

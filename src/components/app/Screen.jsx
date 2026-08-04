@@ -1,7 +1,7 @@
 import React from "react";
 
 /** Screen scaffold: optional back row, date eyebrow + serif display title, stacked content. */
-export function Screen({ title, eyebrow, onBack, action, children }) {
+export function Screen({ title, eyebrow, onBack, action, brand = false, children }) {
   return (
     <div
       style={{
@@ -26,10 +26,10 @@ export function Screen({ title, eyebrow, onBack, action, children }) {
               padding: "0 0 10px",
               display: "inline-flex",
               alignItems: "center",
-              gap: "4px",
+              minHeight: "var(--hit-min)",
             }}
           >
-            ← Back
+            Back
           </button>
         )}
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "12px" }}>
@@ -43,7 +43,7 @@ export function Screen({ title, eyebrow, onBack, action, children }) {
                 fontSize: "var(--type-display-size)",
                 fontWeight: "var(--type-display-weight)",
                 letterSpacing: "var(--type-display-tracking)",
-                color: "var(--text-primary)",
+                color: brand ? "var(--text-brand)" : "var(--text-primary)",
                 textWrap: "balance",
               }}
             >

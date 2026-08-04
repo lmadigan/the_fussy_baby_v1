@@ -1,7 +1,9 @@
 import React from "react";
 import { Card } from "../components/core/Card.jsx";
 import { Button } from "../components/core/Button.jsx";
+import { CardTitle } from "../components/core/CardTitle.jsx";
 import { SectionLabel } from "../components/core/SectionLabel.jsx";
+import { StatusBadge } from "../components/core/StatusBadge.jsx";
 import { Tag } from "../components/core/Tag.jsx";
 import { Screen } from "../components/app/Screen.jsx";
 import { useStore } from "../lib/store.jsx";
@@ -18,10 +20,10 @@ export function CauseDetail({ navigate, goBack, params }) {
   return (
     <Screen eyebrow={`Cause ${cause.rank} · ${cause.evidenceLabel}`} title={cause.title} onBack={goBack}>
       {assessmentCause && (
-        <Card style={{ borderColor: "var(--accent-signal)" }}>
-          <SectionLabel>From your premium assessment</SectionLabel>
+        <Card>
+          <SectionLabel right={<StatusBadge tone="warm">Matched</StatusBadge>}>From your premium assessment</SectionLabel>
           <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-primary)" }}>{assessmentCause.description}</div>
-          {assessmentCause.matching.length > 0 && <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>{assessmentCause.matching.map((item) => <Tag key={item} tone="signal">{item}</Tag>)}</div>}
+          {assessmentCause.matching.length > 0 && <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>{assessmentCause.matching.map((item) => <Tag key={item} tone="warm">{item}</Tag>)}</div>}
         </Card>
       )}
       <Card>
@@ -35,7 +37,7 @@ export function CauseDetail({ navigate, goBack, params }) {
       {protocol && (
         <Card>
           <SectionLabel>{protocolPosition(protocol)}</SectionLabel>
-          <div style={{ fontSize: "var(--type-title-size)", fontWeight: 700, color: "var(--text-primary)" }}>{protocol.title}</div>
+          <CardTitle>{protocol.title}</CardTitle>
           <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)" }}>{protocol.short}</div>
           <Button onClick={() => navigate("protocol", { id: protocol.id })}>View free protocol</Button>
         </Card>

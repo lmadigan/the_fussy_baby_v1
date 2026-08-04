@@ -1,101 +1,39 @@
 import React from "react";
 import { Card } from "../core/Card.jsx";
 import { Button } from "../core/Button.jsx";
+import { CardTitle } from "../core/CardTitle.jsx";
+import { SectionLabel } from "../core/SectionLabel.jsx";
+import { StatusBadge } from "../core/StatusBadge.jsx";
+import { InsightRow } from "../data/InsightRow.jsx";
 import { protocolForCause, protocolPosition } from "../../data/playbook.js";
 
-/**
- * One possible contributor from the model assessment.
- * `rank` is 1-based; the model's order is preserved (we never re-sort).
- */
 export function DifferentialCard({ rank, cause, onExplore }) {
   const protocol = protocolForCause(cause.playbookId);
   return (
     <Card>
-      <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
-        <div
-          aria-hidden
-          style={{
-            flex: "none",
-            width: "26px",
-            height: "26px",
-            borderRadius: "8px",
-            background: "var(--action-primary)",
-            color: "var(--text-on-brand)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "13px",
-            fontWeight: 700,
-            fontVariantNumeric: "tabular-nums",
-          }}
-        >
-          {rank === 1 ? "1" : "+"}
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 }}>
-          <div style={{ fontSize: "var(--type-meta-size)", fontWeight: 700, color: "var(--text-brand)" }}>
-            {rank === 1 ? "Strongest match" : "May also contribute"}
-          </div>
-          <div style={{ fontSize: "16.5px", fontWeight: 700, color: "var(--text-primary)", lineHeight: 1.3 }}>
-            {cause.name}
-          </div>
-          {protocol && <div style={{ fontSize: "12.5px", fontWeight: 700, color: "var(--text-brand)" }}>{protocolPosition(protocol)}</div>}
-          {cause.description && (
-            <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
-              {cause.description}
-            </div>
-          )}
-        </div>
+      <SectionLabel right={<StatusBadge tone={rank === 1 ? "warm" : "calm"}>{rank === 1 ? "Top match" : "May contribute"}</StatusBadge>}>
+        AI assessment
+      </SectionLabel>
+      <div style={{ display: "flex", flexDirection: "column", gap: "var(--gap-card-text)" }}>
+        <CardTitle>{cause.name}</CardTitle>
+        {protocol && <div style={{ fontSize: "var(--type-meta-size)", fontWeight: 600, color: "var(--text-brand)" }}>{protocolPosition(protocol)}</div>}
+        {cause.description && <div style={{ fontSize: "var(--type-body-size)", lineHeight: "var(--type-body-line)", color: "var(--text-muted)", textWrap: "pretty" }}>{cause.description}</div>}
       </div>
 
-      {cause.matching.length > 0 && (
-        <FitRow tone="fit" label="What fits" items={cause.matching} />
-      )}
-      {cause.notFitting.length > 0 && (
-        <FitRow tone="against" label="Worth noting" items={cause.notFitting} />
-      )}
-      {cause.missingInformation?.length > 0 && (
-        <FitRow tone="against" label="What would make this clearer" items={cause.missingInformation} />
-      )}
+      {cause.matching.length > 0 && <EvidenceGroup label="What fits" items={cause.matching} tone="signal" />}
+      {cause.notFitting.length > 0 && <EvidenceGroup label="Worth noting" items={cause.notFitting} tone="neutral" />}
+      {cause.missingInformation?.length > 0 && <EvidenceGroup label="What would make this clearer" items={cause.missingInformation} tone="neutral" />}
 
-      <Button variant="secondary" onClick={() => onExplore(cause.playbookId)}>
-        View match in Playbook
-      </Button>
+      <Button variant="secondary" onClick={() => onExplore(cause.playbookId)}>View match in Playbook</Button>
     </Card>
   );
 }
 
-function FitRow({ tone, label, items }) {
-  const fit = tone === "fit";
+function EvidenceGroup({ label, items, tone }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "7px" }}>
-        <span
-          aria-hidden
-          style={{
-            width: "17px",
-            height: "17px",
-            borderRadius: "50%",
-            flex: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "11px",
-            fontWeight: 700,
-            color: fit ? "var(--text-brand)" : "var(--text-warm)",
-            background: fit ? "var(--accent-calm-bg)" : "var(--accent-warm-bg)",
-          }}
-        >
-          {fit ? "✓" : "!"}
-        </span>
-        <span style={{ fontSize: "var(--type-meta-size)", fontWeight: 600, color: "var(--text-muted)" }}>{label}</span>
-      </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: "3px", paddingLeft: "24px" }}>
-        {items.map((it, i) => (
-          <div key={i} style={{ fontSize: "13.5px", lineHeight: 1.5, color: "var(--text-primary)", textWrap: "pretty" }}>
-            {it}
-          </div>
-        ))}
-      </div>
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      <div style={{ fontSize: "var(--type-label-size)", fontWeight: 600, letterSpacing: "var(--type-label-tracking)", textTransform: "uppercase", color: "var(--text-muted)" }}>{label}</div>
+      {items.map((item) => <InsightRow key={item} tone={tone}>{item}</InsightRow>)}
     </div>
   );
 }

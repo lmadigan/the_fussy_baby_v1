@@ -1,6 +1,7 @@
 import React from "react";
 import { Card } from "../components/core/Card.jsx";
 import { Button } from "../components/core/Button.jsx";
+import { StatusBadge } from "../components/core/StatusBadge.jsx";
 import { SectionLabel } from "../components/core/SectionLabel.jsx";
 import { Screen } from "../components/app/Screen.jsx";
 import { useStore } from "../lib/store.jsx";
@@ -26,18 +27,18 @@ export function ProtocolDetail({ navigate, goBack, params }) {
         <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.6, color: "var(--text-primary)" }}>{protocol.short}</div>
       </Card>
       <Card>
-        <SectionLabel right={`${done} of ${protocol.checklist.length}`}>Checklist</SectionLabel>
+        <SectionLabel right={<StatusBadge tone="calm">{done} of {protocol.checklist.length}</StatusBadge>}>Checklist</SectionLabel>
         <div style={{ height: "6px", borderRadius: "99px", background: "var(--surface-inset)", border: "1px solid var(--border-default)", overflow: "hidden" }}>
-          <div style={{ height: "100%", width: `${percent}%`, background: "var(--accent-signal)", borderRadius: "99px" }} />
+          <div style={{ height: "100%", width: `${percent}%`, background: "var(--accent-calm)", borderRadius: "99px" }} />
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {protocol.checklist.map((item, index) => {
             const complete = checked.has(index);
             return (
-              <button key={item} onClick={() => toggle(index)} style={{ all: "unset", cursor: "pointer", display: "flex", alignItems: "flex-start", gap: "12px" }}>
-                <span aria-hidden style={{ flex: "none", width: "22px", height: "22px", borderRadius: "6px", border: `1px solid ${complete ? "var(--accent-signal)" : "var(--border-hover)"}`, background: complete ? "var(--accent-signal-bg)" : "var(--surface-card)", color: "var(--text-brand)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800 }}>{complete ? "✓" : ""}</span>
+              <label key={item} style={{ cursor: "pointer", display: "flex", alignItems: "flex-start", gap: "12px", minHeight: "var(--hit-min)" }}>
+                <input type="checkbox" checked={complete} onChange={() => toggle(index)} style={{ flex: "none", width: "20px", height: "20px", margin: "1px 0 0", accentColor: "var(--navy-800)" }} />
                 <span style={{ fontSize: "13.5px", lineHeight: 1.5, color: complete ? "var(--text-muted)" : "var(--text-primary)" }}>{item}</span>
-              </button>
+              </label>
             );
           })}
         </div>
