@@ -8,5 +8,4 @@ compatibility_date = "2024-11-01"
 # Optional vars:
 [vars]
 MODEL = "claude-sonnet-5"
-# Lock the proxy to your site once deployed, e.g.:
-# ALLOW_ORIGIN = "https://lmadigan.github.io"
+ALLOW_ORIGIN = "https://lmadigan.github.io"

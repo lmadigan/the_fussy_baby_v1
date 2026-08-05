@@ -14,7 +14,6 @@ import { useStore } from "../lib/store.jsx";
 import { useDifferential } from "../lib/useDifferential.js";
 import { extractObservations, getObservation, redFlagsIn } from "../data/vocabulary.js";
 import { createRecognizer, speechSupported } from "../lib/speech.js";
-import { hasEndpoint, setEndpoint } from "../lib/differential.js";
 
 const FEEDING_OPTIONS = ["Breastfeeding", "Formula", "Both"];
 const TIMING_OPTIONS = ["During feeds", "Right after feeds", "Later after feeds", "Mostly evenings", "No clear timing"];
@@ -75,11 +74,6 @@ export function Navigator({ navigate }) {
     }
   };
 
-  const connectModel = () => {
-    const url = window.prompt("Paste your deployed assessment endpoint URL. Leave blank to disconnect.", "");
-    if (url !== null) setEndpoint(url);
-  };
-
   if (state.membership !== "premium") {
     return (
       <Screen eyebrow="Premium · $5/month" title="AI Symptom Navigator">
@@ -111,7 +105,7 @@ export function Navigator({ navigate }) {
         />
         {canSpeak && <Button variant="secondary" onClick={toggleVoice}>{listening ? "Stop listening" : "Speak instead"}</Button>}
         <div style={{ fontSize: "12px", lineHeight: 1.5, color: "var(--text-muted)" }}>
-          Your words help this assessment only. The app saves the observations you approve below, not the recording or transcript.
+          Your text is sent to the secure AI assessment service for this request. The app saves the observations you approve and the result, not an audio recording.
         </div>
       </Card>
 
@@ -170,7 +164,12 @@ export function Navigator({ navigate }) {
             </Card>
           )}
           {assessment.result.note && <div style={{ padding: "0 4px", fontSize: "12.5px", lineHeight: 1.55, color: "var(--text-muted)" }}>{assessment.result.note}</div>}
-          {assessment.result.isExample && <Button variant="secondary" onClick={connectModel}>{hasEndpoint() ? "Change live model endpoint" : "Connect live model"}</Button>}
+          {assessment.result.isExample && (
+            <Card>
+              <SectionLabel>Preview result</SectionLabel>
+              <div style={{ fontSize: "13px", lineHeight: 1.55, color: "var(--text-muted)" }}>This build is using a sample result until the production AI service is configured.</div>
+            </Card>
+          )}
         </>
       )}
     </Screen>

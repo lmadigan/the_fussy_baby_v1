@@ -9,30 +9,10 @@
 import { getObservation, isRedFlag } from "../data/vocabulary.js";
 import { CAUSES, getCause } from "../data/playbook.js";
 
-const ENDPOINT_KEY = "fussy-baby-differential-endpoint";
 const PLAYBOOK_IDS = new Set(CAUSES.map((item) => item.id));
 
 export function getEndpoint() {
-  try {
-    const stored = localStorage.getItem(ENDPOINT_KEY);
-    if (stored) return stored;
-  } catch {
-    /* localStorage unavailable */
-  }
   return import.meta.env?.VITE_DIFFERENTIAL_ENDPOINT || "";
-}
-
-export function setEndpoint(url) {
-  try {
-    if (url) localStorage.setItem(ENDPOINT_KEY, url.trim());
-    else localStorage.removeItem(ENDPOINT_KEY);
-  } catch {
-    /* localStorage unavailable */
-  }
-}
-
-export function hasEndpoint() {
-  return Boolean(getEndpoint());
 }
 
 export function symptomLabels(ids) {
@@ -63,6 +43,7 @@ export function matchPlaybookId(causeName) {
     ["latch", "tongue-tie"],
     ["tongue", "tongue-tie"],
     ["microbiome", "microbiome"],
+    ["gut context", "microbiome"],
     ["digestive", "digestive-immaturity"],
     ["gas", "digestive-immaturity"],
     ["overtired", "sensory-overload"],
@@ -160,8 +141,8 @@ export async function requestDifferential({
     signal,
   });
   if (!response.ok) {
-    const detail = await response.text().catch(() => "");
-    throw new Error(`Assessment service returned ${response.status}. ${detail.slice(0, 200)}`);
+    const payload = await response.json().catch(() => null);
+    throw new Error(payload?.error || "The assessment service is temporarily unavailable. Please try again.");
   }
   const result = normalize(await response.json(), symptoms);
   if (result.causes.length === 0) throw new Error("The assessment did not return a supported contributor. Please try again.");
@@ -214,6 +195,6 @@ function exampleDifferential(labels) {
     summary: "This symptom cluster may have more than one contributor. The strongest match shows where personalized evidence intersects with the free Playbook.",
     causes: causes.slice(0, 3),
     followUpQuestions: ["When is fussiness worst relative to feeds?", "Have the stool or skin changes been consistent across several days?"],
-    note: "This is an example assessment for exploration, not a diagnosis. Connect the live model endpoint for a personalized read.",
+    note: "This is an example assessment for exploration, not a diagnosis. The production AI service has not been configured in this build.",
   };
 }

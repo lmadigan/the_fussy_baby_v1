@@ -1,41 +1,40 @@
-# Contributor assessment proxy
+# Contributor assessment service
 
-The app asks a language model to rank possible contributors to your baby's fussiness.
-The model call can't happen safely from the browser (it needs an API key), so
-this tiny worker sits in between: the app sends it symptoms, it asks Claude,
-and it returns clean JSON. **This worker is the only place your API key lives.**
+The Navigator calls this Cloudflare Worker rather than a model from the browser.
+The Anthropic key remains a Worker secret, and Claude can return only the eight
+curated Playbook contributors. Safety alerts remain deterministic in the app.
 
-## Deploy once
+## Deploy the Worker
 
 ```bash
-npm install -g wrangler
-wrangler login
+npx wrangler login
 cd server
-wrangler secret put ANTHROPIC_API_KEY   # paste your Anthropic API key
-wrangler deploy
+npx wrangler secret put ANTHROPIC_API_KEY
+npx wrangler deploy
 ```
 
-`wrangler deploy` prints a URL like
-`https://fussy-baby-differential.<you>.workers.dev`.
+Set `ALLOW_ORIGIN` in `wrangler.toml` to the exact production site origin before
+launch. Multiple origins can be comma-separated. The Worker exposes `GET /health`
+for a configuration check and accepts assessments at `POST /`.
 
-## Connect the app
+## Connect the app build
 
-Open the Symptom Navigator, run an assessment in example mode, and tap
-**Connect live model**. Paste the worker URL. It is stored in your browser only.
+Set the public Worker URL before building the frontend:
 
-## Options
+```bash
+VITE_DIFFERENTIAL_ENDPOINT=https://fussy-baby-differential.example.workers.dev/ npm run build
+```
 
-- `MODEL` (in `wrangler.toml`) — which Claude model to use. Defaults to
-  `claude-sonnet-5`.
-- `ALLOW_ORIGIN` — set to your site origin (e.g. `https://lmadigan.github.io`)
-  to stop other sites from using your proxy. Defaults to `*` for easy setup.
+For local development, create an uncommitted `.env.local` from `.env.example`.
+Never put `ANTHROPIC_API_KEY` in a `VITE_` variable because Vite exposes those
+values to the browser.
 
-## What it does not do
+## Model contract
 
-- It does **not** diagnose — the prompt frames everything as possible causes to
-  discuss with a pediatrician.
-- It does **not** handle red flags. Those are matched in the app itself,
-  deterministically, so the “call your pediatrician” nudge never depends on a
-  model response.
-- It does **not** write protocol content. The model can select only from the
-  eight published causes; trusted app code maps each cause to the free Playbook.
+- Claude uses a JSON schema structured output and can select only curated IDs.
+- The Worker validates exact symptom evidence and drops unsupported contributors.
+- Blood-streaked stool is deterministically mapped to food protein sensitivity in
+  the client while still showing the clinician-contact alert.
+- Claude does not write protocols, prescribe treatment, or decide safety alerts.
+- Responses use `Cache-Control: no-store`; configure Cloudflare rate limiting
+  before a public launch.

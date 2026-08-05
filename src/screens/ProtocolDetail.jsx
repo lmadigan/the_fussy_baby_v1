@@ -23,8 +23,16 @@ export function ProtocolDetail({ navigate, goBack, params }) {
   return (
     <Screen eyebrow={protocolPosition(protocol)} title={protocol.title} onBack={goBack}>
       <Card>
-        <SectionLabel right={`${protocol.reviewAfterDays}-day review point`}>About this step</SectionLabel>
+        <SectionLabel>About this step</SectionLabel>
         <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.6, color: "var(--text-primary)" }}>{protocol.short}</div>
+        {protocol.approachNote && (
+          <div style={{ padding: "10px 12px", background: "var(--accent-signal-bg)", borderRadius: "var(--radius-field)", fontSize: "13px", lineHeight: 1.5, color: "var(--text-primary)" }}>
+            {protocol.approachNote}
+          </div>
+        )}
+        <div style={{ padding: "10px 12px", background: "var(--surface-inset)", border: "1px solid var(--border-default)", borderRadius: "var(--radius-field)", fontSize: "13px", lineHeight: 1.5, color: "var(--text-brand)", fontWeight: 600 }}>
+          {protocol.reviewWindow}
+        </div>
       </Card>
       <Card>
         <SectionLabel right={<StatusBadge tone="calm">{done} of {protocol.checklist.length}</StatusBadge>}>Checklist</SectionLabel>
@@ -44,6 +52,17 @@ export function ProtocolDetail({ navigate, goBack, params }) {
         </div>
       </Card>
       <Card>
+        <SectionLabel>Contact a healthcare professional sooner if</SectionLabel>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          {protocol.contactSooner.map((item) => (
+            <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: "10px", fontSize: "13.5px", lineHeight: 1.5, color: "var(--text-primary)" }}>
+              <span aria-hidden="true" style={{ color: "var(--text-brand)", fontWeight: 700 }}>!</span>
+              <span>{item}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+      <Card>
         <SectionLabel>Outcome review</SectionLabel>
         <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-primary)" }}>{protocol.reviewQuestion}</div>
         {plan ? (
@@ -53,6 +72,16 @@ export function ProtocolDetail({ navigate, goBack, params }) {
           </>
         ) : <Button onClick={start}>Start this free plan</Button>}
       </Card>
+      <details style={{ background: "var(--surface-card)", border: "1px solid var(--border-default)", borderRadius: "var(--radius-card)", padding: "14px 16px", boxShadow: "var(--shadow-card)" }}>
+        <summary style={{ cursor: "pointer", color: "var(--text-brand)", fontSize: "14px", fontWeight: 600 }}>Evidence behind this step</summary>
+        <div style={{ display: "flex", flexDirection: "column", gap: "10px", paddingTop: "14px" }}>
+          {protocol.sources.map((source) => (
+            <a key={source.url} href={source.url} target="_blank" rel="noreferrer" style={{ color: "var(--text-brand)", fontSize: "13px", lineHeight: 1.45 }}>
+              {source.label}
+            </a>
+          ))}
+        </div>
+      </details>
       <div style={{ fontSize: "12px", lineHeight: 1.5, color: "var(--text-muted)", textAlign: "center" }}>Protocol content is educational and does not replace care from a healthcare professional.</div>
     </Screen>
   );

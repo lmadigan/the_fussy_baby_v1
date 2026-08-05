@@ -34,7 +34,7 @@ export function buildDemoState() {
         },
         {
           playbookId: "silent-reflux",
-          name: "Silent Reflux",
+          name: "Reflux-Related Discomfort",
           description: "Reflux-like discomfort may be overlapping with the food-related symptom cluster.",
           matching: ["Spit up", "Fussiness after feeds"],
           notFitting: ["Reflux alone would not usually explain blood-streaked stool or eczema."],

@@ -31,15 +31,9 @@ export function OutcomeReview({ navigate, goBack, params }) {
   };
 
   if (saved) {
-    const interpretation = result === "clearly_better" && followed === "yes"
-      ? "This result makes the contributor more consistent with what you observed. Follow the protocol's confirmation or clinician-guided next step rather than treating improvement as a diagnosis."
-      : result === "somewhat_better"
-        ? "This may explain part of the fussiness. Another contributor could still be involved."
-        : result === "unchanged" && followed === "yes"
-          ? "This contributor may be less likely to explain the full picture. Consider the next Playbook step or reassess with Navigator."
-          : result === "worse"
-            ? "Stop and reassess the plan. Contact a healthcare professional about worsening or concerning symptoms."
-            : "The protocol was not completed consistently enough to interpret. Restart or discuss a different plan.";
+    const interpretation = followed === "yes"
+      ? protocol.outcomeGuidance[result]
+      : "The plan was not followed consistently enough to interpret the result. Restart only if the plan still fits, or discuss a different next step with a healthcare professional.";
     return (
       <Screen eyebrow="Outcome saved" title="What this means">
         <Card>
