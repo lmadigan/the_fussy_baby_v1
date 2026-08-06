@@ -258,7 +258,7 @@ Never patterns. Surfaced immediately in Detective at logging time
 
 ### Layer 3 — Language (AI-assisted)
 
-An LLM (Claude) is used in three seats, all optional enhancements to a
+An LLM is used in three seats, all optional enhancements to a
 deterministic core that works without them:
 
 **Extraction.** Map natural speech onto the vocabulary

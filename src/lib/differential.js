@@ -10,9 +10,10 @@ import { getObservation, isRedFlag } from "../data/vocabulary.js";
 import { CAUSES, getCause } from "../data/playbook.js";
 
 const PLAYBOOK_IDS = new Set(CAUSES.map((item) => item.id));
+const DEFAULT_ENDPOINT = "https://fussy-baby-differential.laurenmadigan51.workers.dev";
 
 export function getEndpoint() {
-  return import.meta.env?.VITE_DIFFERENTIAL_ENDPOINT || "";
+  return import.meta.env?.VITE_DIFFERENTIAL_ENDPOINT || DEFAULT_ENDPOINT;
 }
 
 export function symptomLabels(ids) {

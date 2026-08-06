@@ -3,9 +3,9 @@ main = "worker.js"
 compatibility_date = "2024-11-01"
 
 # Set your API key as a secret (never commit it):
-#   wrangler secret put ANTHROPIC_API_KEY
+#   wrangler secret put OPENAI_API_KEY
 #
 # Optional vars:
 [vars]
-MODEL = "claude-sonnet-5"
-ALLOW_ORIGIN = "https://lmadigan.github.io"
+MODEL = "gpt-5.6-terra"
+ALLOW_ORIGIN = "https://lmadigan.github.io,http://127.0.0.1:4173,http://127.0.0.1:4174,http://localhost:5173"

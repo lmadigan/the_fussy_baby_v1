@@ -1,6 +1,6 @@
 /**
  * Cloudflare Worker for the model-driven contributor assessment.
- * The Worker owns the API key and constrains model output to the Playbook.
+ * The Worker owns the OpenAI API key and constrains model output to the Playbook.
  */
 
 const PLAYBOOK = [
@@ -137,29 +137,41 @@ async function requestAssessment(body, env) {
     `Additional parent context: ${String(body.additionalContext || "not provided").slice(0, 2000)}`,
   ].join("\n");
 
-  const modelResponse = await fetch("https://api.anthropic.com/v1/messages", {
+  const modelResponse = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": env.ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
+      Authorization: `Bearer ${env.OPENAI_API_KEY}`,
     },
     body: JSON.stringify({
-      model: env.MODEL || "claude-sonnet-5",
-      max_tokens: 1600,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: "user", content: userMessage }],
-      output_config: { format: { type: "json_schema", schema: OUTPUT_SCHEMA } },
+      model: env.MODEL || "gpt-5.6-terra",
+      instructions: SYSTEM_PROMPT,
+      input: userMessage,
+      max_output_tokens: 1600,
+      reasoning: { effort: "low" },
+      store: false,
+      text: {
+        verbosity: "low",
+        format: {
+          type: "json_schema",
+          name: "fussy_baby_assessment",
+          strict: true,
+          schema: OUTPUT_SCHEMA,
+        },
+      },
     }),
   });
 
   if (!modelResponse.ok) return { error: "The assessment service is temporarily unavailable.", status: 502 };
 
   const data = await modelResponse.json();
-  if (data.stop_reason === "refusal") return { error: "The assessment could not be completed from those observations.", status: 422 };
-  if (data.stop_reason === "max_tokens") return { error: "The assessment response was incomplete. Please try again.", status: 502 };
+  if (data.status === "incomplete") return { error: "The assessment response was incomplete. Please try again.", status: 502 };
 
-  const text = (data.content || []).map((block) => block.text || "").join("");
+  const content = (data.output || []).flatMap((item) => item.content || []);
+  if (content.some((item) => item.type === "refusal")) {
+    return { error: "The assessment could not be completed from those observations.", status: 422 };
+  }
+  const text = content.filter((item) => item.type === "output_text").map((item) => item.text || "").join("");
   try {
     const result = normalize(JSON.parse(text), symptoms);
     if (result.causes.length === 0) throw new Error("No supported contributors returned.");
@@ -177,10 +189,10 @@ export default {
 
     const url = new URL(request.url);
     if (request.method === "GET" && url.pathname === "/health") {
-      return json({ status: "ok", model: env.MODEL || "claude-sonnet-5" }, 200, origin);
+      return json({ status: "ok", model: env.MODEL || "gpt-5.6-terra" }, 200, origin);
     }
     if (request.method !== "POST" || url.pathname !== "/") return json({ error: "Not found" }, 404, origin);
-    if (!env.ANTHROPIC_API_KEY) return json({ error: "Assessment service is not configured" }, 503, origin);
+    if (!env.OPENAI_API_KEY) return json({ error: "Assessment service is not configured" }, 503, origin);
 
     const contentLength = Number(request.headers.get("Content-Length") || 0);
     if (contentLength > 16000) return json({ error: "Request is too large" }, 413, origin);

@@ -343,7 +343,7 @@ Return:
 
 ### Provider independence
 
-The client contract remains model-provider neutral. The initial Worker may call Claude, but model selection is not part of the user-facing product identity.
+The client contract remains model-provider neutral. The initial Worker calls the OpenAI Responses API, but model selection is not part of the user-facing product identity.
 
 ## 11. Safety
 

@@ -1,7 +1,7 @@
 # Contributor assessment service
 
 The Navigator calls this Cloudflare Worker rather than a model from the browser.
-The Anthropic key remains a Worker secret, and Claude can return only the eight
+The OpenAI key remains a Worker secret, and GPT can return only the eight
 curated Playbook contributors. Safety alerts remain deterministic in the app.
 
 ## Deploy the Worker
@@ -9,7 +9,7 @@ curated Playbook contributors. Safety alerts remain deterministic in the app.
 ```bash
 npx wrangler login
 cd server
-npx wrangler secret put ANTHROPIC_API_KEY
+npx wrangler secret put OPENAI_API_KEY
 npx wrangler deploy
 ```
 
@@ -26,15 +26,15 @@ VITE_DIFFERENTIAL_ENDPOINT=https://fussy-baby-differential.example.workers.dev/ 
 ```
 
 For local development, create an uncommitted `.env.local` from `.env.example`.
-Never put `ANTHROPIC_API_KEY` in a `VITE_` variable because Vite exposes those
+Never put `OPENAI_API_KEY` in a `VITE_` variable because Vite exposes those
 values to the browser.
 
 ## Model contract
 
-- Claude uses a JSON schema structured output and can select only curated IDs.
+- OpenAI uses a JSON schema structured output and can select only curated IDs.
 - The Worker validates exact symptom evidence and drops unsupported contributors.
 - Blood-streaked stool is deterministically mapped to food protein sensitivity in
   the client while still showing the clinician-contact alert.
-- Claude does not write protocols, prescribe treatment, or decide safety alerts.
+- GPT does not write protocols, prescribe treatment, or decide safety alerts.
 - Responses use `Cache-Control: no-store`; configure Cloudflare rate limiting
   before a public launch.
