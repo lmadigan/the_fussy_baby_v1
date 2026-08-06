@@ -162,7 +162,16 @@ async function requestAssessment(body, env) {
     }),
   });
 
-  if (!modelResponse.ok) return { error: "The assessment service is temporarily unavailable.", status: 502 };
+  if (!modelResponse.ok) {
+    const providerError = await modelResponse.json().catch(() => null);
+    console.error("OpenAI request failed", {
+      status: modelResponse.status,
+      type: providerError?.error?.type,
+      code: providerError?.error?.code,
+      param: providerError?.error?.param,
+    });
+    return { error: "The assessment service is temporarily unavailable.", status: 502 };
+  }
 
   const data = await modelResponse.json();
   if (data.status === "incomplete") return { error: "The assessment response was incomplete. Please try again.", status: 502 };
