@@ -11,7 +11,7 @@ export function Playbook({ navigate, params = {} }) {
   const items = view === "protocol" ? PROTOCOL_STEPS : CAUSES;
 
   return (
-    <Screen eyebrow="Free reference" title="The Fussy Baby Playbook">
+    <Screen title="The Fussy Baby Playbook">
       <div role="tablist" aria-label="Playbook view" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", padding: "3px", borderRadius: "var(--radius-pill)", background: "var(--surface-inset)", border: "1px solid var(--border-default)" }}>
         {[{ id: "protocol", label: "Protocol" }, { id: "causes", label: "Causes" }].map((option) => (
           <button
@@ -29,7 +29,7 @@ export function Playbook({ navigate, params = {} }) {
       {view === "protocol" ? (
         <>
           <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.6, color: "var(--text-muted)" }}>
-            Four core steps create the investigation path. Digestive and sensory support can run alongside it.
+            Use these four core steps to explore why your baby may seem fussier than usual. Along the way, try the digestive and sensory support steps that seem helpful for your baby.
           </div>
           {items.map((step) => (
             <Card key={step.id}>
