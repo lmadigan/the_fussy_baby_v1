@@ -35,7 +35,10 @@ export function ProtocolDetail({ navigate, goBack, params }) {
         </div>
       </Card>
       <Card>
-        <SectionLabel right={<StatusBadge tone="calm">{done} of {protocol.checklist.length}</StatusBadge>}>Checklist</SectionLabel>
+        <SectionLabel right={<StatusBadge tone="calm">{done} of {protocol.checklist.length}</StatusBadge>}>{protocol.checklistLabel ?? "Checklist"}</SectionLabel>
+        {protocol.checklistIntro && (
+          <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)" }}>{protocol.checklistIntro}</div>
+        )}
         <div style={{ height: "6px", borderRadius: "99px", background: "var(--surface-inset)", border: "1px solid var(--border-default)", overflow: "hidden" }}>
           <div style={{ height: "100%", width: `${percent}%`, background: "var(--accent-calm)", borderRadius: "99px" }} />
         </div>
@@ -51,6 +54,34 @@ export function ProtocolDetail({ navigate, goBack, params }) {
           })}
         </div>
       </Card>
+      {protocol.helpfulResources?.length > 0 && (
+        <Card>
+          <SectionLabel>Helpful resources</SectionLabel>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            {protocol.helpfulResources.map((resource) => (
+              <a
+                key={resource.url}
+                href={resource.url}
+                target="_blank"
+                rel="noreferrer"
+                style={{ display: "flex", flexDirection: "column", gap: "4px", padding: "12px", background: "var(--surface-inset)", border: "1px solid var(--border-default)", borderRadius: "var(--radius-field)", color: "inherit", textDecoration: "none" }}
+              >
+                <span style={{ fontSize: "14px", lineHeight: 1.4, fontWeight: 650, color: "var(--text-primary)" }}>{resource.title}</span>
+                <span style={{ fontSize: "13px", lineHeight: 1.45, color: "var(--text-muted)" }}>{resource.description}</span>
+                <span style={{ fontSize: "13px", lineHeight: 1.4, fontWeight: 600, color: "var(--text-brand)" }}>{resource.action}</span>
+              </a>
+            ))}
+          </div>
+        </Card>
+      )}
+      {protocol.relatedSteps?.map((step) => (
+        <Card key={step.protocolId}>
+          <SectionLabel>Where to go next</SectionLabel>
+          <div style={{ fontSize: "14px", lineHeight: 1.45, fontWeight: 650, color: "var(--text-primary)" }}>{step.title}</div>
+          <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)" }}>{step.description}</div>
+          <Button variant="secondary" onClick={() => navigate("protocol", { id: step.protocolId })}>{step.action}</Button>
+        </Card>
+      ))}
       <Card>
         <SectionLabel>Contact a healthcare professional sooner if</SectionLabel>
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
