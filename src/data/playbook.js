@@ -22,10 +22,11 @@ export const PROTOCOL_STEPS = [
       "Schedule a feeding assessment with a board-certified lactation consultant (IBCLC) as soon as you can. Ask them to watch a full feed and evaluate positioning, latch, milk transfer, oral movement, comfort, and milk flow.",
       "Before the appointment, note any leaking, coughing, fatigue, latch pain, or whether your baby seems satisfied after feeds. If these issues are intermittent or the appointment is virtual, record a feed to share.",
       "While you wait, try a deeper latch: hold your baby close with their nose level with your nipple, wait for a wide-open mouth, and bring them to the breast chin-first. If the latch stays painful after the first few sucks, gently break the seal and try again.",
-      "Listen and look during a feed. Rounded cheeks, audible swallowing, and a comfortable latch are encouraging signs. If clicking, leaking, dimpled cheeks, or flared lips continue, show the IBCLC and ask them to check your baby's seal and oral movement.",
+      "Listen and look during a feed. Healthy milk transfer often has a steady suck-swallow-breathe rhythm, deeper jaw movements, brief pauses for swallowing, rounded cheeks, and little leaking. Clicking, smacking, losing the seal, coughing, pulling away, or frantic gulping can mean your baby is swallowing air or struggling with the milk flow. Show these signs to the IBCLC if they continue.",
+      "Ask the IBCLC to assess your baby's tongue movement as part of the full feeding evaluation. A tongue tie matters when it limits feeding function, such as maintaining a latch or transferring milk, after positioning and latch have been addressed. If it is suspected, review next steps with the pediatrician before pursuing a procedure.",
       "If your baby has a persistent head tilt, turns toward one side, or cannot feed comfortably in one position, contact the pediatrician and ask whether a pediatric physical therapy assessment is appropriate. Do not force neck stretches without guidance.",
       "If your baby takes a bottle, try paced feeding and a slower-flow nipple when they cough, gulp, pull away, or spill milk. Repeated coughing or choking needs pediatric evaluation and may need a feeding therapist.",
-      "If feeding is still painful or milk transfer remains poor after positioning and latch support, ask the IBCLC and pediatrician for a coordinated oral-function evaluation. Decisions about a tongue-tie procedure should be based on feeding function, not appearance alone.",
+      "If feeding concerns continue after positioning and latch support, ask the IBCLC and pediatrician to coordinate the next evaluation rather than assuming one sign points to a single cause.",
     ],
     helpfulResources: [
       {
