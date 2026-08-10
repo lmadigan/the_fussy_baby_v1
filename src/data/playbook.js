@@ -120,7 +120,7 @@ export const PROTOCOL_STEPS = [
     timing: "Weeks 2–6",
     title: "Maternal Elimination Diet",
     short: "Small amounts of food proteins can pass into breast milk. Most babies tolerate them, but dairy, soy, and egg are among the food proteins most often linked to reactions in breastfed babies. When stool, skin, feeding, and reflux-like symptoms point toward food protein sensitivity, these are the three foods this Playbook investigates first.",
-    approachNote: "This Playbook recommends removing dairy, soy, and egg together for one defined trial. If your baby reacts to more than one food and you remove only dairy, symptoms may continue and make the result difficult to interpret. Reintroducing the foods one at a time afterward is what helps identify which food or foods were contributing.",
+    approachNote: "Because dairy and soy sensitivities can overlap, and egg is another food protein linked to reactions through breast milk, this Playbook recommends removing all three together. If symptoms improve, add them back one at a time to learn which food or foods were contributing. If you have a strong hunch about another food because you have noticed the same symptoms after eating it more than once, add it to the trial as well. This can feel like a lot, but the goal is a short, structured trial that gives you a clearer answer, not a permanently restricted diet.",
     reviewAfterDays: 14,
     reviewWindow: "First review after 2 weeks; continue for up to 4 weeks if symptoms are partly improving",
     checklist: [
@@ -130,7 +130,7 @@ export const PROTOCOL_STEPS = [
       "For dairy, check labels for milk, cheese, yogurt, butter, cream, whey, casein, and ghee.",
       "For soy, check labels for soy protein and other soy ingredients. Ask the dietitian how strict your trial needs to be for soybean oil or soy lecithin.",
       "For egg, check foods such as pasta, baked goods, dressings, and mayonnaise.",
-      "If you have repeatedly noticed the same symptom after another specific food, discuss adding that food to the trial. Do not add foods because of one difficult day.",
+      "If you have repeatedly noticed the same symptoms after eating another specific food, add that food to the trial and include it in your one-at-a-time reintroduction plan. Do not broaden the diet because of one difficult day.",
       "If your baby uses formula, ask the pediatrician whether a 2–4 week extensively hydrolyzed formula trial makes sense. Amino-acid formula is usually reserved for severe or unresolved cases.",
       "Record the start date, read every label, and avoid unrelated diet, formula, medication, or supplement changes during the trial.",
       "Some symptoms may shift sooner, but wait 2 weeks before judging the full pattern. If symptoms are partly better, continue the agreed plan for up to 4 weeks.",
