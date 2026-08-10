@@ -13,7 +13,7 @@ export const PROTOCOL_STEPS = [
     track: "core",
     timing: "Days 1–7",
     title: "Rule Out Structural or Oral Issues",
-    short: "Start here when feeding is painful, tiring, or difficult. Positioning and latch can often be improved, while persistent trouble may point to oral function, body alignment, or milk-flow issues that deserve a closer look.",
+    short: "Start here to check how your baby is latching and feeding. Latch pain, clicking, leaking, gulping, swallowing air, or a strong preference for one feeding position can all signal that positioning, oral function, body alignment, or milk flow deserves a closer look.",
     reviewAfterDays: 7,
     reviewWindow: "Schedule a feeding assessment as soon as you can. Use the techniques and resources below while you wait.",
     checklistLabel: "Your next steps",
