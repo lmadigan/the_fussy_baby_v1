@@ -126,7 +126,7 @@ export const PROTOCOL_STEPS = [
     checklist: [
       "Contact a healthcare professional promptly for blood-streaked stool and review growth, feeding, skin, and stool symptoms together.",
       "Choose the symptoms you will use to judge the trial, such as visible blood or mucus, eczema, feeding pain, vomiting, or fussiness after feeds.",
-      "If your baby is breastfed, begin a 2–4 week trial without dairy, soy, and egg, ideally with support from the pediatrician or a dietitian.",
+      "If your baby is breastfed, begin a 2–4 week trial with dairy, soy, and egg fully eliminated, ideally with support from the pediatrician or a dietitian. This is an all-or-nothing trial: simply eating less of these foods will not give you a clear result.",
       "For dairy, check labels for milk, cheese, yogurt, butter, cream, whey, casein, and ghee.",
       "For soy, read the full ingredient list for soy protein and other soy ingredients. Soy can show up in unexpected places, including sauces, breads, dressings, and restaurant cooking oils. When eating out, ask whether the vegetable oil contains soybean oil.",
       "For egg, check foods such as pasta, baked goods, dressings, and mayonnaise.",
