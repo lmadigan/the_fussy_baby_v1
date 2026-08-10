@@ -15,7 +15,7 @@ export const PROTOCOL_STEPS = [
     title: "Rule Out Structural or Oral Issues",
     short: "Start here to check how your baby is latching and feeding. Latch pain, clicking, leaking, gulping, swallowing air, or a strong preference for one feeding position can all signal that positioning, oral function, body alignment, or milk flow deserves a closer look.",
     reviewAfterDays: 7,
-    reviewWindow: "Schedule a feeding assessment as soon as you can. Use the techniques and resources below while you wait.",
+    reviewWindow: "Schedule a feeding assessment as soon as you can, if possible. The free resources below can help while you wait or if an assessment is not possible for you.",
     checklistLabel: "Your next steps",
     checklistIntro: "Start with an assessment if one is available to you. The remaining steps help you prepare, try simple adjustments, and find the right follow-up.",
     checklist: [
