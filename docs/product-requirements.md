@@ -66,7 +66,7 @@ The original Playbook is the methodology and content source, but it is not autom
 For MVP:
 
 - Do not recommend an inclined sleep surface. Safe-sleep language must require a firm, flat, non-inclined surface and back sleeping.
-- Do not tell a breastfeeding parent to broadly eliminate dairy, soy, and egg without clinician or dietitian guidance.
+- When the food-sensitivity symptom pattern fits, the Playbook may recommend one defined dairy, soy, and egg trial while encouraging pediatrician or dietitian support, nutrition planning, and one-at-a-time reintroduction.
 - Do not prescribe medication, formula, supplements, probiotics, dosing, procedures, or supply-management changes.
 - Do not present craniosacral therapy or chiropractic treatment as established care.
 - Blood in stool and other red flags must surface the deterministic clinician message immediately.

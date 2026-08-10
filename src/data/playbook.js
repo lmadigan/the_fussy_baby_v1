@@ -119,8 +119,8 @@ export const PROTOCOL_STEPS = [
     track: "core",
     timing: "Weeks 2–6",
     title: "Maternal Elimination Diet",
-    short: "When stool, skin, feeding, and reflux-like symptoms point toward food protein sensitivity, remove dairy, soy, and egg together for one defined trial. Starting with all three gives you a clearer answer faster than removing them one at a time.",
-    approachNote: "This Playbook starts breastfeeding parents with dairy, soy, and egg together. That is broader than many clinical pathways, which begin with cow's milk alone, but it reflects the approach that worked for The Fussy Baby's founder and can create a fuller first test when the symptom cluster is strong.",
+    short: "Small amounts of food proteins can pass into breast milk. Most babies tolerate them, but dairy, soy, and egg are among the food proteins most often linked to reactions in breastfed babies. When stool, skin, feeding, and reflux-like symptoms point toward food protein sensitivity, these are the three foods this Playbook investigates first.",
+    approachNote: "This Playbook recommends removing dairy, soy, and egg together for one defined trial. If your baby reacts to more than one food and you remove only dairy, symptoms may continue and make the result difficult to interpret. Reintroducing the foods one at a time afterward is what helps identify which food or foods were contributing.",
     reviewAfterDays: 14,
     reviewWindow: "First review after 2 weeks; continue for up to 4 weeks if symptoms are partly improving",
     checklist: [
