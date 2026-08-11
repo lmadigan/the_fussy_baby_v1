@@ -338,7 +338,7 @@ export const CAUSES = [
     rank: 4,
     title: "Fast Flow / Oversupply",
     evidenceLabel: "Commonly discussed",
-    short: "Fast milk flow can make feeds gulping, sputtery, and uncomfortable and can overlap with other digestive signs.",
+    short: "A fast letdown or oversupply can cause gulping, sputtering, pulling away, and discomfort during or after feeds.",
     whatIsIt: "A baby managing fast flow may cough, pull away, swallow air, or have green or foamy stools. This contributor is most relevant to breastfeeding and should be interpreted in feeding context.",
     signs: ["gulping", "pulling-off", "green-stool", "foamy-stool", "gas", "explosive-stool", "fussy-after-feeds"],
     protocolStepId: "feeding-dynamics",
