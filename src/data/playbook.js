@@ -327,7 +327,7 @@ export const CAUSES = [
     rank: 3,
     title: "Oral Function / Possible Tongue Tie",
     evidenceLabel: "Commonly discussed",
-    short: "If your baby clicks, leaks milk, gulps air, or struggles to stay latched, the issue could be positioning, milk flow, or how their mouth and tongue move. A tongue tie is one possible cause, but not the only one.",
+    short: "If your baby clicks, leaks milk, slips off the breast or bottle, or has trouble maintaining a comfortable latch, positioning or the way their mouth and tongue move may be involved. A tongue tie is one possible cause, but not the only one.",
     whatIsIt: "A functional feeding assessment matters more than appearance alone. Clicking or latch pain does not confirm a tie, and procedures are generally reserved for significant functional problems that persist after feeding support.",
     signs: ["clicking", "milk-leaking", "short-feeds", "frequent-feeds", "latch-pain", "gas", "fussy-after-feeds"],
     protocolStepId: "structural-oral",
