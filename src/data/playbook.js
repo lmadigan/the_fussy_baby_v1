@@ -296,6 +296,13 @@ export const CAUSES = [
     evidenceLabel: "Commonly discussed",
     short: "Some babies react to proteins in breast milk or formula. This may show up as blood or mucus in poop, eczema, spit-up, or fussiness after feeding.",
     whatIsIt: "Small amounts of dietary proteins such as cow's milk, soy, and egg can pass into breast milk. In some babies, the developing gut and immune system react to them. One symptom alone may have many explanations, but food protein sensitivity becomes more likely when several signs appear together, such as blood or mucus in poop, eczema, and ongoing discomfort during or after feeds. Many delayed gut reactions improve during the first year, although the timing varies and a planned reintroduction is still needed.",
+    foodListIntro: "There are no reliable percentages for food reactions through breast milk, but these are the proteins most often considered:",
+    commonFoods: [
+      { name: "Cow's milk protein", detail: "The food protein most often linked to reactions in breastfed babies." },
+      { name: "Soy protein", detail: "Another possible trigger that is often considered alongside dairy." },
+      { name: "Egg protein", detail: "Another common infant food allergen, although reactions through breast milk are less well studied." },
+    ],
+    ourApproach: "Many clinical guidelines begin with cow's milk alone, then consider soy or egg if symptoms continue. If you are not sure where to begin, The Fussy Baby recommends a short, complete trial without dairy, soy, and egg. This is intentionally broader than standard guidance and reflects what worked for our founder, her sister-in-law, and other mothers interviewed for this project. If symptoms improve, add the foods back one at a time to identify which food or foods were involved. Ideally, plan the trial with your pediatrician or a dietitian.",
     signs: ["green-stool", "mucus-stool", "blood-stool", "eczema", "rash", "hives", "facial-rash-feeds", "diaper-rash", "fussy-after-feeds", "spit-up"],
     protocolStepId: "food-protein",
     related: ["silent-reflux", "microbiome"],

@@ -30,6 +30,29 @@ export function CauseDetail({ navigate, goBack, params }) {
         <SectionLabel>What it means</SectionLabel>
         <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.6, color: "var(--text-primary)" }}>{cause.whatIsIt}</div>
       </Card>
+      {cause.commonFoods?.length > 0 && (
+        <Card>
+          <SectionLabel>Foods most often involved</SectionLabel>
+          <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)" }}>{cause.foodListIntro}</div>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {cause.commonFoods.map((food, index) => (
+              <div key={food.name} style={{ display: "grid", gridTemplateColumns: "24px minmax(0, 1fr)", gap: "10px", padding: "12px 0", borderBottom: index < cause.commonFoods.length - 1 ? "1px solid var(--border-default)" : "none" }}>
+                <div style={{ fontSize: "13px", lineHeight: 1.5, fontWeight: 700, color: "var(--text-brand)" }}>{index + 1}</div>
+                <div>
+                  <div style={{ fontSize: "14px", lineHeight: 1.45, fontWeight: 650, color: "var(--text-primary)" }}>{food.name}</div>
+                  <div style={{ marginTop: "2px", fontSize: "13.5px", lineHeight: 1.5, color: "var(--text-muted)" }}>{food.detail}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
+      {cause.ourApproach && (
+        <Card>
+          <SectionLabel>Our approach</SectionLabel>
+          <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.6, color: "var(--text-primary)" }}>{cause.ourApproach}</div>
+        </Card>
+      )}
       <Card>
         <SectionLabel>Common signs</SectionLabel>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>{cause.signs.map((id) => <Tag key={id}>{getObservation(id)?.label ?? id}</Tag>)}</div>
