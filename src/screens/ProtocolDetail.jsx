@@ -117,17 +117,19 @@ export function ProtocolDetail({ navigate, goBack, params }) {
           <Button variant="secondary" onClick={() => navigate("protocol", { id: step.protocolId })}>{step.action}</Button>
         </Card>
       ))}
-      <Card>
-        <SectionLabel>Contact a healthcare professional sooner if</SectionLabel>
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-          {protocol.contactSooner.map((item) => (
-            <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: "10px", fontSize: "13.5px", lineHeight: 1.5, color: "var(--text-primary)" }}>
-              <span aria-hidden="true" style={{ color: "var(--text-brand)", fontWeight: 700 }}>!</span>
-              <span>{item}</span>
-            </div>
-          ))}
-        </div>
-      </Card>
+      {protocol.contactSooner?.length > 0 && (
+        <Card>
+          <SectionLabel>Contact a healthcare professional sooner if</SectionLabel>
+          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            {protocol.contactSooner.map((item) => (
+              <div key={item} style={{ display: "flex", alignItems: "flex-start", gap: "10px", fontSize: "13.5px", lineHeight: 1.5, color: "var(--text-primary)" }}>
+                <span aria-hidden="true" style={{ color: "var(--text-brand)", fontWeight: 700 }}>!</span>
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
       <Card>
         <SectionLabel>Outcome review</SectionLabel>
         <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.55, color: "var(--text-primary)" }}>{protocol.reviewQuestion}</div>

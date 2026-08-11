@@ -267,17 +267,13 @@ export const PROTOCOL_STEPS = [
       "First check feeding, diaper, temperature, clothing, and fingers and toes for anything wrapped tightly around them.",
       "Reduce stimulation during the hardest part of the day with dimmer light, fewer visitors or transitions, and a quieter environment.",
       "Try the 5 S's together: swaddle, side or stomach hold, shush, swing or rock gently, and suck. Side or stomach positioning is only for an awake baby being held; every sleep begins flat on the back.",
-      "Use babywearing only with a clear airway and according to the carrier's safety instructions.",
+      "Use babywearing with a clear airway and follow the carrier's safety instructions. The carrier should hold your baby snugly, like a hug. Because it is a new sensation, your baby may need a few tries or a couple of minutes of gentle movement before settling.",
       "Use white noise softly, place the machine away from your baby, and turn it off when it is no longer needed.",
       "Try gentle clockwise tummy massage or bicycle legs for gas-related discomfort.",
-      "For a persistent head preference or body asymmetry, ask the pediatrician about a licensed pediatric physical therapist. Evidence for infant chiropractic and craniosacral therapy is limited.",
-      "If you feel overwhelmed, place baby on their back in an empty crib or other safe sleep space, step away, and call someone for support. Never shake a baby.",
+      "If it fits your budget and lifestyle, you may choose to discuss gentle bodywork, such as craniosacral therapy or care from a licensed chiropractor with infant experience, with your pediatrician. Some families report that it helps with physical tightness or fussiness, but clinical research has not established a clear benefit. Avoid forceful neck or spinal manipulation.",
     ],
     reviewQuestion: "After trying a consistent calming routine, are the hardest periods shorter or more manageable?",
-    contactSooner: [
-      "Crying is suddenly different, high-pitched, truly inconsolable, or paired with fever, breathing trouble, vomiting, poor feeding, unusual sleepiness, or injury.",
-      "You are worried about your ability to keep your baby or yourself safe. Place your baby in a safe sleep space and get immediate support.",
-    ],
+    contactSooner: [],
     outcomeGuidance: {
       clearly_better: "Keep the smallest calming routine that reliably helps. Sensory load may be part of the pattern even when another contributor also exists.",
       somewhat_better: "Keep the calming routine as support and continue investigating any feeding, stool, skin, or growth concern.",
@@ -286,6 +282,7 @@ export const PROTOCOL_STEPS = [
     },
     sources: [
       { label: "AAP: Calming a fussy baby safely", url: "https://www.healthychildren.org/english/ages-stages/baby/crying-colic/pages/Calming-A-Fussy-Baby.aspx" },
+      { label: "Cochrane: Manipulative therapies for infant colic", url: "https://www.cochrane.org/evidence/CD004796_manipulative-therapies-infantile-colic" },
     ],
     relatedCauseIds: ["sensory-overload"],
   },
