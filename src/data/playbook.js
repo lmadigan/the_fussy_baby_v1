@@ -182,7 +182,7 @@ export const PROTOCOL_STEPS = [
     reviewAfterDays: 14,
     reviewWindow: "Follow one agreed reflux plan for 2 weeks before judging it",
     checklist: [
-      "Before the appointment, write down the clearest patterns: arching, feeding for comfort, spit-up or wet burps, crying after feeds, and difficulty settling.",
+      "Write down the clearest patterns to share with your pediatrician: arching, feeding for comfort, spit-up or wet burps, crying after feeds, and difficulty settling.",
       "Ask the pediatrician to evaluate reflux-related discomfort and other causes that can look similar, especially food protein sensitivity and feeding-flow issues.",
       "Review feeding volume, frequency, flow, and technique. If the pediatrician recommends it, try smaller or more frequent feeds without reducing the total amount your baby needs.",
       "Hold your baby upright for 20–30 minutes after feeds when practical.",
