@@ -43,7 +43,7 @@ export function Playbook({ navigate, params = {} }) {
       ) : (
         <>
           <div style={{ fontSize: "var(--type-body-size)", lineHeight: 1.6, color: "var(--text-muted)" }}>
-            Browse the contributors most often discussed in the original Playbook. Their order is educational, not a medical probability.
+            Browse possible causes of baby fussiness, ordered by how often they appeared in our research across parenting blogs, public forums, and moms' groups.
           </div>
           {items.map((cause) => (
             <Card key={cause.id}>
