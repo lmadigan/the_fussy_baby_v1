@@ -349,7 +349,7 @@ export const CAUSES = [
     rank: 5,
     title: "Developing Gut Microbiome",
     evidenceLabel: "Limited / developing",
-    short: "Your baby's gut microbiome is still developing. Birth, antibiotic, and feeding history add context, but gas, crying, or stool changes cannot tell us on their own that it is out of balance.",
+    short: "Your baby's gut is still developing. Birth, antibiotics, and feeding can affect the bacteria that live there. But gas, crying, and poop changes are common in babies and do not automatically mean something is wrong with their gut bacteria.",
     whatIsIt: "The gut microbiome is the community of bacteria and other microorganisms living in the digestive tract. It changes quickly during infancy. Birth, antibiotics, and feeding can influence it, but no single symptom or symptom pattern shows that it is disrupted. Probiotic effects are strain-specific, which means evidence for one strain does not apply to every probiotic product.",
     signs: ["gas", "explosive-stool", "antibiotics", "evening-fussiness", "trouble-settling"],
     protocolStepId: "microbiome-support",
