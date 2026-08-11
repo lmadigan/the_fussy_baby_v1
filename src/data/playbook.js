@@ -328,7 +328,7 @@ export const CAUSES = [
     title: "Oral Function / Possible Tongue Tie",
     evidenceLabel: "Commonly discussed",
     short: "If your baby clicks, leaks milk, slips off the breast or bottle, or has trouble maintaining a comfortable latch, positioning or the way their mouth and tongue move may be involved. A tongue tie is one possible cause, but not the only one.",
-    whatIsIt: "A functional feeding assessment matters more than appearance alone. Clicking or latch pain does not confirm a tie, and procedures are generally reserved for significant functional problems that persist after feeding support.",
+    whatIsIt: "To feed well, your baby uses their tongue, lips, jaw, and cheeks together to latch, stay attached, and move milk. If those movements are not working well, you may hear clicking, see milk leaking, or notice your baby slipping off repeatedly. A tongue tie is a tight band of tissue under the tongue that can limit its movement, but simply seeing one does not mean it is causing the feeding problem. A feeding assessment looks at what your baby can actually do before treatment is considered.",
     signs: ["clicking", "milk-leaking", "short-feeds", "frequent-feeds", "latch-pain", "gas", "fussy-after-feeds"],
     protocolStepId: "structural-oral",
     related: ["structural-tension", "forceful-letdown"],
