@@ -308,7 +308,7 @@ export const CAUSES = [
     title: "Reflux-Related Discomfort",
     evidenceLabel: "Commonly discussed",
     short: "Reflux can appear as discomfort during or after feeds even when very little milk is visibly spit up.",
-    whatIsIt: "Reflux-like discomfort may include arching, wet burps, or feeding distress. These signs overlap with feeding mechanics and food protein sensitivity, and ordinary reflux is common, so feeding comfort and growth matter more than spit-up alone.",
+    whatIsIt: "Reflux is when milk moves back up from the stomach into the esophagus, the tube between the mouth and stomach. With normal infant reflux, milk may come out as spit-up, but the baby is generally comfortable and continues feeding and growing well. Silent reflux is an informal name for the same movement when milk does not reach the mouth or is swallowed again, so there may be little or no visible spit-up. Silent does not mean more severe. Reflux needs a closer look when it repeatedly comes with pain, feeding refusal or difficulty, poor intake, or growth concerns. Arching or fussiness alone does not prove reflux because fast milk flow, latch problems, and food protein sensitivity can look similar.",
     signs: ["arching-during-feed", "fussy-after-feeds", "wet-burps", "congestion", "sleeps-upright-only", "trouble-settling", "hiccups"],
     protocolStepId: "reflux",
     related: ["food-protein-sensitivity", "tongue-tie"],
