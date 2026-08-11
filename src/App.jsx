@@ -28,6 +28,11 @@ function Shell() {
     setRoute(prev ?? { screen: "home", params: {} });
   };
 
+  const goBackToCauses = () => {
+    stackRef.current.pop();
+    setRoute({ screen: "playbook", params: { view: "causes" } });
+  };
+
   const switchTab = (screen) => {
     stackRef.current = [];
     setRoute({ screen, params: {} });
@@ -80,7 +85,7 @@ function Shell() {
         {screen === "navigator" && <Navigator navigate={navigate} />}
         {screen === "playbook" && <Playbook navigate={navigate} params={params} />}
         {screen === "protocol" && <ProtocolDetail navigate={navigate} goBack={goBack} params={params} />}
-        {screen === "cause" && <CauseDetail navigate={navigate} goBack={goBack} params={params} />}
+        {screen === "cause" && <CauseDetail navigate={navigate} goBack={goBackToCauses} params={params} />}
         {screen === "plan" && <MyPlan navigate={navigate} />}
         {screen === "outcome" && <OutcomeReview navigate={navigate} goBack={goBack} params={params} />}
       </div>
