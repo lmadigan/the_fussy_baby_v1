@@ -295,7 +295,7 @@ export const CAUSES = [
     title: "Food Protein Sensitivity",
     evidenceLabel: "Commonly discussed",
     short: "Some babies react to proteins in breast milk or formula. This may show up as blood or mucus in poop, eczema, spit-up, or fussiness after feeding.",
-    whatIsIt: "Small amounts of dietary proteins such as cow's milk, soy, and egg can pass into breast milk. In some babies, the developing gut and immune system react to them. Blood or mucus in stool, eczema, and persistent feeding discomfort make the full cluster more informative than any single sign. Many delayed gut reactions improve during the first year, although the timing varies and a planned reintroduction is still needed.",
+    whatIsIt: "Small amounts of dietary proteins such as cow's milk, soy, and egg can pass into breast milk. In some babies, the developing gut and immune system react to them. One symptom alone may have many explanations, but food protein sensitivity becomes more likely when several signs appear together, such as blood or mucus in poop, eczema, and ongoing discomfort during or after feeds. Many delayed gut reactions improve during the first year, although the timing varies and a planned reintroduction is still needed.",
     signs: ["green-stool", "mucus-stool", "blood-stool", "eczema", "rash", "hives", "facial-rash-feeds", "diaper-rash", "fussy-after-feeds", "spit-up"],
     protocolStepId: "food-protein",
     related: ["silent-reflux", "microbiome"],
