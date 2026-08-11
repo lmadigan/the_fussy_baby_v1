@@ -8,7 +8,7 @@ const PLAYBOOK = [
   ["silent-reflux", "Reflux-Related Discomfort", "Discomfort during or after feeds, arching, wet burps, or difficulty settling flat while awake."],
   ["tongue-tie", "Oral Function / Possible Tongue Tie", "Clicking, leaking, feeding effort, latch pain, and ineffective milk transfer. Rank function, not appearance."],
   ["forceful-letdown", "Fast Flow / Oversupply", "Fast milk flow, gulping, pulling off, air intake, and foamy or green stools in breastfeeding context."],
-  ["microbiome", "Microbiome Context", "Antibiotic, birth, and feeding history may be relevant, but evidence is evolving and symptoms are nonspecific."],
+  ["microbiome", "Developing Gut Microbiome", "Birth, antibiotic, and feeding history may add context. Gas, crying, or stool changes alone do not indicate an imbalance, and probiotic evidence is strain-specific."],
   ["digestive-immaturity", "Digestive Immaturity", "Common early digestive coordination, straining with soft stools, knees to chest, and evening discomfort."],
   ["sensory-overload", "Sensory Overload", "Busy days, difficulty settling, and evening fussiness that improve with lower stimulation."],
   ["structural-tension", "Body Asymmetry / Tension", "Persistent head preference, body asymmetry, or feeding-position difficulty that warrants conventional clinical assessment."],
