@@ -10,6 +10,7 @@ Write to one tired parent who wants a clear next step.
 - Treat lived experience as valuable context while distinguishing it from established evidence.
 - Explain why a step matters, then say what to do.
 - Never diagnose, promise an outcome, or imply that one symptom proves a cause.
+- Keep internal product taxonomy out of parent-facing copy. Use natural labels such as "What this may relate to" instead of terms such as "Playbook cause" or "protocol item."
 
 Good: "Look for signs of oversupply: coughing at letdown, frequent spit-up, or green frothy stools. One sign alone does not confirm it."
 

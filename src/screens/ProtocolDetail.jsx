@@ -5,7 +5,7 @@ import { StatusBadge } from "../components/core/StatusBadge.jsx";
 import { SectionLabel } from "../components/core/SectionLabel.jsx";
 import { Screen } from "../components/app/Screen.jsx";
 import { useStore } from "../lib/store.jsx";
-import { getProtocolStep, protocolPosition } from "../data/playbook.js";
+import { getCause, getProtocolStep, protocolPosition } from "../data/playbook.js";
 import { formatShort } from "../lib/dates.js";
 
 export function ProtocolDetail({ navigate, goBack, params }) {
@@ -14,6 +14,7 @@ export function ProtocolDetail({ navigate, goBack, params }) {
   if (!protocol) return <Screen title="Protocol" onBack={goBack}><Card>This protocol is not available yet.</Card></Screen>;
   const checked = new Set(state.protocolChecklists[protocol.id] ?? []);
   const plan = state.plans[protocol.id];
+  const relatedCauses = protocol.relatedCauseIds.map(getCause).filter(Boolean);
   const done = checked.size;
   const percent = Math.round((done / protocol.checklist.length) * 100);
 
@@ -34,6 +35,40 @@ export function ProtocolDetail({ navigate, goBack, params }) {
           {protocol.reviewWindow}
         </div>
       </Card>
+      {protocol.fitGuidance && (
+        <Card>
+          <SectionLabel>Is this step for you?</SectionLabel>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <div>
+              <div style={{ fontSize: "13px", lineHeight: 1.4, fontWeight: 650, color: "var(--text-primary)", marginBottom: "3px" }}>Do this step if</div>
+              <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)" }}>{protocol.fitGuidance.doThis}</div>
+            </div>
+            <div style={{ paddingTop: "12px", borderTop: "1px solid var(--border-default)" }}>
+              <div style={{ fontSize: "13px", lineHeight: 1.4, fontWeight: 650, color: "var(--text-primary)", marginBottom: "3px" }}>If these signs are not present</div>
+              <div style={{ fontSize: "13.5px", lineHeight: 1.55, color: "var(--text-muted)" }}>{protocol.fitGuidance.ifNot}</div>
+            </div>
+          </div>
+          {protocol.fitGuidance.nextProtocolId && (
+            <Button variant="secondary" onClick={() => navigate("protocol", { id: protocol.fitGuidance.nextProtocolId })}>{protocol.fitGuidance.nextAction}</Button>
+          )}
+        </Card>
+      )}
+      {relatedCauses.length > 0 && (
+        <Card>
+          <SectionLabel>What this may relate to</SectionLabel>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {relatedCauses.map((cause, index) => (
+              <div key={cause.id} style={{ display: "flex", flexDirection: "column", gap: "6px", padding: index === 0 ? "0 0 14px" : "14px 0", borderBottom: index < relatedCauses.length - 1 ? "1px solid var(--border-default)" : "none" }}>
+                <div style={{ fontSize: "12px", lineHeight: 1.4, fontWeight: 650, color: "var(--text-brand)" }}>#{cause.rank} in Causes</div>
+                <div style={{ fontSize: "14px", lineHeight: 1.4, fontWeight: 650, color: "var(--text-primary)" }}>{cause.title}</div>
+                <div style={{ fontSize: "13px", lineHeight: 1.45, color: "var(--text-muted)" }}>{cause.short}</div>
+                <Button size="sm" variant="secondary" aria-label={`Read about ${cause.title}`} onClick={() => navigate("cause", { id: cause.id })}>Read about this cause</Button>
+              </div>
+            ))}
+          </div>
+          <div style={{ fontSize: "12px", lineHeight: 1.45, color: "var(--text-muted)" }}>The number reflects the app's educational order, not how likely this cause is for your baby.</div>
+        </Card>
+      )}
       <Card>
         <SectionLabel right={<StatusBadge tone="calm">{done} of {protocol.checklist.length}</StatusBadge>}>{protocol.checklistLabel ?? "Checklist"}</SectionLabel>
         {protocol.checklistIntro && (

@@ -14,6 +14,12 @@ export const PROTOCOL_STEPS = [
     timing: "Days 1–7",
     title: "Rule Out Structural or Oral Issues",
     short: "Start here to check how your baby is latching and feeding. Latch pain, clicking, leaking, gulping, swallowing air, or a strong preference for one feeding position can all signal that positioning, oral function, body alignment, or milk flow deserves a closer look.",
+    fitGuidance: {
+      doThis: "You notice clicking, leaking, gulping, swallowed air, latch pain, coughing during feeds, very long or tiring feeds, or a persistent head or side preference.",
+      ifNot: "Continue to Step 2. It is especially relevant if your main concern is frequent or large spit-up after feeds.",
+      nextProtocolId: "feeding-dynamics",
+      nextAction: "Continue to Step 2",
+    },
     reviewAfterDays: 7,
     reviewWindow: "Schedule a feeding assessment as soon as you can, if possible. The free resources below can help while you wait or if an assessment is not possible for you.",
     checklistLabel: "Your next steps",
@@ -54,14 +60,6 @@ export const PROTOCOL_STEPS = [
         url: "https://womenshealth.gov/breastfeeding/learning-breastfeed/finding-breastfeeding-support-and-information",
       },
     ],
-    relatedSteps: [
-      {
-        protocolId: "feeding-dynamics",
-        title: "Spitting up frequently or in large amounts after feeds?",
-        description: "Continue to Step 2 to look at fast milk flow, oversupply, bottle flow, and feeding volume.",
-        action: "Continue to Step 2",
-      },
-    ],
     reviewQuestion: "After the feeding assessment or several feeds using the recommended technique, are feeds more comfortable and effective?",
     contactSooner: [
       "Your baby repeatedly coughs or chokes during feeds, struggles to breathe, turns blue or gray, or is taking much less milk.",
@@ -85,6 +83,12 @@ export const PROTOCOL_STEPS = [
     timing: "Weeks 1–2",
     title: "Investigate Oversupply & Milk Balance",
     short: "If you're breastfeeding, making more milk than your baby needs or having a fast letdown can cause gas, green or foamy stools, and fussiness after feeds. Check for these feeding patterns before starting an elimination diet.",
+    fitGuidance: {
+      doThis: "Your baby coughs, sputters, gulps, or pulls away as milk starts flowing; spits up frequently or in large amounts; has green or frothy stools; or seems full but fussy after feeds. Very full or frequently engorged breasts can be another clue.",
+      ifNot: "Continue to Step 3.",
+      nextProtocolId: "food-protein",
+      nextAction: "Continue to Step 3",
+    },
     reviewAfterDays: 7,
     reviewWindow: "Try one agreed feeding change for 3–7 days",
     checklist: [
@@ -120,6 +124,12 @@ export const PROTOCOL_STEPS = [
     timing: "Weeks 2–6",
     title: "Maternal Elimination Diet",
     short: "Small amounts of food proteins can pass into breast milk. Most babies tolerate them, but dairy, soy, and egg are among the food proteins most often linked to reactions in breastfed babies. When stool, skin, feeding, and reflux-like symptoms point toward food protein sensitivity, these are the three foods this Playbook investigates first.",
+    fitGuidance: {
+      doThis: "Your baby has blood or persistent mucus in stool, or a repeated cluster of eczema or skin flares with vomiting, spit-up, feeding discomfort, or fussiness after feeds. Discuss blood in stool with your baby's healthcare professional.",
+      ifNot: "Do not start an elimination trial. Continue to Step 4 if reflux-like discomfort is still a concern.",
+      nextProtocolId: "reflux",
+      nextAction: "Continue to Step 4",
+    },
     approachNote: "Because dairy and soy sensitivities can overlap, and egg is another food protein linked to reactions through breast milk, this Playbook recommends removing all three together. If symptoms improve, add them back one at a time to learn which food or foods were contributing. If you have a strong hunch about another food because you have noticed the same symptoms after eating it more than once, add it to the trial as well. This can feel like a lot, but the goal is a short, structured trial that gives you a clearer answer, not a permanently restricted diet.",
     reviewAfterDays: 14,
     reviewWindow: "First review after 2 weeks; continue for up to 4 weeks if symptoms are partly improving",
@@ -162,7 +172,13 @@ export const PROTOCOL_STEPS = [
     track: "core",
     timing: "Weeks 3–6",
     title: "Investigate Silent Reflux",
-    short: "If the elimination diet helps only partly, or arching and feeding for comfort are still strong patterns, reflux-related discomfort may also be involved. Spit-up is common, so look at feeding comfort, intake, growth, and distress together.",
+    short: "Consider this step when arching, feeding for comfort, crying after feeds, or difficulty settling forms a repeated pattern. Spit-up alone is common. Look more closely when it comes with discomfort, feeding difficulty, poor intake, or growth concerns.",
+    fitGuidance: {
+      doThis: "Arching, wet burps or spit-up, feeding for comfort, crying after feeds, feeding pain or refusal, and difficulty settling form a repeated pattern. Spit-up without pain or feeding difficulty does not automatically require a reflux investigation.",
+      ifNot: "Continue to Step 5 for optional digestive support.",
+      nextProtocolId: "microbiome-support",
+      nextAction: "Continue to Step 5",
+    },
     reviewAfterDays: 14,
     reviewWindow: "Follow one agreed reflux plan for 2 weeks before judging it",
     checklist: [
@@ -199,6 +215,12 @@ export const PROTOCOL_STEPS = [
     timing: "Start alongside other steps",
     title: "Support the Gut Microbiome",
     short: "Birth, antibiotic, and feeding history can add useful context, but there is no symptom pattern that proves a baby's microbiome is out of balance. Use this step for low-risk digestive support while you investigate stronger clues.",
+    fitGuidance: {
+      doThis: "Soft-stool straining, gas-related discomfort, or colic-like crying remains while you investigate stronger feeding, stool, or skin clues. C-section, antibiotic, and feeding history add context but are not symptoms by themselves.",
+      ifNot: "Skip this step and continue to Step 6 for optional calming support.",
+      nextProtocolId: "sensory-support",
+      nextAction: "Continue to Step 6",
+    },
     reviewAfterDays: 7,
     reviewWindow: "Try one support at a time and review after 7 days",
     checklist: [
@@ -234,6 +256,10 @@ export const PROTOCOL_STEPS = [
     timing: "Use anytime",
     title: "Sensory & Environmental Management",
     short: "These steps will not fix an underlying feeding or dietary issue, but they can make the hardest periods more manageable while you investigate what is driving the fussiness.",
+    fitGuidance: {
+      doThis: "Fussiness builds after a busy day, short naps, visitors, noise, or frequent transitions, or your baby has difficulty settling and you need a safe calming routine.",
+      ifNot: "Skip this step for now and return to it whenever calming support would be useful.",
+    },
     reviewAfterDays: 7,
     reviewWindow: "Use anytime and review what helps after 7 days",
     checklist: [
