@@ -187,7 +187,7 @@ export const PROTOCOL_STEPS = [
       "Review feeding volume, frequency, flow, and technique. If the pediatrician recommends it, try smaller or more frequent feeds without reducing the total amount your baby needs.",
       "Hold your baby upright for 20–30 minutes after feeds when practical.",
       "For every sleep, place baby on their back on a firm, flat, non-inclined surface; do not use wedges or positioners.",
-      "Only thicken feeds, change formula, or use acid-suppressing medicine when the pediatrician recommends it for a specific reason. Improvement with medicine does not confirm reflux by itself.",
+      "Talk with your pediatrician before thickening feeds, changing formula, or trying reflux medicine. These options are not needed for most babies with ordinary reflux, and the right choice depends on your baby's symptoms, feeding, and growth.",
       "If feeding pain, refusal, poor growth, or significant distress continues, ask for a pediatric gastroenterology referral or a second opinion.",
       "Stick with one agreed plan for 2 weeks unless symptoms worsen, so you can tell whether it helped.",
     ],
