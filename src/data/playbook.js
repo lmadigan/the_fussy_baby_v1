@@ -123,14 +123,14 @@ export const PROTOCOL_STEPS = [
     track: "core",
     timing: "Weeks 2–6",
     title: "Maternal Elimination Diet",
-    short: "Small amounts of food proteins can pass into breast milk. Most babies tolerate them, but dairy, soy, and egg are among the food proteins most often linked to reactions in breastfed babies. When stool, skin, feeding, and reflux-like symptoms point toward food protein sensitivity, these are the three foods this Playbook investigates first.",
+    short: "Small amounts of food proteins can pass into breast milk. Most babies tolerate them, but dairy, soy, and egg are among the food proteins most often linked to reactions in breastfed babies. When stool, skin, feeding, and reflux-like symptoms point toward food protein sensitivity, these are the three foods this protocol investigates first.",
     fitGuidance: {
       doThis: "Your baby has blood or persistent mucus in stool, or a repeated cluster of eczema or skin flares with vomiting, spit-up, feeding discomfort, or fussiness after feeds. Discuss blood in stool with your baby's healthcare professional.",
       ifNot: "Do not start an elimination trial. Continue to Step 4 if reflux-like discomfort is still a concern.",
       nextProtocolId: "reflux",
       nextAction: "Continue to Step 4",
     },
-    approachNote: "Because dairy and soy sensitivities can overlap, and egg is another food protein linked to reactions through breast milk, this Playbook recommends removing all three together. If symptoms improve, add them back one at a time to learn which food or foods were contributing. If you have a strong hunch about another food because you have noticed the same symptoms after eating it more than once, add it to the trial as well. This can feel like a lot, but the goal is a short, structured trial that gives you a clearer answer, not a permanently restricted diet.",
+    approachNote: "Because dairy and soy sensitivities can overlap, and egg is another food protein linked to reactions through breast milk, The Fussy Baby recommends removing all three together. If symptoms improve, add them back one at a time to learn which food or foods were contributing. If you have a strong hunch about another food because you have noticed the same symptoms after eating it more than once, add it to the trial as well. This can feel like a lot, but the goal is a short, structured trial that gives you a clearer answer, not a permanently restricted diet.",
     reviewAfterDays: 14,
     reviewWindow: "First review after 2 weeks; continue for up to 4 weeks if symptoms are partly improving",
     checklist: [
