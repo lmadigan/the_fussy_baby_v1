@@ -1,32 +1,21 @@
 :root {
   --font-ui: "Instrument Sans", system-ui, -apple-system, sans-serif;
-  --font-display: "Newsreader", Georgia, serif;
+  --font-display: "Prata", Georgia, serif;
 
-  /* Screen title — "The Fussy Baby" (1d: Newsreader serif) */
   --type-display-size: 26px;
-  --type-display-weight: 600;
+  --type-display-weight: 400;
   --type-display-tracking: 0;
-
-  /* Card / investigation title */
-  --type-title-size: 18px;
-  --type-title-weight: 600;
-  --type-title-tracking: -0.01em;
-
-  /* Body copy */
+  --type-title-size: 19px;
+  --type-title-weight: 400;
+  --type-title-tracking: 0;
   --type-body-size: 14px;
-  --type-body-line: 1.55;
+  --type-body-line: 1.6;
   --type-body-weight: 400;
-
-  /* Section label — uppercase eyebrow on every card */
   --type-label-size: 11px;
   --type-label-weight: 600;
   --type-label-tracking: 0.1em;
-
-  /* Meta — dates, counts */
   --type-meta-size: 12px;
   --type-meta-weight: 500;
-
-  /* Buttons */
   --type-button-size: 14px;
   --type-button-weight: 600;
   --type-button-sm-size: 13px;
@@ -39,5 +28,5 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-a { color: var(--ink-800); }
-a:hover { color: var(--ink-900); }
+a { color: var(--navy-800); }
+a:hover { color: var(--navy-900); }

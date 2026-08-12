@@ -1,4 +1,6 @@
-# The Fussy Baby PRD — Additions
+# The Fussy Baby PRD - Legacy Additions
+
+> Superseded by `docs/product-requirements.md`. This file is retained as historical context for the original deterministic Pattern Engine and is not the current product requirements document.
 
 Version: MVP v1.1 (draft)
 
@@ -256,7 +258,7 @@ Never patterns. Surfaced immediately in Detective at logging time
 
 ### Layer 3 — Language (AI-assisted)
 
-An LLM (Claude) is used in three seats, all optional enhancements to a
+An LLM is used in three seats, all optional enhancements to a
 deterministic core that works without them:
 
 **Extraction.** Map natural speech onto the vocabulary

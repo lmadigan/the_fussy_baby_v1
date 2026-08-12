@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Card } from "../components/core/Card.jsx";
 import { Button } from "../components/core/Button.jsx";
+import { CardTitle } from "../components/core/CardTitle.jsx";
 import { SectionLabel } from "../components/core/SectionLabel.jsx";
 import { Tag } from "../components/core/Tag.jsx";
 import { Input } from "../components/forms/Input.jsx";
@@ -22,6 +23,7 @@ export function Onboarding() {
   const [babyName, setBabyName] = useState("");
   const [ageMonths, setAgeMonths] = useState(null);
   const [symptoms, setSymptoms] = useState([]);
+  const [feedingMode, setFeedingMode] = useState("");
 
   const toggleSymptom = (id) =>
     setSymptoms((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]));
@@ -43,11 +45,10 @@ export function Onboarding() {
           <div
             key={i}
             style={{
-              width: i === step ? "20px" : "6px",
+              width: "6px",
               height: "6px",
               borderRadius: "99px",
-              background: i <= step ? "var(--accent-signal)" : "var(--border-default)",
-              transition: "width .2s ease",
+              background: i === step ? "var(--accent-signal)" : i < step ? "var(--accent-calm)" : "var(--border-default)",
             }}
           />
         ))}
@@ -60,18 +61,15 @@ export function Onboarding() {
     return shell(
       <>
         <div style={{ textAlign: "center", display: "flex", flexDirection: "column", gap: "8px" }}>
-          <div style={{ fontFamily: "var(--font-display)", fontSize: "32px", fontWeight: 600, color: "var(--text-primary)" }}>
+          <div style={{ fontFamily: "var(--font-display)", fontSize: "var(--type-display-size)", fontWeight: 400, color: "var(--text-brand)" }}>
             The Fussy Baby
           </div>
         </div>
         <Card>
-          <div style={{ fontSize: "17px", lineHeight: 1.5, fontWeight: 600, color: "var(--text-primary)", textWrap: "pretty" }}>
-            Hey — you're doing great. But baby fussiness is no joke.
-          </div>
+          <CardTitle>Baby fussiness can be hard to read.</CardTitle>
           <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-primary)", textWrap: "pretty" }}>
-            The good news: we're here to help you troubleshoot. This is an educational and observational tool that helps
-            you understand the common causes of fussiness, and surfaces correlations between what you observe and how
-            fussy your baby's days are.
+            The free Playbook gives you the common causes and a systematic protocol. Premium Navigator helps organize
+            which contributors fit what you're seeing, including when more than one may be involved.
           </div>
           <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-muted)", textWrap: "pretty" }}>
             It's not a medical diagnostic tool — your pediatrician stays in charge. We just help you show up with
@@ -87,7 +85,7 @@ export function Onboarding() {
     return shell(
       <>
         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <div style={{ fontFamily: "var(--font-display)", fontSize: "24px", fontWeight: 600, color: "var(--text-primary)" }}>
+          <div style={{ fontFamily: "var(--font-display)", fontSize: "24px", fontWeight: 400, color: "var(--text-primary)" }}>
             Tell us about your baby
           </div>
           <div style={{ fontSize: "14px", lineHeight: 1.55, color: "var(--text-muted)" }}>
@@ -106,6 +104,16 @@ export function Onboarding() {
               ))}
             </div>
           </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <SectionLabel>Feeding (optional)</SectionLabel>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--gap-chips)" }}>
+              {["Breastfeeding", "Formula", "Both"].map((option) => (
+                <Tag key={option} tone="neutral" selected={feedingMode === option} onClick={() => setFeedingMode(feedingMode === option ? "" : option)}>
+                  {option}
+                </Tag>
+              ))}
+            </div>
+          </div>
         </Card>
         <Button disabled={ageMonths == null} style={ageMonths == null ? { opacity: 0.4, cursor: "default" } : undefined} onClick={() => ageMonths != null && setStep(2)}>
           Continue
@@ -118,7 +126,7 @@ export function Onboarding() {
     return shell(
       <>
         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <div style={{ fontFamily: "var(--font-display)", fontSize: "24px", fontWeight: 600, color: "var(--text-primary)" }}>
+          <div style={{ fontFamily: "var(--font-display)", fontSize: "24px", fontWeight: 400, color: "var(--text-primary)" }}>
             What have you been noticing?
           </div>
           <div style={{ fontSize: "14px", lineHeight: 1.55, color: "var(--text-muted)", textWrap: "pretty" }}>
@@ -137,23 +145,23 @@ export function Onboarding() {
   return shell(
     <>
       <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <div style={{ fontFamily: "var(--font-display)", fontSize: "24px", fontWeight: 600, color: "var(--text-primary)" }}>
+        <div style={{ fontFamily: "var(--font-display)", fontSize: "24px", fontWeight: 400, color: "var(--text-primary)" }}>
           One important note
         </div>
       </div>
       <Card>
         <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-primary)", textWrap: "pretty" }}>
-          The Fussy Baby is an educational pattern recognition tool. It does not diagnose, treat, or replace medical
-          advice.
+          The Fussy Baby is an educational symptom-navigation and planning tool. It does not diagnose, treat, or
+          replace medical advice.
         </div>
         <div style={{ fontSize: "14px", lineHeight: 1.6, color: "var(--text-muted)", textWrap: "pretty" }}>
-          Patterns represent observations you've recorded and should not be interpreted as medical conclusions. Always
-          consult your pediatrician about your baby's health.
+          Assessments organize possibilities to explore. Playbook outcomes should not be interpreted as medical
+          conclusions. Always consult your pediatrician about your baby's health.
         </div>
       </Card>
       <Button
         onClick={() =>
-          dispatch({ type: "completeOnboarding", babyName: babyName.trim(), babyAgeMonths: ageMonths, symptoms })
+          dispatch({ type: "completeOnboarding", babyName: babyName.trim(), babyAgeMonths: ageMonths, feedingMode, symptoms })
         }
       >
         Go to Home

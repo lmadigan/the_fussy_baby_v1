@@ -1,52 +1,21 @@
 /**
- * Differential engine — model-driven, replacing the old hand-coded
- * symptom→cause matrix.
+ * Model-driven contributor assessment.
  *
- * The parent's symptoms go to a small serverless proxy (see server/worker.js)
- * that asks Claude for a differential of common, benign infant-fussiness
- * causes and returns normalized JSON. The proxy holds the API key and the
- * prompt; this module is a thin, safe client.
- *
- * Two things stay OUT of the model's hands on purpose:
- *   1. Red flags — matched client-side from the vocabulary, deterministically,
- *      so a "call your pediatrician" nudge never depends on a model response.
- *   2. Ranking order — we render exactly the order the model returns; we do
- *      not re-sort or re-weight it.
- *
- * When no endpoint is configured (e.g. the static demo), we return a clearly
- * labelled example so the experience is still visible.
+ * Safety alerts remain deterministic in vocabulary.js. The model may rank and
+ * explain only contributors represented in the Playbook; the client validates
+ * that contract before anything reaches the UI.
  */
 
 import { getObservation, isRedFlag } from "../data/vocabulary.js";
-import { INVESTIGATIONS } from "../data/playbook.js";
+import { CAUSES, getCause } from "../data/playbook.js";
 
-const ENDPOINT_KEY = "fussy-baby-differential-endpoint";
+const PLAYBOOK_IDS = new Set(CAUSES.map((item) => item.id));
+const DEFAULT_ENDPOINT = "https://fussy-baby-differential.laurenmadigan51.workers.dev";
 
-/** The differential proxy URL, from localStorage or a build-time default. */
 export function getEndpoint() {
-  try {
-    const stored = localStorage.getItem(ENDPOINT_KEY);
-    if (stored) return stored;
-  } catch {
-    /* localStorage unavailable */
-  }
-  return import.meta.env?.VITE_DIFFERENTIAL_ENDPOINT || "";
+  return import.meta.env?.VITE_DIFFERENTIAL_ENDPOINT || DEFAULT_ENDPOINT;
 }
 
-export function setEndpoint(url) {
-  try {
-    if (url) localStorage.setItem(ENDPOINT_KEY, url.trim());
-    else localStorage.removeItem(ENDPOINT_KEY);
-  } catch {
-    /* ignore */
-  }
-}
-
-export function hasEndpoint() {
-  return Boolean(getEndpoint());
-}
-
-/** Map observation ids → human labels for the model prompt and for display. */
 export function symptomLabels(ids) {
   return ids
     .filter((id) => !id.startsWith("custom:"))
@@ -54,141 +23,179 @@ export function symptomLabels(ids) {
     .concat(ids.filter((id) => id.startsWith("custom:")).map((id) => id.slice(7)));
 }
 
-/** Red-flag labels present in a symptom list — computed here, never by the model. */
 export function redFlagLabels(ids) {
   return ids.filter((id) => isRedFlag(id)).map((id) => getObservation(id)?.label ?? id);
 }
 
-/** Loosely match a model-named cause to a Playbook entry so we can reuse its care advice. */
 export function matchPlaybookId(causeName) {
   if (!causeName) return null;
-  const n = causeName.toLowerCase();
-  for (const inv of INVESTIGATIONS) {
-    const t = inv.title.toLowerCase();
-    if (n.includes(t) || t.includes(n)) return inv.id;
+  const name = causeName.toLowerCase();
+  for (const cause of CAUSES) {
+    const title = cause.title.toLowerCase();
+    if (name.includes(title) || title.includes(name)) return cause.id;
   }
-  // keyword fallbacks for common phrasings the model may use
   const keywords = [
     ["reflux", "silent-reflux"],
     ["milk protein", "food-protein-sensitivity"],
-    ["cow", "food-protein-sensitivity"],
+    ["food protein", "food-protein-sensitivity"],
     ["allerg", "food-protein-sensitivity"],
     ["letdown", "forceful-letdown"],
     ["oversupply", "forceful-letdown"],
-    ["latch", "feeding-mechanics"],
+    ["latch", "tongue-tie"],
     ["tongue", "tongue-tie"],
-    ["gas", "gas-digestion"],
-    ["overtired", "overtiredness"],
-    ["overstimul", "overtiredness"],
-    ["colic", "gas-digestion"],
+    ["microbiome", "microbiome"],
+    ["gut context", "microbiome"],
+    ["digestive", "digestive-immaturity"],
+    ["gas", "digestive-immaturity"],
+    ["overtired", "sensory-overload"],
+    ["overstimul", "sensory-overload"],
+    ["structural", "structural-tension"],
   ];
-  for (const [kw, id] of keywords) if (n.includes(kw)) return id;
-  return null;
+  return keywords.find(([keyword]) => name.includes(keyword))?.[1] ?? null;
 }
 
-/** Normalize whatever the proxy returns into a stable shape the UI can trust. */
-function normalize(raw) {
-  const causes = Array.isArray(raw?.causes) ? raw.causes : [];
+function cleanList(value) {
+  return Array.isArray(value) ? value.map(String).map((item) => item.trim()).filter(Boolean) : [];
+}
+
+function normalize(raw, symptomIds) {
+  const labels = symptomLabels(symptomIds);
+  const reported = new Map(labels.map((label) => [label.toLowerCase(), label]));
+  const seen = new Set();
+  const causes = [];
+
+  for (const candidate of Array.isArray(raw?.causes) ? raw.causes : []) {
+    const requestedId = String(candidate?.playbookId ?? "").trim();
+    const playbookId = PLAYBOOK_IDS.has(requestedId) ? requestedId : matchPlaybookId(candidate?.name);
+    if (!playbookId || seen.has(playbookId)) continue;
+    seen.add(playbookId);
+    const playbook = getCause(playbookId);
+    causes.push({
+      playbookId,
+      name: playbook.title,
+      description: String(candidate?.description ?? playbook.short).trim() || playbook.short,
+      matching: cleanList(candidate?.matching)
+        .map((item) => reported.get(item.toLowerCase()))
+        .filter(Boolean),
+      notFitting: cleanList(candidate?.notFitting).slice(0, 3),
+      missingInformation: cleanList(candidate?.missingInformation).slice(0, 3),
+    });
+    if (causes.length === 3) break;
+  }
+
+  // Blood-streaked stool is both an immediate safety alert and meaningful
+  // evidence for the food-protein-sensitivity investigation.
+  if (symptomIds.includes("blood-stool")) {
+    const playbook = getCause("food-protein-sensitivity");
+    const matching = playbook.signs
+      .filter((id) => symptomIds.includes(id))
+      .map((id) => getObservation(id)?.label)
+      .filter(Boolean);
+    const existingIndex = causes.findIndex((cause) => cause.playbookId === playbook.id);
+    const existing = existingIndex >= 0 ? causes.splice(existingIndex, 1)[0] : null;
+    causes.unshift(existing ? {
+      ...existing,
+      matching: [...new Set([...matching, ...existing.matching])],
+    } : {
+        playbookId: playbook.id,
+        name: playbook.title,
+        description: playbook.short,
+        matching,
+        notFitting: [],
+        missingInformation: ["A clinician can help interpret the stool finding alongside feeding, skin, and growth history."],
+      });
+    if (causes.length > 3) causes.pop();
+  }
+
   return {
-    causes: causes.map((c) => ({
-      name: String(c.name ?? "").trim() || "Possible cause",
-      description: String(c.description ?? "").trim(),
-      matching: Array.isArray(c.matching) ? c.matching.map(String) : [],
-      notFitting: Array.isArray(c.notFitting) ? c.notFitting.map(String) : [],
-      whatToTry: Array.isArray(c.whatToTry) ? c.whatToTry.map(String) : [],
-      playbookId: matchPlaybookId(c.name),
-    })),
+    summary: String(raw?.summary ?? "").trim(),
+    causes,
+    followUpQuestions: cleanList(raw?.followUpQuestions).slice(0, 3),
     note: String(raw?.note ?? "").trim(),
     isExample: Boolean(raw?.isExample),
   };
 }
 
-/**
- * Ask the model for a differential. Returns a normalized result.
- * Throws on network / proxy errors so the caller can show a retry state.
- */
-export async function requestDifferential({ symptoms, babyAgeMonths, signal }) {
+export async function requestDifferential({
+  symptoms,
+  babyAgeMonths,
+  feedingMode,
+  fussinessTiming,
+  additionalContext,
+  signal,
+}) {
   const endpoint = getEndpoint();
   const labels = symptomLabels(symptoms);
 
-  if (!endpoint) {
-    // No proxy connected — show a labelled example so the UX is still visible.
-    return normalize({ ...exampleDifferential(labels), isExample: true });
-  }
+  if (!endpoint) return normalize({ ...exampleDifferential(labels), isExample: true }, symptoms);
 
-  const res = await fetch(endpoint, {
+  const response = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ symptoms: labels, babyAgeMonths }),
+    body: JSON.stringify({
+      symptoms: labels,
+      babyAgeMonths,
+      feedingMode: feedingMode || "not provided",
+      fussinessTiming: fussinessTiming || "not provided",
+      additionalContext: String(additionalContext || "").slice(0, 2000),
+    }),
     signal,
   });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`Differential service returned ${res.status}. ${text.slice(0, 200)}`);
+  if (!response.ok) {
+    const payload = await response.json().catch(() => null);
+    throw new Error(payload?.error || "The assessment service is temporarily unavailable. Please try again.");
   }
-  return normalize(await res.json());
+  const result = normalize(await response.json(), symptoms);
+  if (result.causes.length === 0) throw new Error("The assessment did not return a supported contributor. Please try again.");
+  return result;
 }
 
-/**
- * A canned, clearly-labelled example for the static demo and for when no
- * proxy is connected. This is NOT a fallback engine — it's one illustrative
- * result so the interface reads. Live reads come from the model.
- */
 function exampleDifferential(labels) {
-  const has = (kw) => labels.some((l) => l.toLowerCase().includes(kw));
+  const has = (pattern) => labels.some((label) => pattern.test(label));
+  const matching = (pattern) => labels.filter((label) => pattern.test(label));
   const causes = [];
 
-  if (has("eczema") || has("rash") || has("hives") || has("mucus") || has("dairy")) {
+  if (has(/eczema|rash|hives|mucus|blood|green|explosive/i)) {
     causes.push({
-      name: "Cow's Milk Protein Allergy (food protein sensitivity)",
-      description:
-        "An immune reaction to proteins in cow's milk (via formula or a breastfeeding parent's diet) that can cause skin, gut, and reflux-like symptoms in infants.",
-      matching: labels.filter((l) => /eczema|rash|hives|mucus|green|explosive|spit/i.test(l)),
-      notFitting: ["Spit-up and explosive stool are common in healthy babies too, so on their own they're not specific."],
-      whatToTry: [
-        "Log skin changes and any unusual stool with photos.",
-        "Note whether fussiness clusters in the hours after feeds.",
-        "Bring 1–2 weeks of observations to your pediatrician before changing anyone's diet.",
-      ],
+      playbookId: "food-protein-sensitivity",
+      description: "Food proteins can sometimes contribute to a combination of stool, skin, feeding, and reflux-like symptoms.",
+      matching: matching(/eczema|rash|hives|mucus|blood|green|explosive|spit/i),
+      notFitting: ["Many stool and spit-up changes are common in young babies, so the overall symptom cluster matters."],
+      missingInformation: ["Whether symptoms change consistently with feeding exposures would make this possibility clearer."],
     });
   }
-  if (has("arch") || has("spit") || has("wet burp") || has("congestion")) {
+  if (has(/arch|spit|wet burp|congestion|after feed/i)) {
     causes.push({
-      name: "Infant reflux (GER / silent reflux)",
-      description:
-        "Stomach contents come back up the esophagus. Very common in young babies and usually improves with time; comfort measures often help.",
-      matching: labels.filter((l) => /arch|spit|wet burp|congestion|fussy after/i.test(l)),
-      notFitting: ["Reflux alone doesn't usually cause eczema or skin changes."],
-      whatToTry: [
-        "Keep baby upright 20–30 minutes after feeds for a few days.",
-        "Watch whether discomfort comes during, right after, or ~30 min after feeds.",
-      ],
+      playbookId: "silent-reflux",
+      description: "Reflux can cause discomfort during or after feeds even when very little milk is visibly spit up.",
+      matching: matching(/arch|spit|wet burp|congestion|after feed/i),
+      notFitting: ["Reflux by itself would not usually explain eczema or blood-streaked stool."],
+      missingInformation: ["The timing of discomfort relative to feeds would help separate reflux from other contributors."],
     });
   }
-  if (has("gulp") || has("green") || has("foamy") || has("pulling off")) {
+  if (has(/gulp|foamy|pulling off|green/i)) {
     causes.push({
-      name: "Forceful letdown / oversupply",
-      description:
-        "Milk flows faster than baby can comfortably swallow, so they gulp air and can get gassy, green-ish stools.",
-      matching: labels.filter((l) => /gulp|green|foamy|pulling off|gas/i.test(l)),
-      notFitting: ["Doesn't explain skin findings like eczema."],
-      whatToTry: ["Try a laid-back nursing position so gravity slows the flow.", "Note what happens in the first 2 minutes of a feed."],
+      playbookId: "forceful-letdown",
+      description: "A fast milk flow can make a baby gulp, pull away, take in air, and become uncomfortable after feeds.",
+      matching: matching(/gulp|foamy|pulling off|green|gas/i),
+      notFitting: ["Fast flow would not usually explain skin changes."],
+      missingInformation: ["What happens during the first two minutes of a feed would help test this possibility."],
     });
   }
   if (causes.length === 0) {
     causes.push({
-      name: "Gas & digestive immaturity",
-      description:
-        "A newborn's gut is still learning to move gas through, which is a very common source of fussiness — often peaking in the evening.",
+      playbookId: "digestive-immaturity",
+      description: "Young babies often work hard to move gas through a still-maturing digestive system.",
       matching: labels,
-      notFitting: [],
-      whatToTry: ["Try bicycle legs and tummy massage between feeds.", "Track evening fussiness separately for a week."],
+      notFitting: ["Gas is common and non-specific, so it should not be treated as a complete explanation without a clearer pattern."],
+      missingInformation: ["Time of day and relation to feeds would make this possibility clearer."],
     });
   }
 
   return {
-    causes: causes.slice(0, 4),
-    note:
-      "These are possible causes to explore and discuss with your pediatrician — not a diagnosis. This is a saved example; connect your model endpoint for a live read.",
+    summary: "This symptom cluster may have more than one contributor. The strongest match shows where personalized evidence intersects with the free Playbook.",
+    causes: causes.slice(0, 3),
+    followUpQuestions: ["When is fussiness worst relative to feeds?", "Have the stool or skin changes been consistent across several days?"],
+    note: "This is an example assessment for exploration, not a diagnosis. The production AI service has not been configured in this build.",
   };
 }

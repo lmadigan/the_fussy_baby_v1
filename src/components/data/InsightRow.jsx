@@ -1,27 +1,15 @@
 import React from "react";
 
-/** Evidence bullet: dot + finding, with confidence expressed in words. */
-export function InsightRow({ active = true, children }) {
+export function InsightRow({ tone = "signal", children }) {
+  const dot = tone === "signal"
+    ? "var(--accent-signal)"
+    : tone === "calm"
+      ? "var(--accent-calm)"
+      : "var(--border-default)";
   return (
     <div style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-      <div
-        style={{
-          flex: "none",
-          marginTop: "5px",
-          width: "8px",
-          height: "8px",
-          borderRadius: "99px",
-          background: active ? "var(--accent-signal)" : "var(--border-default)",
-        }}
-      />
-      <div
-        style={{
-          fontSize: "var(--type-body-size)",
-          lineHeight: "var(--type-body-line)",
-          color: active ? "var(--text-primary)" : "var(--text-muted)",
-          textWrap: "pretty",
-        }}
-      >
+      <span aria-hidden style={{ flex: "none", marginTop: "7px", width: "8px", height: "8px", borderRadius: "var(--radius-pill)", background: dot }} />
+      <div style={{ fontSize: "var(--type-body-size)", lineHeight: "var(--type-body-line)", color: tone === "neutral" ? "var(--text-muted)" : "var(--text-primary)", textWrap: "pretty" }}>
         {children}
       </div>
     </div>

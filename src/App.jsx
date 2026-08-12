@@ -3,15 +3,14 @@ import { StoreProvider, useStore, IS_DEMO } from "./lib/store.jsx";
 import { NavBar } from "./components/app/NavBar.jsx";
 import { Onboarding } from "./screens/Onboarding.jsx";
 import { Home } from "./screens/Home.jsx";
-import { InvestigationDetail } from "./screens/InvestigationDetail.jsx";
-import { Detective } from "./screens/Detective.jsx";
-import { Patterns } from "./screens/Patterns.jsx";
-import { Learn } from "./screens/Learn.jsx";
-import { Article } from "./screens/Article.jsx";
-import { History } from "./screens/History.jsx";
-import { Symptoms } from "./screens/Symptoms.jsx";
+import { Navigator } from "./screens/Navigator.jsx";
+import { Playbook } from "./screens/Playbook.jsx";
+import { ProtocolDetail } from "./screens/ProtocolDetail.jsx";
+import { CauseDetail } from "./screens/CauseDetail.jsx";
+import { MyPlan } from "./screens/MyPlan.jsx";
+import { OutcomeReview } from "./screens/OutcomeReview.jsx";
 
-const TAB_SCREENS = new Set(["home", "detective", "patterns", "learn", "history"]);
+const TAB_SCREENS = new Set(["home", "navigator", "playbook", "plan"]);
 
 function Shell() {
   const { state } = useStore();
@@ -27,6 +26,11 @@ function Shell() {
   const goBack = () => {
     const prev = stackRef.current.pop();
     setRoute(prev ?? { screen: "home", params: {} });
+  };
+
+  const goBackToCauses = () => {
+    stackRef.current.pop();
+    setRoute({ screen: "playbook", params: { view: "causes" } });
   };
 
   const switchTab = (screen) => {
@@ -51,18 +55,24 @@ function Shell() {
   const { screen, params } = route;
   // Which tab is highlighted while on a detail screen
   const activeTab =
-    screen === "investigation" ? "home" : screen === "article" ? "learn" : TAB_SCREENS.has(screen) ? screen : "home";
+    screen === "protocol" || screen === "cause"
+      ? "playbook"
+      : screen === "outcome"
+        ? "plan"
+        : TAB_SCREENS.has(screen)
+          ? screen
+          : "home";
 
   return (
     <div className="app-frame">
       {IS_DEMO && (
         <div
           style={{
-            background: "var(--ink-800)",
+            background: "var(--navy-800)",
             color: "var(--text-on-brand)",
             fontSize: "11.5px",
             fontWeight: 600,
-            letterSpacing: "0.04em",
+            letterSpacing: "0.08em",
             textAlign: "center",
             padding: "7px 12px",
           }}
@@ -72,13 +82,12 @@ function Shell() {
       )}
       <div className="app-scroll" ref={scrollRef}>
         {screen === "home" && <Home navigate={navigate} />}
-        {screen === "investigation" && <InvestigationDetail navigate={navigate} goBack={goBack} params={params} />}
-        {screen === "detective" && <Detective navigate={navigate} />}
-        {screen === "patterns" && <Patterns navigate={navigate} />}
-        {screen === "learn" && <Learn navigate={navigate} params={params} />}
-        {screen === "article" && <Article navigate={navigate} goBack={goBack} params={params} />}
-        {screen === "history" && <History navigate={navigate} />}
-        {screen === "symptoms" && <Symptoms goBack={goBack} />}
+        {screen === "navigator" && <Navigator navigate={navigate} />}
+        {screen === "playbook" && <Playbook navigate={navigate} params={params} />}
+        {screen === "protocol" && <ProtocolDetail navigate={navigate} goBack={goBack} params={params} />}
+        {screen === "cause" && <CauseDetail navigate={navigate} goBack={goBackToCauses} params={params} />}
+        {screen === "plan" && <MyPlan navigate={navigate} />}
+        {screen === "outcome" && <OutcomeReview navigate={navigate} goBack={goBack} params={params} />}
       </div>
       <NavBar current={activeTab} onNavigate={switchTab} />
     </div>

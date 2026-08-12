@@ -1,3 +1,4 @@
+@import "./fonts.css";
 @import "./colors.css";
 @import "./typography.css";
 @import "./spacing.css";
@@ -7,7 +8,7 @@ html, body, #root {
 }
 
 body {
-  background: #e9e8e4; /* backdrop behind the phone frame on wide screens */
+  background: var(--gray-200);
 }
 
 * {
@@ -43,24 +44,4 @@ button {
 @media (max-width: 430px) {
   body { background: var(--surface-app); }
   .app-frame { box-shadow: none; }
-}
-
-/* Loading shimmer for the differential skeleton */
-.fb-shimmer {
-  position: relative;
-  overflow: hidden;
-}
-.fb-shimmer::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
-  animation: fb-shimmer 1.3s ease-in-out infinite;
-}
-@keyframes fb-shimmer {
-  100% { transform: translateX(100%); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .fb-shimmer::after { animation: none; }
 }

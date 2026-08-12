@@ -1,11 +1,11 @@
 /**
  * Observation vocabulary — the shared language of the app.
- * Detective chips, onboarding symptoms, the Pattern Engine, and the
- * Symptom Matrix all reference observations by `id`.
+ * Navigator chips, onboarding symptoms, and assessment evidence all reference
+ * observations by `id`.
  *
  * `match` terms are used to extract observations from natural speech/text.
- * `redFlag` observations are never used as pattern evidence — they get a
- * calm, immediate "worth a call to your pediatrician" nudge instead.
+ * `redFlag` observations trigger an immediate clinician message. Some also
+ * deterministically inform ranking when they map to a supported cause.
  *
  * Ids are stable identifiers: they persist in saved histories, so rename
  * labels freely but never reuse or change an id.
@@ -69,6 +69,7 @@ export const OBSERVATIONS = [
   { id: "foamy-stool", label: "Foamy / frothy stool", category: "Stool", match: ["foamy", "frothy", "bubbly stool"] },
   { id: "foul-stool", label: "Unusually foul-smelling stool", category: "Stool", match: ["foul smelling", "smells awful", "really smelly poop"] },
   { id: "pale-stool", label: "Pale / white stool", category: "Stool", redFlag: true, match: ["pale stool", "white stool", "clay colored", "chalky stool"] },
+  { id: "black-stool", label: "Black / tarry stool", category: "Stool", redFlag: true, match: ["black stool", "black poop", "tarry stool", "tarry poop"] },
   { id: "constipation", label: "Constipation", category: "Stool", match: ["constipated", "constipation", "no poop", "hasn't pooped", "days without pooping"] },
   { id: "straining", label: "Straining to pass stool", category: "Stool", match: ["straining", "strains", "grunting to poop", "struggling to poop"] },
 
@@ -83,11 +84,14 @@ export const OBSERVATIONS = [
   // ── Symptoms ──
   { id: "spit-up", label: "Spit up", category: "Symptoms", match: ["spit up", "spitup", "spat up", "spitting up"] },
   { id: "projectile-vomit", label: "Projectile vomiting", category: "Symptoms", redFlag: true, match: ["projectile", "forceful vomit", "vomited across"] },
+  { id: "bilious-vomit", label: "Green / yellow-green vomit", category: "Symptoms", redFlag: true, match: ["green vomit", "green throw up", "yellow green vomit", "bilious vomit", "vomited bile"] },
+  { id: "blood-vomit", label: "Blood in vomit", category: "Symptoms", redFlag: true, match: ["blood in vomit", "bloody vomit", "vomited blood"] },
   { id: "gas", label: "Gas", category: "Symptoms", match: ["gas", "gassy", "passing gas", "farting"] },
   { id: "hiccups", label: "Frequent hiccups", category: "Symptoms", match: ["hiccups", "hiccuping"] },
   { id: "wet-burps", label: "Wet burps", category: "Symptoms", match: ["wet burp", "wet burps", "burps up milk"] },
   { id: "congestion", label: "Congestion", category: "Symptoms", match: ["congested", "congestion", "stuffy nose"] },
   { id: "noisy-breathing", label: "Noisy breathing", category: "Symptoms", match: ["noisy breathing", "squeaky breathing", "wheezing", "stridor"] },
+  { id: "breathing-trouble", label: "Trouble breathing", category: "Symptoms", redFlag: true, match: ["trouble breathing", "can't breathe", "struggling to breathe", "turned blue", "blue lips"] },
   { id: "swallowing-sounds", label: "Swallowing / gagging sounds", category: "Symptoms", match: ["gagging", "swallowing hard", "throat sounds", "gurgling"] },
   { id: "ear-pulling", label: "Ear pulling / rubbing", category: "Symptoms", match: ["pulling ears", "ear pulling", "rubbing ears", "grabbing ears"] },
   { id: "white-tongue", label: "White coating on tongue", category: "Symptoms", match: ["white tongue", "white coating", "thrush"] },
@@ -97,7 +101,8 @@ export const OBSERVATIONS = [
 
   // ── Skin ──
   { id: "rash", label: "Rash", category: "Skin", match: ["rash"] },
-  { id: "hives", label: "Hives", category: "Skin", match: ["hives", "welts"] },
+  { id: "hives", label: "Hives", category: "Skin", redFlag: true, match: ["hives", "welts"] },
+  { id: "facial-swelling", label: "Face / lip swelling", category: "Skin", redFlag: true, match: ["face swelling", "facial swelling", "swollen lips", "lip swelling", "swollen tongue"] },
   { id: "eczema", label: "Eczema flare", category: "Skin", match: ["eczema", "dry patches"] },
   { id: "facial-rash-feeds", label: "Rash around mouth after feeds", category: "Skin", match: ["rash around mouth", "red around the mouth", "face rash after feeding"] },
   { id: "red-ring", label: "Red ring around anus", category: "Skin", match: ["red ring", "red around the anus", "red bottom ring"] },
@@ -108,6 +113,7 @@ export const OBSERVATIONS = [
   // ── Body & Behavior ──
   { id: "knees-to-chest", label: "Pulling knees to chest", category: "Body & Behavior", match: ["knees to chest", "pulling legs up", "legs up", "squirming"] },
   { id: "body-tension", label: "Stiff / tense body", category: "Body & Behavior", match: ["stiff", "tense", "rigid", "whole body tight"] },
+  { id: "swollen-belly", label: "Swollen / distended belly", category: "Body & Behavior", redFlag: true, match: ["swollen belly", "distended belly", "bloated hard belly", "hard swollen stomach"] },
   { id: "fist-clenching", label: "Fist clenching", category: "Body & Behavior", match: ["clenched fists", "fist clenching", "tight fists"] },
   { id: "red-face-grunting", label: "Red face, straining and grunting", category: "Body & Behavior", match: ["red face", "grunting", "bearing down", "turning red"] },
   { id: "head-side-preference", label: "Turns head to one side", category: "Body & Behavior", match: ["head to one side", "always looks one way", "favors one side", "tilted head"] },

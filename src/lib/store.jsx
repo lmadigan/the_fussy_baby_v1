@@ -1,34 +1,40 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { todayKey } from "./dates.js";
 import { buildDemoState } from "../data/demoSeed.js";
+import { getProtocolStep, reviewDate } from "../data/playbook.js";
 
 /**
- * App state, persisted to localStorage.
+ * Local MVP state.
  *
- * profile:   { babyName, babyAgeMonths, onboardingSymptoms: [obsId], onboarded }
- * days:      { [dateKey]: { fussiness: 1–5|null, observations: [obsId|"custom:Label"] } }
- *            — only parent-approved observations are ever stored.
- * statuses:  { [investigationId]: statusId }
- * checklists:{ [investigationId]: [stepIndex] } — care-advice steps checked off
- * feedback:  { [promptId]: "dismissed" | "sent" } — timed in-app feedback prompts
- * currentInvestigationId: string|null
- *
- * Demo mode (?demo in the URL) loads a seeded example family and never
- * persists — refreshing the page resets the story.
+ * profile: baby context and approved symptom ids
+ * membership: "free" or "premium"
+ * assessment: latest validated AI contributor map
+ * activePlanId: current free Playbook protocol step
+ * plans: start date, review date, and status by protocol id
+ * protocolChecklists: completed checklist indexes by protocol id
+ * outcomes: one structured outcome review by protocol id
  */
 
-const STORAGE_KEY = "fussy-baby-v1";
+const STORAGE_KEY = "fussy-baby-v2";
 
 export const IS_DEMO =
   typeof window !== "undefined" && new URLSearchParams(window.location.search).has("demo");
 
 const initialState = {
-  profile: { babyName: "", babyAgeMonths: null, onboardingSymptoms: [], onboarded: false },
-  days: {},
-  statuses: {},
-  checklists: {},
-  feedback: {},
-  currentInvestigationId: null,
+  profile: {
+    babyName: "",
+    babyAgeMonths: null,
+    feedingMode: "",
+    fussinessTiming: "",
+    onboardingSymptoms: [],
+    onboarded: false,
+  },
+  membership: "free",
+  assessment: null,
+  activePlanId: null,
+  plans: {},
+  protocolChecklists: {},
+  outcomes: {},
 };
 
 function load() {
@@ -41,85 +47,99 @@ function load() {
       ...initialState,
       ...parsed,
       profile: { ...initialState.profile, ...parsed.profile },
-      checklists: parsed.checklists ?? {},
-      feedback: parsed.feedback ?? {},
+      plans: parsed.plans ?? {},
+      protocolChecklists: parsed.protocolChecklists ?? {},
+      outcomes: parsed.outcomes ?? {},
+      assessment: parsed.assessment ?? null,
     };
   } catch {
     return initialState;
   }
 }
 
+function beginPlan(state, protocolId, startedAt = todayKey()) {
+  const protocol = getProtocolStep(protocolId);
+  if (!protocol) return state;
+  const existing = state.plans[protocolId];
+  return {
+    ...state,
+    activePlanId: protocolId,
+    plans: {
+      ...state.plans,
+      [protocolId]: {
+        startedAt: existing?.startedAt ?? startedAt,
+        reviewDate: existing?.reviewDate ?? reviewDate(startedAt, protocol.reviewAfterDays),
+        status: existing?.status ?? "in_progress",
+      },
+    },
+  };
+}
+
 function reducer(state, action) {
   switch (action.type) {
-    case "completeOnboarding": {
-      const { babyName, babyAgeMonths, symptoms } = action;
+    case "completeOnboarding":
       return {
         ...state,
-        profile: { babyName, babyAgeMonths, onboardingSymptoms: symptoms, onboarded: true },
+        profile: {
+          ...state.profile,
+          babyName: action.babyName,
+          babyAgeMonths: action.babyAgeMonths,
+          feedingMode: action.feedingMode ?? "",
+          onboardingSymptoms: action.symptoms,
+          onboarded: true,
+        },
       };
-    }
-    case "updateSymptoms": {
-      // The standing "what you're seeing" list — editable any time, drives suggestions.
+    case "updateSymptoms":
       return { ...state, profile: { ...state.profile, onboardingSymptoms: action.symptoms } };
-    }
-    case "saveDay": {
-      // Merge approved observations into the day's record (dedupe, keep order).
-      const { dateKey, observations, fussiness } = action;
-      const existing = state.days[dateKey] ?? { fussiness: null, observations: [] };
-      const merged = [...existing.observations];
-      for (const obs of observations) if (!merged.includes(obs)) merged.push(obs);
+    case "updateAssessmentContext":
       return {
         ...state,
-        days: {
-          ...state.days,
-          [dateKey]: { fussiness: fussiness ?? existing.fussiness, observations: merged },
+        profile: {
+          ...state.profile,
+          feedingMode: action.feedingMode ?? state.profile.feedingMode,
+          fussinessTiming: action.fussinessTiming ?? state.profile.fussinessTiming,
+        },
+      };
+    case "activateMembership":
+      return { ...state, membership: "premium" };
+    case "saveAssessment":
+      return { ...state, assessment: action.assessment };
+    case "startPlan":
+      return beginPlan(state, action.protocolId, action.startedAt);
+    case "toggleProtocolItem": {
+      const current = new Set(state.protocolChecklists[action.protocolId] ?? []);
+      if (current.has(action.index)) current.delete(action.index);
+      else current.add(action.index);
+      const next = beginPlan(state, action.protocolId);
+      return {
+        ...next,
+        protocolChecklists: {
+          ...state.protocolChecklists,
+          [action.protocolId]: [...current].sort((a, b) => a - b),
         },
       };
     }
-    case "updateDay": {
-      const { dateKey, observations, fussiness } = action;
-      if (observations.length === 0 && fussiness == null) {
-        const days = { ...state.days };
-        delete days[dateKey];
-        return { ...state, days };
-      }
-      return { ...state, days: { ...state.days, [dateKey]: { fussiness, observations } } };
-    }
-    case "deleteDay": {
-      const days = { ...state.days };
-      delete days[action.dateKey];
-      return { ...state, days };
-    }
-    case "setStatus": {
-      const statuses = { ...state.statuses, [action.investigationId]: action.status };
-      let current = state.currentInvestigationId;
-      if (action.status === "in_progress") current = action.investigationId;
-      else if (current === action.investigationId) current = null;
-      return { ...state, statuses, currentInvestigationId: current };
-    }
-    case "toggleChecklistStep": {
-      const { investigationId, index } = action;
-      const current = new Set(state.checklists[investigationId] ?? []);
-      const checking = !current.has(index);
-      if (checking) current.add(index);
-      else current.delete(index);
-      // Checking your first step means you're exploring this — promote it.
-      let statuses = state.statuses;
-      let currentInvestigationId = state.currentInvestigationId;
-      if (checking && (state.statuses[investigationId] ?? "not_started") === "not_started") {
-        statuses = { ...state.statuses, [investigationId]: "in_progress" };
-        currentInvestigationId = investigationId;
-      }
+    case "saveOutcome":
       return {
         ...state,
-        checklists: { ...state.checklists, [investigationId]: [...current].sort((a, b) => a - b) },
-        statuses,
-        currentInvestigationId,
+        plans: {
+          ...state.plans,
+          [action.protocolId]: {
+            ...state.plans[action.protocolId],
+            status: "reviewed",
+          },
+        },
+        outcomes: {
+          ...state.outcomes,
+          [action.protocolId]: {
+            result: action.result,
+            followed: action.followed,
+            improvedSymptoms: action.improvedSymptoms ?? [],
+            note: action.note ?? "",
+            reviewedAt: todayKey(),
+          },
+        },
       };
-    }
-    case "resolveFeedback": {
-      return { ...state, feedback: { ...state.feedback, [action.promptId]: action.outcome } };
-    }
     case "reset":
       return initialState;
     default:
@@ -132,11 +152,11 @@ const StoreContext = createContext(null);
 export function StoreProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, undefined, load);
   useEffect(() => {
-    if (IS_DEMO) return; // demo edits live in memory only
+    if (IS_DEMO) return;
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {
-      // storage full or unavailable — the session still works in memory
+      // The session remains usable when local storage is unavailable.
     }
   }, [state]);
   return <StoreContext.Provider value={{ state, dispatch }}>{children}</StoreContext.Provider>;
@@ -144,32 +164,4 @@ export function StoreProvider({ children }) {
 
 export function useStore() {
   return useContext(StoreContext);
-}
-
-/** Days sorted newest first: [{ dateKey, fussiness, observations }] */
-export function sortedDays(state) {
-  return Object.entries(state.days)
-    .map(([dateKey, day]) => ({ dateKey, ...day }))
-    .sort((a, b) => (a.dateKey < b.dateKey ? 1 : -1));
-}
-
-export function lastObservationDay(state) {
-  const days = sortedDays(state);
-  return days.length ? days[0] : null;
-}
-
-/** Observation labels the parent uses most, seeded from onboarding. */
-export function commonObservationIds(state, limit = 8) {
-  const counts = new Map();
-  for (const id of state.profile.onboardingSymptoms) counts.set(id, 1);
-  for (const day of Object.values(state.days)) {
-    for (const obs of day.observations) {
-      if (obs.startsWith("custom:")) continue;
-      counts.set(obs, (counts.get(obs) ?? 0) + 2);
-    }
-  }
-  return [...counts.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, limit)
-    .map(([id]) => id);
 }
